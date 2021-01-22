@@ -1,0 +1,9 @@
+[alias]
+	co = checkout
+	p = push
+	st = status -sb
+	last = log -1 HEAD --stat
+	cm = commit -m
+	ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[help]
+	autocorrect = 20
