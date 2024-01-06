@@ -1,0 +1,5 @@
+readme.md
+
+{{ if eq .chezmoi.os "windows" }}
+run_onchange_windows-apps.ps1
+{{ end }}
