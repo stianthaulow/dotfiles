@@ -1,0 +1,2 @@
+winget install Microsoft.WindowsTerminal
+winget install gerardog.gsudo

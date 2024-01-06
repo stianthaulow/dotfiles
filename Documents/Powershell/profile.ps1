@@ -64,16 +64,6 @@ function e {
   Invoke-Item .
 }
 
-# Sudo
-function sudo() {
-  if ($args.Length -eq 1) {
-    Start-Process $args[0] -verb "runAs"
-  }
-  if ($args.Length -gt 1) {
-    Start-Process $args[0] -ArgumentList $args[1..$args.Length] -verb "runAs"
-  }
-}
-
 # Edit powershell profile with vscode
 function ep() {
   code $profile
