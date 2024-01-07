@@ -12,8 +12,12 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```powershell
 winget install twpayne.chezmoi
 ```
+## Install Powershell Core
+```powershell
+winget install Microsoft.Powershell
+```
 
-## *Run powershell as admin*
+## *Run powershell core as admin*
 
 ## Init Chezmoi
 ```poswershell
