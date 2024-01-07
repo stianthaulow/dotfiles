@@ -8,7 +8,6 @@ if (-not (Test-IsAdmin)) {
   $arguments = "& '" + $myinvocation.mycommand.definition + "'"
   Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait
   exit
-
 }
 
 $AppXApps = @(
