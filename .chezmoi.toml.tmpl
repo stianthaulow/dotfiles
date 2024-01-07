@@ -1,4 +1,8 @@
 {{ $email := promptString "email" -}}
 
+[interpreters.ps1]
+command = "powershell"
+args = ["-NoLogo"]
+
 [data]
 email = {{ $email | quote }}

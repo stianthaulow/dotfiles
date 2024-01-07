@@ -1,5 +1,6 @@
 readme.md
 
 {{ if ne .chezmoi.os "windows" }}
-scripts/Windows/**
+.chezmoiscripts/Windows/**
+Documents
 {{ end }}
