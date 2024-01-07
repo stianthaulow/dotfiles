@@ -3,4 +3,5 @@ readme.md
 {{ if ne .chezmoi.os "windows" }}
 .chezmoiscripts/Windows/**
 Documents
+AppData
 {{ end }}
