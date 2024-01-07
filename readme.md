@@ -16,4 +16,6 @@ winget install twpayne.chezmoi
 ## *Run powershell as admin*
 
 ## Init Chezmoi
+```poswershell
 chezmoi init stianthaulow --apply
+```
