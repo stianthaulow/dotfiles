@@ -44,16 +44,3 @@ foreach ($app in $notInstalled) {
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $appId $appArgs"
   Invoke-Expression "winget $wingetArgs"
 }
-
-# Remove all desktop shortcuts
-$userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
-$publicDesktopPath = [System.Environment]::GetFolderPath("CommonDesktopDirectory")
-function Remove-Shortcuts($path) {
-  $shortcuts = Get-ChildItem -Path $path -Filter *.lnk
-  foreach ($shortcut in $shortcuts) {
-    Remove-Item $shortcut.FullName -Force
-  }
-}
-
-Remove-Shortcuts -path $userDesktopPath
-Remove-Shortcuts -path $publicDesktopPath
