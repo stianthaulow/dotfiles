@@ -46,6 +46,7 @@ foreach ($app in $notInstalled) {
 }
 
 # Remove all desktop shortcuts
+Write-Host "Removing all desktop shortcuts"
 $desktopPath = [System.Environment]::GetFolderPath("Desktop")
 $shortcuts = Get-ChildItem -Path $desktopPath -Filter *.lnk
 foreach ($shortcut in $shortcuts) {
