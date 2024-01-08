@@ -17,9 +17,12 @@ winget install twpayne.chezmoi
 winget install Microsoft.Powershell
 ```
 
-## *Run powershell core as admin*
-
 ## Init Chezmoi
 ```poswershell
-chezmoi init stianthaulow --apply
+chezmoi init stianthaulow
+```
+
+## Apply chezmoi in Powershell as admin
+```
+chezmoi apply
 ```
