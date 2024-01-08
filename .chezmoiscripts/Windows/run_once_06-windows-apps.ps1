@@ -1,13 +1,13 @@
 $apps = @(
   @{Id = "JanDeDobbeleer.OhMyPosh"; Name = "Oh My Posh" }
-  @{Id = "7zip.7zip"; Name = "7zip" }
   @{Id = "Microsoft.WindowsTerminal"; Name = "Windows Terminal" }
-  @{Id = "Google.Chrome"; Name = "Google Chrome" }
-  @{Id = "Neovim.Neovim"; Name = "Neovim" }
-  @{Id = "Microsoft.PowerToys"; Name = "PowerToys" }
   @{Id = "Schniz.fnm"; Name = "Fast Node Manager (fnm)" }
-  @{Id = "Microsoft.VisualStudioCode"; Name = "Visual Studio Code"; Args = "--override '/SILENT /mergetasks=`"!runcode,addcontextmenufiles,addcontextmenufolders`"'" },
-  @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
+  # @{Id = "Microsoft.PowerToys"; Name = "PowerToys" }
+  # @{Id = "Neovim.Neovim"; Name = "Neovim" }
+  # @{Id = "Microsoft.VisualStudioCode"; Name = "Visual Studio Code"; Args = "--override '/SILENT /mergetasks=`"!runcode,addcontextmenufiles,addcontextmenufolders`"'" },
+  # @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
+  # @{Id = "Google.Chrome"; Name = "Google Chrome" }
+  # @{Id = "7zip.7zip"; Name = "7zip" }
   # @{Id = "Spotify.Spotify"; Name = "Spotify" }
   # @{Id = "Ditto.Ditto"; Name = "Ditto" }
   # @{Id = "GitHub.cli"; Name = "GitHub CLI" }
