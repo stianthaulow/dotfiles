@@ -2,6 +2,7 @@
 $directoriesToCreate = @(
   "C:\Dev",
   "C:\Tools"
+  "$env:USERPROFILE\Resources"
 )
 foreach ($directory in $directoriesToCreate) {
   if (-not (Test-Path $directory)) {
