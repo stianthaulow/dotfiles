@@ -1,2 +1,6 @@
-{{- /* chezmoi:modify-template */ -}}
-{{ fromJson .chezmoi.stdin | setValueAtPath "dismissedMessages" (list "setAsDefault") | toPrettyJson }}
+{{ /* chezmoi:modify-template */ }}
+{{ $content := "{}" }}
+{{ if (eq .chezmoi.stdin "") }}
+{{ $content := .chezmoi.stdin }}
+{{ end }}
+{{ fromJson $content | setValueAtPath "dismissedMessages" (list "setAsDefault") | toPrettyJson }}
