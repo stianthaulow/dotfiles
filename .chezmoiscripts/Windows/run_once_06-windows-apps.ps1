@@ -6,8 +6,8 @@ $apps = @(
   @{Id = "Microsoft.PowerToys"; Name = "PowerToys" }
   @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
   @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
+  @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
   # @{Id = "Neovim.Neovim"; Name = "Neovim" }
-  # @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
   # @{Id = "Google.Chrome"; Name = "Google Chrome" }
   # @{Id = "7zip.7zip"; Name = "7zip" }
   # @{Id = "Spotify.Spotify"; Name = "Spotify" }
