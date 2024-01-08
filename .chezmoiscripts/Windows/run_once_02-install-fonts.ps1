@@ -107,6 +107,3 @@ foreach ($FontItem in (Get-ChildItem -Path $downloadPath |
     Where-Object { ($_.Name -like '*.ttf') -or ($_.Name -like '*.otf') })) {  
   Install-Font -fontFile $FontItem.FullName  
 }
-
-Write-Host "Cleaning up"
-Remove-Item -Path $downloadPath -Recurse -Force

@@ -4,6 +4,8 @@ $apps = @(
   @{Id = "Schniz.fnm"; Name = "Fast Node Manager (fnm)" }
   @{Id = "Microsoft.VisualStudioCode"; Name = "Visual Studio Code"; Args = "--override '/SILENT /mergetasks=`"!runcode,addcontextmenufiles,addcontextmenufolders`"'" },
   @{Id = "Microsoft.PowerToys"; Name = "PowerToys" }
+  @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
+  @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
   # @{Id = "Neovim.Neovim"; Name = "Neovim" }
   # @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
   # @{Id = "Google.Chrome"; Name = "Google Chrome" }
@@ -15,8 +17,6 @@ $apps = @(
   # @{Id = "junegunn.fzf"; Name = "fzf (fuzzy finder)" }
   # @{Id = "Obsidian.Obsidian"; Name = "Obsidian" }
   # @{Id = "Notepad++.Notepad++"; Name = "Notepad++" }
-  # @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
-  # @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
   # @{Id = "DigitalScholar.Zotero"; Name = "Zotero" }
   # @{Id = "voidtools.Everything"; Name = "Everything search" }
   # @{Id = "Discord.Discord"; Name = "Discord" }
