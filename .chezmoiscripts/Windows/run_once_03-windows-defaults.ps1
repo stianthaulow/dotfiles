@@ -35,6 +35,18 @@ $defaults = @(
 
   # Hide News and Interests from taskbar
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds"; Name = "ShellFeedsTaskbarViewMode"; Value = 2 }
+  
+  # Hide Recently Added Apps from Start Menu
+  @{Path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer"; Name = "HideRecentlyAddedApps"; Value = 1 }
+
+  # Disable sticky keys by hitting shift 5 times shortcut
+  @{Path = "HKCU:\Control Panel\Accessibility\StickyKeys"; Name = "Flags"; Value = 506 }
+
+  # Disable Whats New in Windows
+  @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement"; Name = "ScoobeSystemSettingEnabled"; Value = 0 }
+
+  # Hide App suggestions from Start Menu
+  @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"; Name = "SubscribedContent-338388Enabled"; Value = 0 }
 
   # Show file extensions
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"; Name = "HideFileExt"; Value = 0 }
@@ -53,14 +65,16 @@ $defaults = @(
 
   # Disable Edge pre-launching
   @{Path = "HKCU:\Software\Policies\Microsoft\MicrosoftEdge\Main"; Name = "AllowPrelaunch"; Value = 0 }
-  @{Path = "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main"; Name = "AllowPrelaunch"; Value = 0 }
-
 
 )
 
 
 foreach ($setting in $defaults) {
-  if (Test-Path -Path $setting.Path) {
+  if (!(Test-Path -Path $setting.Path)) {
+    Write-Host "Creating registry path: $($setting.Path)"
+    New-Item $setting.Path -Force | Out-Null
+  }
+  else {
     Set-ItemProperty @setting
   }
 }
