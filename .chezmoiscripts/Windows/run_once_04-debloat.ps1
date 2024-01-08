@@ -1,11 +1,9 @@
-function Test-IsAdmin {
-  $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-  $currentUser.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-}
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-if (-not (Test-IsAdmin)) {
-  # Relaunch the script with administrator rights
-  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+if (!$isAdmin) {
+  Write-Host "Relaunching debloat script as admin in Windows Powershell" -ForegroundColor DarkYellow
+  $arguments = "& '" + $Myinvocation.Mycommand.Definition + "'"
   Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait
   exit
 }
@@ -50,13 +48,29 @@ $AppXApps = @(
   "*Flipboard*"
   "*Twitter*"
   "*Facebook*"
-  "*Spotify*"
 )
 
+Write-Host "Removing AppX packages..." -ForegroundColor DarkYellow
 foreach ($App in $AppXApps) {
-  Write-Host "Removing Package $App" -ForegroundColor DarkYellow
-  Get-AppxPackage -Name $App | Remove-AppxPackage -ErrorAction SilentlyContinue
-  Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
-  Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
-}
+  Write-Host "Checking $App"
+  # Check for the package for the current user
+  $userPackage = Get-AppxPackage -Name $App -ErrorAction SilentlyContinue
+  if ($userPackage) {
+    Write-Host "Removing Package $App for Current User" -ForegroundColor DarkYellow
+    Remove-AppxPackage -Package $userPackage.PackageFullName -ErrorAction SilentlyContinue
+  }
 
+  # Check for the package for all users
+  $allUsersPackage = Get-AppxPackage -Name $App -AllUsers -ErrorAction SilentlyContinue
+  if ($allUsersPackage) {
+    Write-Host "Removing Package $App for All Users" -ForegroundColor DarkYellow
+    Remove-AppxPackage -Package $allUsersPackage.PackageFullName -AllUsers -ErrorAction SilentlyContinue
+  }
+
+  # Check for provisioned packages
+  $provisionedPackage = Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App
+  if ($provisionedPackage) {
+    Write-Host "Removing Provisioned Package $App" -ForegroundColor DarkYellow
+    Remove-AppxProvisionedPackage -PackageName $provisionedPackage.PackageName -Online -ErrorAction SilentlyContinue
+  }
+}
