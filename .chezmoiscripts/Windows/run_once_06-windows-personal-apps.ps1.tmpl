@@ -1,4 +1,4 @@
-{{ if .isPersonal }}
+{{ if ne .isWork true }}
 $apps = @(
   @{Id = "Microsoft.OneDrive"; Name = "Onedrive Personal" }
 )

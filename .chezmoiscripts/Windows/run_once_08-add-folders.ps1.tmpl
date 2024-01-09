@@ -3,6 +3,9 @@ $directoriesToCreate = @(
   "C:\Dev",
   "C:\Tools"
   "$env:USERPROFILE\Resources"
+  {{ if .isWork }}
+  "C:\P"
+  {{ end }}
 )
 foreach ($directory in $directoriesToCreate) {
   if (-not (Test-Path $directory)) {
