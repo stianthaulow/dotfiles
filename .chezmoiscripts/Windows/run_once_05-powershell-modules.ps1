@@ -11,7 +11,14 @@ if (!$isAdmin) {
 
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 
-Install-Module DockerCompletion -Scope CurrentUser
-Install-Module posh-git -Scope CurrentUser
+$modules = @(
+  "posh-git"
+  "DockerCompletion"
+)
+
+foreach ($module in $modules) {
+  Write-Host "Installing $module"
+  Install-Module -Name $module -Scope CurrentUser
+}
 
 Write-Host "Powershell modules installed." -ForegroundColor Green
