@@ -1,4 +1,5 @@
 $apps = @(
+  @{Id = "Git.Git"; Name = "Git" }
   @{Id = "JanDeDobbeleer.OhMyPosh"; Name = "Oh My Posh" }
   @{Id = "Microsoft.WindowsTerminal"; Name = "Windows Terminal" }
   @{Id = "Schniz.fnm"; Name = "Fast Node Manager (fnm)" }
