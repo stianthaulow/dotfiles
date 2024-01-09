@@ -39,6 +39,11 @@ $defaults = @(
   # Hide Recently Added Apps from Start Menu
   @{Path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer"; Name = "HideRecentlyAddedApps"; Value = 1 }
 
+  # Hide recently added and frequently used from Quick Access in Explorer
+  @{Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer"; Name = "ShowRecent"; Value = 0 }
+  @{Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer"; Name = "ShowFrequent"; Value = 0 }
+
+
   # Disable sticky keys by hitting shift 5 times shortcut
   @{Path = "HKCU:\Control Panel\Accessibility\StickyKeys"; Name = "Flags"; Value = 506 }
 
