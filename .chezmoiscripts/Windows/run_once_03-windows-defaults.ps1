@@ -71,6 +71,11 @@ $defaults = @(
   # Disable Edge pre-launching
   @{Path = "HKCU:\Software\Policies\Microsoft\MicrosoftEdge\Main"; Name = "AllowPrelaunch"; Value = 0 }
 
+  # Disable Windows Meet Now
+  @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies"; Name = "HideSCAMeetNow"; Value = 1 }
+
+
+
 )
 
 
