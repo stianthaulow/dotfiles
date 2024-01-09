@@ -1,5 +1,6 @@
 readme.md
 
+bootstrap.ps1
 {{ if ne .chezmoi.os "windows" }}
 .chezmoiscripts/Windows/**
 Documents

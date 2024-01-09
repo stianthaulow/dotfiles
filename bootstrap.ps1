@@ -1,0 +1,1 @@
+Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
