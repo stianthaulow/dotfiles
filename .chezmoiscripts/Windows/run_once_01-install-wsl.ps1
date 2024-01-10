@@ -1,4 +1,3 @@
-Write-Host "Installing WSL..." -ForegroundColor DarkYellow
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
@@ -10,5 +9,9 @@ if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
 
 $wslFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 if ($wslFeature -and $wslFeature.State -ne "Enabled") {
-  wsl --install
+  Write-Host "Install WSL? [Y/n]"
+  $key = [System.Console]::ReadKey($true)
+  if ($key.Key -eq 'Y' -or $key.Key -eq 'Enter') {
+    wsl --install
+  }
 }
