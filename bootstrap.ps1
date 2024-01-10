@@ -3,7 +3,7 @@ $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Pri
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (!$isAdmin) {
-  $arguments = "& '" + $myinvocation.mycommand.definition + "' -NoExit"
+  $arguments = @("-NoExit", "-Command", "'" + $myinvocation.mycommand.definition + "'")
   Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User")
   chezmoi init $githubUserName
