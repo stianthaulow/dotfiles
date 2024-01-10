@@ -14,6 +14,6 @@ $languageList.Add("nb-NO")
 $languageList[0].InputMethodTips.Add("0414:00000414")
 $languageList[1].InputMethodTips.Add("0414:00000414")
 Set-WinUserLanguageList $languageList -Force
-Set-Culture "nb-NO"
 Set-WinSystemLocale "nb-NO"
 Set-WinUILanguageOverride -Language "en-US"
+Set-Culture "nb-NO"
