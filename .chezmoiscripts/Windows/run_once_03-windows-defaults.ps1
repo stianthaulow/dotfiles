@@ -84,9 +84,7 @@ foreach ($setting in $defaults) {
     Write-Host "Creating registry path: $($setting.Path)"
     New-Item $setting.Path -Force | Out-Null
   }
-  else {
-    Set-ItemProperty @setting
-  }
+  Set-ItemProperty @setting
 }
 
 # Clear all current applied system sounds
