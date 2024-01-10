@@ -3,14 +3,13 @@ $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Pri
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (!$isAdmin) {
-  $arguments = @("-NoExit", "-Command", "'" + $myinvocation.mycommand.definition + "'")
+  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
   Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User")
   chezmoi init $githubUserName
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply"
   exit
 }
-
 
 Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
 Write-Host "Press any key to continue after installing winget..."
