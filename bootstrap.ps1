@@ -26,14 +26,14 @@ switch -Regex (Read-host $QuestionString) {
     Read-HostBoolean $Question
   }
 }
-$chemoiConfigPath = "$env:USERPROFILE\.config\chezmoi\chezmoi.toml"
+$chezmoiConfigPath = "$env:USERPROFILE\.config\chezmoi\chezmoi.toml"
 $email = Read-Host 'What is your email address?'
 $isWork = Read-HostBoolean 'Is this a work computer? (y/n)'
 
-New-Item -Path $chemoiConfigPath -ItemType File -Force | Out-Null
-Add-Content -Path $chemoiConfigPath -Value "[data]"
-Add-Content -Path $chemoiConfigPath -Value "email = `"$email`""
-Add-Content -Path $chemoiConfigPath -Value "isWork = $("$isWork".ToLower())"
+New-Item -Path $chezmoiConfigPath -ItemType File -Force | Out-Null
+Add-Content -Path $chezmoiConfigPath -Value "[data]"
+Add-Content -Path $chezmoiConfigPath -Value "email = `"$email`""
+Add-Content -Path $chezmoiConfigPath -Value "isWork = $("$isWork".ToLower())"
 
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
