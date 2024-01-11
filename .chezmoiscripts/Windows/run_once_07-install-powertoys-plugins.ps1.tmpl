@@ -1,0 +1,3 @@
+$everyThingInstallScriptPath = Join-Path "{{- .chezmoi.sourceDir -}}" "/Scripts/install-powertoys-everythingplugin.ps1"
+$arguments = @("-File", $everyThingInstallScriptPath)
+Start-Process pwsh -ArgumentList $arguments -Wait

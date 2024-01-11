@@ -9,11 +9,11 @@ $apps = @(
   @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
   @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
   @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
+  @{Id = "Ditto.Ditto"; Name = "Ditto" }
   # @{Id = "Neovim.Neovim"; Name = "Neovim" }
   # @{Id = "Google.Chrome"; Name = "Google Chrome" }
   # @{Id = "7zip.7zip"; Name = "7zip" }
   # @{Id = "Spotify.Spotify"; Name = "Spotify" }
-  # @{Id = "Ditto.Ditto"; Name = "Ditto" }
   # @{Id = "GitHub.cli"; Name = "GitHub CLI" }
   # @{Id = "jqlang.jq"; Name = "jq (JSON CLI)" }
   # @{Id = "junegunn.fzf"; Name = "fzf (fuzzy finder)" }

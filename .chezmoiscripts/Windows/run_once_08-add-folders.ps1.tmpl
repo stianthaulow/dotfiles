@@ -5,6 +5,7 @@ $directoriesToCreate = @(
   "C:\Dev\Lab",
   "C:\Tools"
   "$env:USERPROFILE\Resources"
+  "$env:USERPROFILE\Scripts"
   {{ if .isWork }}
   "C:\P"
   {{ end }}
@@ -16,3 +17,10 @@ foreach ($directory in $directoriesToCreate) {
     Write-Host "Created directory: $directory" -ForegroundColor Green
   }   
 }
+
+$scriptsPath = "$env:USERPROFILE\Scripts"
+$envPath = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::User)
+if ($envPath -notlike "*$scriptsPath*") {
+    $envPath += ";$scriptsPath"
+    [System.Environment]::SetEnvironmentVariable("Path", $envPath, [System.EnvironmentVariableTarget]::User)
+} 

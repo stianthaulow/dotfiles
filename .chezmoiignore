@@ -5,4 +5,5 @@ bootstrap.ps1
 .chezmoiscripts/Windows/**
 Documents
 AppData
+install-powertoys-everythingplugin.ps1
 {{ end }}
