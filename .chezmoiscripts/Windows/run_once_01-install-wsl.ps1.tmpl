@@ -9,9 +9,7 @@ if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
 
 $wslFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 if ($wslFeature -and $wslFeature.State -ne "Enabled") {
-  Write-Host "Install WSL? [Y/n]"
-  $key = [System.Console]::ReadKey($true)
-  if ($key.Key -eq 'Y' -or $key.Key -eq 'Enter') {
-    wsl --install
-  }
+  {{ if .wantWsl }}
+  wsl --install
+  {{ end }}
 }

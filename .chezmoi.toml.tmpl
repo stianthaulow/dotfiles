@@ -1,5 +1,6 @@
 {{ $email := promptStringOnce . "email" "What is your email address" }}
 {{ $isWork := promptBoolOnce . "isWork" "Is this a work machine"}}
+{{ $wantWsl := promptBoolOnce . "wantWsl" "Do you want WSL"}}
 
 [interpreters.ps1]
 command = "pwsh"
@@ -8,3 +9,4 @@ args = ["-NoLogo"]
 [data]
 email = {{ $email | quote }}
 isWork = {{ $isWork }}
+wantWsl = {{ $wantWsl }}

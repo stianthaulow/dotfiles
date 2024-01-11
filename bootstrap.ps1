@@ -35,11 +35,13 @@ function Read-HostBoolean([String]$Question) {
 $chezmoiConfigPath = "$env:USERPROFILE\.config\chezmoi\chezmoi.toml"
 $email = Read-Host 'What is your email address?'
 $isWork = Read-HostBoolean 'Is this a work computer? (y/n)'
+$wantWsl = Read-HostBoolean 'Do you want to install WSL? (y/n)'
 
 New-Item -Path $chezmoiConfigPath -ItemType File -Force | Out-Null
 Add-Content -Path $chezmoiConfigPath -Value "[data]"
 Add-Content -Path $chezmoiConfigPath -Value "email = `"$email`""
 Add-Content -Path $chezmoiConfigPath -Value "isWork = $("$isWork".ToLower())"
+Add-Content -Path $chezmoiConfigPath -Value "wantWsl = $("$wantWsl".ToLower())"
 
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
