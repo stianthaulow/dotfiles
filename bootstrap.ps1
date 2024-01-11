@@ -13,6 +13,10 @@ if (!$isAdmin) {
 
 Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
 
+# Disable UAC
+[Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
+Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
+
 # Pre-prompt chezmoi data
 function Read-HostBoolean([String]$Question) {
   $QuestionString = "$($Question)"

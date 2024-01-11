@@ -52,6 +52,10 @@ $folderIconsPath = "$localResourcePath\Icons\Folders"
 
 $FolderIconsChildren
 foreach ($folder in $folders) {
+  if (-not (Test-Path $folder)) {
+    # The directory does not exist, so create it
+    New-Item -Path $folder -ItemType Directory | Out-Null
+  }   
   $iconItem = $FolderIconsChildren | Where-Object { $_.Name -eq $folder.IconName }
   $IconPath = Join-Path $folderIconsPath $folder.IconName
 
