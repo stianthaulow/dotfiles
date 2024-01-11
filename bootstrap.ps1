@@ -2,22 +2,33 @@ $githubUserName = "stianthaulow"
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
+$logpath = "$env:USERPROFILE\bootstrap.log"
+New-Item -Path $log -ItemType File -Force | Out-Null
+function log($message) {
+  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  Add-Content -Path $logpath -Value "$message - $timestamp"
+}
+
 if (!$isAdmin) {
   $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+  log("Restarting as admin")
   Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User")
+  log("Installing chezmoi")
   chezmoi init $githubUserName
+  log("Applying chezmoi as admin")
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply"
   exit
 }
 
 Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
 
-# Disable UAC
+
+log("Disabling UAC")
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
 
-# Pre-prompt chezmoi data
+log("Pre-prompt chezmoi data")
 function Read-HostBoolean([String]$Question) {
   $QuestionString = "$($Question)"
   if ($ReadHostBooleanWasInvalid) {
@@ -53,6 +64,7 @@ $apps = @(
 )
 
 foreach ($app in $apps) {
+  log("Installing $app")
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $app"
   Invoke-Expression "winget $wingetArgs"
 }
