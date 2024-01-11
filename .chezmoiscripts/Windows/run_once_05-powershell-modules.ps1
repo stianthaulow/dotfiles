@@ -14,11 +14,13 @@ Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 $modules = @(
   "posh-git"
   "DockerCompletion"
+  "Microsoft.Graph"
 )
 
 foreach ($module in $modules) {
   Write-Host "Installing $module"
   Install-Module -Name $module -Scope CurrentUser
 }
+
 
 Write-Host "Powershell modules installed." -ForegroundColor Green
