@@ -9,8 +9,8 @@ if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
 }
 
 # Set norwegian keyboard layout
-$languageList = New-WinUserLanguageList -Language "en-US"
-$languageList.Add("nb-NO")
+$languageList = New-WinUserLanguageList -Language "nb-NO"
+$languageList.Add("en-US")
 $languageList[0].InputMethodTips.Add("0414:00000414")
 $languageList[1].InputMethodTips.Add("0414:00000414")
 Set-WinUserLanguageList $languageList -Force
