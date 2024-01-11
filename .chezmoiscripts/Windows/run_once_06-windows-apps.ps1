@@ -9,6 +9,7 @@ $apps = @(
   @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
   @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
   @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
+  @{Id = "voidtools.Everything"; Name = "Everything search" }
   @{Id = "Ditto.Ditto"; Name = "Ditto" }
   # @{Id = "Neovim.Neovim"; Name = "Neovim" }
   # @{Id = "Google.Chrome"; Name = "Google Chrome" }
@@ -20,7 +21,6 @@ $apps = @(
   # @{Id = "Obsidian.Obsidian"; Name = "Obsidian" }
   # @{Id = "Notepad++.Notepad++"; Name = "Notepad++" }
   # @{Id = "DigitalScholar.Zotero"; Name = "Zotero" }
-  # @{Id = "voidtools.Everything"; Name = "Everything search" }
   # @{Id = "Discord.Discord"; Name = "Discord" }
   # @{Id = "tailscale.tailscale"; Name = "Tailscale" }
   # @{Id = "NickeManarin.ScreenToGif"; Name = "ScreenToGif" }
