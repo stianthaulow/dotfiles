@@ -3,7 +3,7 @@ $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Pri
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 $logpath = "$env:USERPROFILE\bootstrap.log"
-New-Item -Path $log -ItemType File -Force | Out-Null
+New-Item -Path $logpath -ItemType File -Force | Out-Null
 function log($message) {
   $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
   Add-Content -Path $logpath -Value "$message - $timestamp"
