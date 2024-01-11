@@ -13,17 +13,19 @@ if (!$isAdmin) {
 
 Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
 
-# Pre-prompt chezmoi datafunction Read-HostBoolean([String]$Question) {
-$QuestionString = "$($Question)"
-if ($ReadHostBooleanWasInvalid) {
-  Write-Host -Object "Please select a valid option" -ForegroundColor Yellow
-}
-switch -Regex (Read-host $QuestionString) {
-  '1|Y|Yes|true' { return $true }
-  '0|N|No|false' { return $false }
-  default { 
-    $ReadHostBooleanWasInvalid = $True
-    Read-HostBoolean $Question
+# Pre-prompt chezmoi data
+function Read-HostBoolean([String]$Question) {
+  $QuestionString = "$($Question)"
+  if ($ReadHostBooleanWasInvalid) {
+    Write-Host -Object "Please select a valid option" -ForegroundColor Yellow
+  }
+  switch -Regex (Read-host $QuestionString) {
+    '1|Y|Yes|true' { return $true }
+    '0|N|No|false' { return $false }
+    default { 
+      $ReadHostBooleanWasInvalid = $True
+      Read-HostBoolean $Question
+    }
   }
 }
 $chezmoiConfigPath = "$env:USERPROFILE\.config\chezmoi\chezmoi.toml"
