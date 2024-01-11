@@ -47,7 +47,6 @@ Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
 $apps = @(
-  "Git.Git"
   "Microsoft.PowerShell"
   "twpayne.chezmoi"
 )
