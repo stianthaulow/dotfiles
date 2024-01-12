@@ -45,6 +45,7 @@ $folders = @(
   @{Path = $env:USERPROFILE; IconName = "Profile.ico" }
   @{Path = "$env:USERPROFILE\Autohotkey"; IconName = "AHK.ico" }
   @{Path = "$env:USERPROFILE\Documents\Powershell"; IconName = "Powershell.ico" }
+  @{Path = "$env:USERPROFILE\Documents\WindowsPowershell"; IconName = "Powershell.ico" }
   @{Path = "$env:USERPROFILE\Scripts"; IconName = "Util.ico" }
 )
   
@@ -54,7 +55,7 @@ $FolderIconsChildren
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder)) {
     # The directory does not exist, so create it
-    New-Item -Path $folder -ItemType Directory | Out-Null
+    New-Item -Path $folder -ItemType Directory -Force | Out-Null
   }   
   $iconItem = $FolderIconsChildren | Where-Object { $_.Name -eq $folder.IconName }
   $IconPath = Join-Path $folderIconsPath $folder.IconName
