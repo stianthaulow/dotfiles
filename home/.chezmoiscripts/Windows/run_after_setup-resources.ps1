@@ -56,7 +56,7 @@ $folders = @(
   
 $folderIconsPath = "$localResourcePath\Icons\Folders"
 
-$FolderIconsChildren
+
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder.Path)) {
     # The directory does not exist, so create it
@@ -99,6 +99,6 @@ foreach ($item in $itemsExceptHome[0..($itemsExceptHome.Length - 1)]) {
 }
 
 # Set Desktop wallpaper and lockscreen
-$everyThingInstallScriptPath = Join-Path "{{- .chezmoi.sourceDir -}}" "/Scripts/set-lockscreen-and-wallpaper.ps1"
+$everyThingInstallScriptPath = "$env:USERPROFILE\Scripts\set-lockscreen-and-wallpaper.ps1"
 $arguments = @("-File", $everyThingInstallScriptPath)
 Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait

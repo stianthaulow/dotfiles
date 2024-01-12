@@ -67,7 +67,7 @@ $apps = @(
   @{Id = "Microsoft.WindowsTerminal"; Name = "Windows Terminal" }
   @{Id = "Schniz.fnm"; Name = "Fast Node Manager (fnm)" }
   @{Id = "Microsoft.VisualStudioCode"; Name = "Visual Studio Code"; Args = "--override '/SILENT /mergetasks=`"!runcode,addcontextmenufiles,addcontextmenufolders`"'" },
-  @{Id = "Microsoft.PowerToys"; Name = "PowerToys" }
+  @{Id = "Microsoft.PowerToys"; Name = "PowerToys"; Args = "--override '/SILENT'" }
   @{Id = "Microsoft.PowerShell"; Name = "Powershell Core" }
   @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
   @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
