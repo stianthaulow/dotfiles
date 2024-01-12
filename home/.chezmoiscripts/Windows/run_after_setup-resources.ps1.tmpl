@@ -46,8 +46,9 @@ $folders = @(
   @{Path = "C:\Dev\Lab"; IconName = "Lab-folder.ico" }
   @{Path = $env:USERPROFILE; IconName = "Profile.ico" }
   @{Path = "$env:USERPROFILE\Autohotkey"; IconName = "AHK.ico" }
-  @{Path = "$env:USERPROFILE\Documents\Powershell"; IconName = "Powershell.ico" }
-  @{Path = "$env:USERPROFILE\Documents\WindowsPowershell"; IconName = "Powershell.ico" }
+  @{Path = "$([Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments))\Powershell"; IconName = "Powershell.ico" }
+  @{Path = "$([Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments))\WindowsPowershell"; IconName = "Powershell.ico" }
+  @{Path = "$([Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments))\Misc"; IconName = "project.ico" }
   @{Path = "$env:USERPROFILE\Scripts"; IconName = "Util.ico" }
 )
   
