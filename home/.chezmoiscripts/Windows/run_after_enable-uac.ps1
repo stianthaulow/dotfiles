@@ -9,5 +9,7 @@ if ([Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVa
   }
   [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", $null, [System.EnvironmentVariableTarget]::User)
   Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 2
+  
+  Remove-Item "$env:USERPROFILE\apps.json"
 }
 
