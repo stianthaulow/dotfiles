@@ -58,8 +58,6 @@ $folderIconsPath = "$localResourcePath\Icons\Folders"
 
 $FolderIconsChildren
 foreach ($folder in $folders) {
-  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-
   if (-not (Test-Path $folder.Path)) {
     # The directory does not exist, so create it
     New-Item -Path $folder.Path -ItemType Directory -Force | Out-Null
