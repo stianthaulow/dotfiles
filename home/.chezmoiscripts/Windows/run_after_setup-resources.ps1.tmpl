@@ -28,16 +28,10 @@ $WallpaperFileItem = $WallpaperChildren | Where-Object { $_.Name -eq "wallpaper.
 $LoginFileItem = $WallpaperChildren | Where-Object { $_.Name -eq "login.jpg" }
 
 Write-Host "Downloading wallpaper..."
-Write-Host "Press any key to continue."
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-
 $wallpaperPath = "$localResourcePath\Wallpaper\wallpaper.jpg"
 Get-MgDriveItemContent -DriveId $drive.Id -DriveItemId $WallpaperFileItem.Id -OutFile $wallpaperPath
 
 Write-Host "Downloading login wallpaper..."
-Write-Host "Press any key to continue."
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-
 $loginImagePath = "$localResourcePath\Wallpaper\login.jpg"
 Get-MgDriveItemContent -DriveId $drive.Id -DriveItemId $LoginFileItem.Id -OutFile $loginImagePath
 
@@ -64,13 +58,11 @@ $folderIconsPath = "$localResourcePath\Icons\Folders"
 
 $FolderIconsChildren
 foreach ($folder in $folders) {
-  Write-Host "Processing $folder ..."
-  Write-Host "Press any key to continue."
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-  
-  if (-not (Test-Path $folder)) {
+
+  if (-not (Test-Path $folder.Path)) {
     # The directory does not exist, so create it
-    New-Item -Path $folder -ItemType Directory -Force | Out-Null
+    New-Item -Path $folder.Path -ItemType Directory -Force | Out-Null
   }   
   $iconItem = $FolderIconsChildren | Where-Object { $_.Name -eq $folder.IconName }
   $IconPath = Join-Path $folderIconsPath $folder.IconName
