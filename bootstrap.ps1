@@ -152,7 +152,7 @@ do {
 
 if ($selectedApps.Count -ne 0) {
   $appListPath = "$env:USERPROFILE\apps.json"
-  $selectedApps | ConvertTo-Json | Out-File $appListPath
+  $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
 
 
