@@ -1,4 +1,7 @@
 $githubUserName = "stianthaulow"
+
+$ErrorActionPreference = 'Stop'
+
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
@@ -20,6 +23,8 @@ if (!$isAdmin) {
   log("Installing chezmoi")
   chezmoi init $githubUserName
   log("Applying chezmoi as admin")
+  Write-Host "Press any key to continue and apply dotfiles..."
+  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply" -Wait
   log("Done")
   exit
