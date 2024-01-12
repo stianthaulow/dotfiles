@@ -10,6 +10,8 @@ Write-Host "Setting up resources..."
 
 Connect-MgGraph -Scopes "Files.Read.All" -NoWelcome
 
+Write-Host "Downloading resources from OneDrive..."
+
 $drive = Get-MgDrive | Where-Object { $_.DriveType -eq "personal" }
 $ResourcesItem = Get-MgDriveRootChild -DriveId $drive.Id | Where-Object { $_.Name -eq "Resources" }
 
@@ -64,7 +66,7 @@ foreach ($folder in $folders) {
 
   $iniPath = Join-Path $folder.Path "desktop.ini"
   if (!(Test-Path $iniPath)) {
-    New-Item -Path $iniPath -ItemType File | Out-Null
+    New-Item -Path $iniPath -ItemType File -Force | Out-Null
     # Set folder and ini as System files
     attrib +s $folder.Path
     attrib +s +h $iniPath
