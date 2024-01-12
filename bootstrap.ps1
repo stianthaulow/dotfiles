@@ -172,7 +172,7 @@ Start-Process pwsh -ArgumentList $moduleArgs
 
 Install-App "Git.Git"
 $refreshEnvCommand = '$env:Path = [System.Environment]::GetEnvironmentVariable(''Path'', ''Machine'')'
-$gitHubArgs = @("-NoExit", "-Command", "$refreshEnvCommand; git credential-manager github login")
+$gitHubArgs = @("-Command", "$refreshEnvCommand; git credential-manager github login")
 log("Logging in to GitHub")
 Start-Process pwsh -ArgumentList $gitHubArgs
 
