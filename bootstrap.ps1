@@ -5,6 +5,7 @@ $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::A
 $logpath = "$env:USERPROFILE\bootstrap.log"
 New-Item -Path $logpath -ItemType File -Force | Out-Null
 function log($message) {
+  Write-Host $message
   $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
   Add-Content -Path $logpath -Value "$message - $timestamp"
 }
@@ -19,7 +20,8 @@ if (!$isAdmin) {
   log("Installing chezmoi")
   chezmoi init $githubUserName
   log("Applying chezmoi as admin")
-  Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply"
+  Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply" -Wait
+  log("Done")
   exit
 }
 
