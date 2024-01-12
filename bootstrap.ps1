@@ -156,14 +156,21 @@ if ($selectedApps.Count -ne 0) {
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
-$apps = @(
-  "Git.Git"
-  "Microsoft.PowerShell"
-  "twpayne.chezmoi"
-)
-
-foreach ($app in $apps) {
+function Install-App($app) {
   log("Installing $app")
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $app"
   Invoke-Expression "winget $wingetArgs"
 }
+
+Install-App "Microsoft.PowerShell"
+$moduleArgs = @("-Command", "Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted; Install-Module -Name Microsoft.Graph.Authentication -Scope CurrentUser;Connect-MgGraph -Scopes `"Files.Read.All`" -NoWelcome")
+log("Installing Microsoft.Graph.Authentication and connecting to Graph")
+Start-Process pwsh -ArgumentList $moduleArgs
+
+Install-App "Git.Git"
+$refreshEnvCommand = '$env:Path = [System.Environment]::GetEnvironmentVariable(''Path'', ''Machine'')'
+$gitHubArgs = @("-NoExit", "-Command", "$refreshEnvCommand; git credential-manager github login")
+log("Logging in to GitHub")
+Start-Process pwsh -ArgumentList $gitHubArgs
+
+Install-App "twpayne.chezmoi"
