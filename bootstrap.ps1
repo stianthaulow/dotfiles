@@ -33,11 +33,7 @@ if (!$isAdmin) {
   exit
 }
 
-$isWingetMissing = $null -eq $(Get-Command winget -ErrorAction SilentlyContinue)
-
-if ($isWingetMissing) {
-  Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
-} 
+Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
 
 log("Disabling UAC")
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
@@ -163,10 +159,8 @@ if ($selectedApps.Count -ne 0) {
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
 
-if ($isWingetMissing) {
-  Write-Host "Press any key to continue after installing winget..."
-  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-}
+Write-Host "Press any key to continue after installing winget..."
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
 function Install-App($app) {
   log("Installing $app")
