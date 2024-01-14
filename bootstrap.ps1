@@ -1,3 +1,5 @@
+param($debug = $false)
+
 $githubUserName = "stianthaulow"
 
 $ErrorActionPreference = 'Stop'
@@ -15,6 +17,9 @@ function log($message) {
 
 if (!$isAdmin) {
   $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+  if ($debug) {
+    $arguments += " -NoExit"
+  }
   log("Restarting as admin")
   Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
@@ -28,8 +33,11 @@ if (!$isAdmin) {
   exit
 }
 
-Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
+$isWingetMissing = $null -eq $(Get-Command winget -ErrorAction SilentlyContinue)
 
+if ($isWingetMissing) {
+  Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
+} 
 
 log("Disabling UAC")
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
@@ -155,9 +163,10 @@ if ($selectedApps.Count -ne 0) {
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
 
-
-Write-Host "Press any key to continue after installing winget..."
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+if ($isWingetMissing) {
+  Write-Host "Press any key to continue after installing winget..."
+  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+}
 
 function Install-App($app) {
   log("Installing $app")
