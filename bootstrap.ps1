@@ -33,11 +33,18 @@ if (!$isAdmin) {
   exit
 }
 
-Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
+# Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
+
+$progressPreference = 'silentlyContinue'
+Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.6.3482/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+Add-AppxPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 log("Disabling UAC")
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
+
+log("Disabling Edge first run")
+Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
 
 log("Pre-prompt chezmoi data")
 function Read-HostBoolean([String]$Question) {
