@@ -1,41 +1,12 @@
 $localResourcePath = "$env:USERPROFILE\Resources"
-$wallpaperPath = "$localResourcePath\Wallpaper\wallpaper.jpg"
+$devIniPath = "C:\Dev\desktop.ini"
 
-# If wallpaper exists, assume resources have been setup
-if (Test-Path -Path $wallpaperPath) {
+# If wallpaper exists, assume folder icons have been setup
+if (Test-Path -Path $devIniPath) {
   exit
 }
 
-Write-Host "Setting up resources..."
-
-Connect-MgGraph -Scopes "Files.Read.All" -NoWelcome
-
-Write-Host "Downloading resources from OneDrive..."
-
-$drive = Get-MgDrive | Where-Object { $_.DriveType -eq "personal" }
-$ResourcesItem = Get-MgDriveRootChild -DriveId $drive.Id | Where-Object { $_.Name -eq "Resources" }
-
-$ResourcesChildren = Get-MgDriveItemChild -DriveId $drive.Id -DriveItemId $ResourcesItem.Id
-
-$IconsItem = $ResourcesChildren | Where-Object { $_.Name -eq "Icons" }
-$WallpaperItem = $ResourcesChildren | Where-Object { $_.Name -eq "Wallpaper" }
-
-$WallpaperChildren = Get-MgDriveItemChild -DriveId $drive.Id -DriveItemId $WallpaperItem.Id
-$FolderIconsItem = Get-MgDriveItemChild -DriveId $drive.Id -DriveItemId $IconsItem.Id | Where-Object { $_.Name -eq "Folders" }
-$FolderIconsChildren = Get-MgDriveItemChild -DriveId $drive.Id -DriveItemId $FolderIconsItem.Id
-
-$WallpaperFileItem = $WallpaperChildren | Where-Object { $_.Name -eq "wallpaper.jpg" }
-$LoginFileItem = $WallpaperChildren | Where-Object { $_.Name -eq "login.jpg" }
-
-Write-Host "Downloading wallpaper..."
-$wallpaperPath = "$localResourcePath\Wallpaper\wallpaper.jpg"
-Get-MgDriveItemContent -DriveId $drive.Id -DriveItemId $WallpaperFileItem.Id -OutFile $wallpaperPath
-
-Write-Host "Downloading login wallpaper..."
-$loginImagePath = "$localResourcePath\Wallpaper\login.jpg"
-Get-MgDriveItemContent -DriveId $drive.Id -DriveItemId $LoginFileItem.Id -OutFile $loginImagePath
-
-
+Write-Host "Setting up folder icons..."
 # Folder icons
 $folders = @(
   @{Path = "$localResourcePath"; IconName = "Misc.ico" }
@@ -56,7 +27,6 @@ $folders = @(
   
 $folderIconsPath = "$localResourcePath\Icons\Folders"
 
-
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder.Path)) {
     # The directory does not exist, so create it
@@ -64,8 +34,6 @@ foreach ($folder in $folders) {
   }   
   $iconItem = $FolderIconsChildren | Where-Object { $_.Name -eq $folder.IconName }
   $IconPath = Join-Path $folderIconsPath $folder.IconName
-
-  Get-MgDriveItemContent -DriveId $drive.Id -DriveItemId $iconItem.Id -OutFile $IconPath
 
   $iniPath = Join-Path $folder.Path "desktop.ini"
   if (!(Test-Path $iniPath)) {

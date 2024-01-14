@@ -1,3 +1,7 @@
 ["Autohotkey"]
 type = "git-repo"
 url = "https://github.com/stianthaulow/autohotkey.git"
+
+["Resources"]
+type = "git-repo"
+url = "https://github.com/stianthaulow/resources.git"

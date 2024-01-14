@@ -14,7 +14,6 @@ Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 $modules = @(
   "posh-git"
   "DockerCompletion"
-  "Microsoft.Graph"
 )
 
 foreach ($module in $modules) {
