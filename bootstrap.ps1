@@ -168,10 +168,12 @@ function Install-App($app) {
   Invoke-Expression "winget $wingetArgs"
 }
 
+Install-App "Microsoft.PowerShell"
+
 Install-App "Git.Git"
 $refreshEnvCommand = '$env:Path = [System.Environment]::GetEnvironmentVariable(''Path'', ''Machine'')'
 $gitHubArgs = @("-Command", "$refreshEnvCommand; git credential-manager github login")
 log("Logging in to GitHub")
-Start-Process powershell -ArgumentList $gitHubArgs
+Start-Process pwsh -ArgumentList $gitHubArgs
 
 Install-App "twpayne.chezmoi"
