@@ -1,3 +1,4 @@
+{{ if .wantWsl }}
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
@@ -9,7 +10,6 @@ if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
 
 $wslFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 if ($wslFeature -and $wslFeature.State -ne "Enabled") {
-  {{ if .wantWsl }}
   wsl --install
-  {{ end }}
 }
+{{ end }}

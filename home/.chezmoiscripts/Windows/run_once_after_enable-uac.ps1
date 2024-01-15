@@ -1,3 +1,11 @@
+param([switch]$Debug)
+
+if ($Debug -or $env:DOTDEBUG) {
+  $DebugPreference = "Continue"
+  Start-Transcript -Path "$env:USERPROFILE\enable-uac.log" -IncludeInvocationHeader
+}
+Write-Debug "Running $PSCommandPath"
+
 if ([Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
   $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
   $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)

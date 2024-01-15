@@ -94,22 +94,10 @@ function Uninstall-Font {
   }        
 }
 
-
-# JetBrains Mono Nerdfont
-$url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip"
-
-$tempPath = [System.IO.Path]::GetTempPath()
-$downloadPath = Join-Path $tempPath ([System.Guid]::NewGuid())
-New-Item -ItemType Directory -Path $downloadPath | Out-Null
-$zipPath = Join-Path $downloadPath "JetBrainsMono.zip"
-Write-Host "Downloading $url to $zipPath"
-$progressPreference = 'silentlyContinue'
-Invoke-WebRequest -Uri $url -OutFile $zipPath
-$progressPreference = 'Continue'
-Expand-Archive -LiteralPath $zipPath -DestinationPath $downloadPath
+$fontsPath = "$env:USERPROFILE\Theme\Fonts"
 
 Write-Host "Installing Fonts"
-foreach ($FontItem in (Get-ChildItem -Path $downloadPath | 
+foreach ($FontItem in (Get-ChildItem -Path $fontsPath | 
     Where-Object { ($_.Name -like '*.ttf') -or ($_.Name -like '*.otf') })) {  
   Install-Font -fontFile $FontItem.FullName  
 }
