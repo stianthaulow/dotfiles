@@ -94,6 +94,7 @@ foreach ($item in $QuickAccess.Items()) {
 }
 
 # Add home first
+Write-Debug "Pining $env:USERPROFILE"
 $shell.Namespace($env:USERPROFILE).Self.InvokeVerb("pintohome")
 
 # Re-add in reverse order
