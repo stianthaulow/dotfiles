@@ -1,4 +1,10 @@
-param($debug = $false)
+param([switch]$debug)
+
+if ($Debug -or $env:DOTDEBUG) {
+  $DebugPreference = "Continue"
+  Start-Transcript -Path "$env:USERPROFILE\bootstrap.log" -IncludeInvocationHeader
+}
+Write-Debug "Running $PSCommandPath"
 
 $githubUserName = "stianthaulow"
 
@@ -7,29 +13,22 @@ $ErrorActionPreference = 'Stop'
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-$logpath = "$env:USERPROFILE\bootstrap.log"
-New-Item -Path $logpath -ItemType File -Force | Out-Null
-function log($message) {
-  Write-Host $message
-  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-  Add-Content -Path $logpath -Value "$message - $timestamp"
-}
 
 if (!$isAdmin) {
   $arguments = "& '" + $myinvocation.mycommand.definition + "'"
   if ($debug) {
     $arguments += " -NoExit"
   }
-  log("Restarting as admin")
+  Write-Debug "Restarting as admin"
   Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-  log("Installing chezmoi")
+  Write-Debug "Installing chezmoi"
   chezmoi init $githubUserName
-  log("Applying chezmoi as admin")
+  Write-Debug "Applying chezmoi as admin"
   Write-Host "Press any key to continue and apply dotfiles..."
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply" -Wait
-  log("Done")
+  Write-Debug "Done"
   exit
 }
 
@@ -64,14 +63,14 @@ if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
   Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-log("Disabling UAC")
+Write-Debug "Disabling UAC"
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
 
-log("Disabling Edge first run")
+Write-Debug "Disabling Edge first run"
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
 
-log("Pre-prompt chezmoi data")
+Write-Debug "Pre-prompt chezmoi data"
 function Read-HostBoolean([String]$Question) {
   $QuestionString = "$($Question)"
   if ($ReadHostBooleanWasInvalid) {
@@ -195,7 +194,7 @@ Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
 function Install-App($app) {
-  log("Installing $app")
+  Write-Debug "Installing $app"
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $app"
   Invoke-Expression "winget $wingetArgs"
 }
@@ -205,7 +204,7 @@ Install-App "Microsoft.PowerShell"
 Install-App "Git.Git"
 $refreshEnvCommand = '$env:Path = [System.Environment]::GetEnvironmentVariable(''Path'', ''Machine'')'
 $gitHubArgs = @("-Command", "$refreshEnvCommand; git credential-manager github login")
-log("Logging in to GitHub")
+Write-Debug "Logging in to GitHub"
 Start-Process pwsh -ArgumentList $gitHubArgs
 
 Install-App "twpayne.chezmoi"
