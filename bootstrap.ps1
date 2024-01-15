@@ -2,7 +2,7 @@ param([switch]$Debug)
 
 if ($Debug -or $env:DOTDEBUG) {
   $DebugPreference = "Continue"
-  Start-Transcript -Path "$env:USERPROFILE\bootstrap.log" -IncludeInvocationHeader
+  Start-Transcript -Path "$env:USERPROFILE\bootstrap.log" -IncludeInvocationHeader -Append
 }
 Write-Debug "Running $PSCommandPath"
 
@@ -16,10 +16,11 @@ $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::A
 
 if (!$isAdmin) {
   $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+  Write-Debug "Restarting as admin"
   if ($debug) {
     $arguments += " -NoExit"
+    Stop-Transcript
   }
-  Write-Debug "Restarting as admin"
   Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
   Write-Debug "Installing chezmoi"
