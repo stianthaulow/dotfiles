@@ -1,4 +1,4 @@
-param([switch]$debug)
+param([switch]$Debug)
 
 if ($Debug -or $env:DOTDEBUG) {
   $DebugPreference = "Continue"
