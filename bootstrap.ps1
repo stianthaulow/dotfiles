@@ -56,17 +56,21 @@ if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
   $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
   $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
   $xamlUIUrl = "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.7.3/Microsoft.UI.Xaml.2.7.x64.appx"
+  $vcLibsUrl = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
 
   $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
   New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
   $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
   $xamlUiPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $xamlUIUrl)
+  $vcLibsPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $vcLibsUrl)
   $ProgressPreference = 'SilentlyContinue'
   Invoke-WebRequest -Uri $xamlUIUrl -OutFile $xamlUiPath
+  Invoke-WebRequest -Uri $vcLibsUrl -OutFile $vcLibsPath
   Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
   $ProgressPreference = 'Continue'
   Write-Host "Installing winget..."
   Add-AppxPackage -Path $xamlUiPath
+  Add-AppxPackage -Path $vcLibsPath
   Add-AppxPackage -Path $packagePath
   Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
 }
