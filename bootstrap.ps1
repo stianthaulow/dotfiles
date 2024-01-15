@@ -32,7 +32,6 @@ if (!$isAdmin) {
   Write-Debug "Done"
   exit
 }
-
 $wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
 $response = Invoke-RestMethod -Uri $wingetApiUrl
 
@@ -59,7 +58,9 @@ if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
   $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
   New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
   $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
-  Invoke-WebRequest -Uri $downloadUrl -OutFile $tempArchivePath
+  $ProgressPreference = 'SilentlyContinue'  
+  Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
+  $ProgressPreference = 'Continue'
   Add-AppxPackage -Path $packagePath
   Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
 }
