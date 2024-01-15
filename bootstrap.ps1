@@ -33,11 +33,36 @@ if (!$isAdmin) {
   exit
 }
 
-# Start-Process "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1"
+$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+$response = Invoke-RestMethod -Uri $wingetApiUrl
 
-$progressPreference = 'silentlyContinue'
-Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.6.3482/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
-Add-AppxPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+function Get-Version($versionString) {
+  $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
+  return [System.Version]::new($versionString)
+}
+
+$latestVersion = Get-Version($response.tag_name)
+
+try {
+  $currentWingetVersionString = winget --version
+  $currentWingetVersion = Get-Version($currentWingetVersionString)
+}
+catch {
+  $currentWingetVersion = $false
+}
+
+if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
+  Write-Host "Installing winget..."
+  $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+  $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
+
+  $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
+  New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+  $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
+  Invoke-WebRequest -Uri $downloadUrl -OutFile $tempArchivePath
+  Add-AppxPackage -Path $packagePath
+  Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 log("Disabling UAC")
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
