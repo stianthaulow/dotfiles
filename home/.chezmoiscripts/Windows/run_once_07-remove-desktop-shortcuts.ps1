@@ -5,8 +5,7 @@ function Test-IsAdmin {
 
 if (-not (Test-IsAdmin)) {
   # Relaunch the script with administrator rights
-  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
-  Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait
+  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait
   exit
 }
 

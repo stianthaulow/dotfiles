@@ -5,7 +5,7 @@ $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::A
 
 if (!$isAdmin) {
   $script = $MyInvocation.MyCommand.Definition
-  Start-Process pwsh -ArgumentList "-File `"$script`"" -Verb RunAs -Wait  
+  Start-Process pwsh -ArgumentList "-NoProfile -File `"$script`"" -Verb RunAs -Wait  
   exit
 }
 

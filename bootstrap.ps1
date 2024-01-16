@@ -34,6 +34,58 @@ if (!$isAdmin) {
   exit
 }
 
+$installWinget = {
+
+  Write-Host 'Checking for updated winget...'
+
+  $wingetApiUrl = 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'
+  $response = Invoke-RestMethod -Uri $wingetApiUrl
+
+  function Get-Version($versionString) {
+    $versionString = $versionString.TrimStart('v').TrimEnd('-preview')
+    return [System.Version]::new($versionString)
+  }
+
+  $latestVersion = Get-Version($response.tag_name)
+  Write-Debug 'Latest version: $latestVersion'
+
+  try {
+    $currentWingetVersionString = winget --version
+    $currentWingetVersion = Get-Version($currentWingetVersionString)
+    Write-Debug 'Current version: $currentWingetVersion'
+  }
+  catch {
+    $currentWingetVersion = $false
+    write-debug 'Winget not installed'
+  }
+
+  if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
+    Write-Host 'Downloading latest winget...'
+    $wingetPackageName = 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
+    $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
+    $xamlUiUrl = 'https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.7.3/Microsoft.UI.Xaml.2.7.x64.appx'
+    $vclibsUrl = 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx'
+
+    $tempFolderPath = Join-Path -Path $env:Temp -ChildPath 'Winget'
+    New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+    $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
+    $xamlUiPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $xamlUiUrl)
+    $vclibsPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $vclibsUrl)
+    $ProgressPreference = 'SilentlyContinue'  
+    Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
+    Invoke-WebRequest -Uri $xamlUiUrl -OutFile $xamlUiPath
+    Invoke-WebRequest -Uri $vclibsUrl -OutFile $vclibsPath
+    $ProgressPreference = 'Continue'
+    Write-Host 'Installing winget...'
+    Add-AppxPackage -Path $vclibsPath
+    Add-AppxPackage -Path $xamlUiPath
+    Add-AppxPackage -Path $packagePath
+    Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+
+Start-Process powershell -ArgumentList "-NoExit -NoProfile -Command `"$installWinget`""
+
 Write-Debug "Disabling UAC"
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
@@ -160,49 +212,6 @@ do {
 if ($selectedApps.Count -ne 0) {
   $appListPath = "$env:USERPROFILE\apps.json"
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
-}
-
-
-$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
-$response = Invoke-RestMethod -Uri $wingetApiUrl
-
-function Get-Version($versionString) {
-  $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
-  return [System.Version]::new($versionString)
-}
-
-$latestVersion = Get-Version($response.tag_name)
-
-try {
-  $currentWingetVersionString = winget --version
-  $currentWingetVersion = Get-Version($currentWingetVersionString)
-}
-catch {
-  $currentWingetVersion = $false
-}
-
-if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
-  Write-Host "Downloading latest winget..."
-  $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-  $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
-  $xamlUiUrl = "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.7.3/Microsoft.UI.Xaml.2.7.x64.appx"
-  $vclibsUrl = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
-
-  $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
-  New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
-  $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
-  $xamlUiPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $xamlUiUrl)
-  $vclibsPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $vclibsUrl)
-  $ProgressPreference = 'SilentlyContinue'  
-  Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
-  Invoke-WebRequest -Uri $xamlUiUrl -OutFile $xamlUiPath
-  Invoke-WebRequest -Uri $vclibsUrl -OutFile $vclibsPath
-  $ProgressPreference = 'Continue'
-  Write-Host "Installing winget..."
-  Add-AppxPackage -Path $vclibsPath
-  Add-AppxPackage -Path $xamlUiPath
-  Add-AppxPackage -Path $packagePath
-  Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 Write-Host "Press any key to continue after installing winget..."

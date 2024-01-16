@@ -2,9 +2,7 @@ $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Pri
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
-  Write-Host "Relaunching debloat script as admin in Windows Powershell" -ForegroundColor DarkYellow
-  $arguments = "& '" + $Myinvocation.Mycommand.Definition + "'"
-  Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait
+  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait
   exit
 }
 

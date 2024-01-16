@@ -2,10 +2,8 @@ Write-Host "Disabling services..." -ForegroundColor DarkYellow
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-
 if (!$isAdmin) {
-  $arguments = "& '" + $Myinvocation.Mycommand.Definition + "'"
-  Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait
+  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait
   exit
 }
 
