@@ -2,6 +2,7 @@ param([switch]$Debug)
 
 if ($Debug -or $env:DOTDEBUG) {
   $DebugPreference = "Continue"
+  [System.Environment]::SetEnvironmentVariable("DOTDEBUG", 1, "User")
   Start-Transcript -Path "$env:USERPROFILE\bootstrap.log" -IncludeInvocationHeader -Append
 }
 Write-Debug "Running $PSCommandPath"
