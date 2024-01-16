@@ -1,3 +1,7 @@
+
+$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+$response = Invoke-RestMethod -Uri $wingetApiUrl
+
 function Get-Version($versionString) {
   $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
   return [System.Version]::new($versionString)
