@@ -52,7 +52,7 @@ catch {
 }
 
 if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
-  Write-Host "Downloading lastet winget..."
+  Write-Host "Downloading latest winget..."
   $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
   $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
 
@@ -72,6 +72,7 @@ Write-Debug "Disabling UAC"
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
 
 Write-Debug "Disabling Edge first run"
+New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
 
 Write-Debug "Pre-prompt chezmoi data"
