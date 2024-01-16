@@ -33,40 +33,6 @@ if (!$isAdmin) {
   exit
 }
 
-$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
-$response = Invoke-RestMethod -Uri $wingetApiUrl
-
-function Get-Version($versionString) {
-  $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
-  return [System.Version]::new($versionString)
-}
-
-$latestVersion = Get-Version($response.tag_name)
-
-try {
-  $currentWingetVersionString = winget --version
-  $currentWingetVersion = Get-Version($currentWingetVersionString)
-}
-catch {
-  $currentWingetVersion = $false
-}
-
-if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
-  Write-Host "Downloading latest winget..."
-  $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-  $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
-
-  $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
-  New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
-  $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
-  $ProgressPreference = 'SilentlyContinue'  
-  Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
-  $ProgressPreference = 'Continue'
-  Write-Host "Installing winget..."
-  Add-AppxPackage -Path $packagePath
-  Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
-}
-
 Write-Debug "Disabling UAC"
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
@@ -193,6 +159,41 @@ do {
 if ($selectedApps.Count -ne 0) {
   $appListPath = "$env:USERPROFILE\apps.json"
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
+}
+
+
+$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+$response = Invoke-RestMethod -Uri $wingetApiUrl
+
+function Get-Version($versionString) {
+  $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
+  return [System.Version]::new($versionString)
+}
+
+$latestVersion = Get-Version($response.tag_name)
+
+try {
+  $currentWingetVersionString = winget --version
+  $currentWingetVersion = Get-Version($currentWingetVersionString)
+}
+catch {
+  $currentWingetVersion = $false
+}
+
+if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
+  Write-Host "Downloading latest winget..."
+  $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+  $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
+
+  $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
+  New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+  $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
+  $ProgressPreference = 'SilentlyContinue'  
+  Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
+  $ProgressPreference = 'Continue'
+  Write-Host "Installing winget..."
+  Add-AppxPackage -Path $packagePath
+  Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 Write-Host "Press any key to continue after installing winget..."
