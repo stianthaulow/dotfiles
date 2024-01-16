@@ -81,6 +81,7 @@ $installWinget = {
     Add-AppxPackage -Path $xamlUiPath
     Add-AppxPackage -Path $packagePath
     Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host 'Winget installed' -ForegroundColor Green
   }
 }
 
@@ -217,6 +218,14 @@ if ($selectedApps.Count -ne 0) {
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
+$installGit = {
+  Write-Host 'Installing Git...'
+  winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
+  $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
+  git credential-manager github login
+}
+Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
+
 function Install-App($app) {
   Write-Debug "Installing $app"
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $app"
@@ -224,11 +233,4 @@ function Install-App($app) {
 }
 
 Install-App "Microsoft.PowerShell"
-
-Install-App "Git.Git"
-$refreshEnvCommand = '$env:Path = [System.Environment]::GetEnvironmentVariable(''Path'', ''Machine'')'
-$gitHubArgs = @("-Command", "$refreshEnvCommand; git credential-manager github login")
-Write-Debug "Logging in to GitHub"
-Start-Process pwsh -ArgumentList $gitHubArgs
-
 Install-App "twpayne.chezmoi"
