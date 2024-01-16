@@ -6,6 +6,8 @@ if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
   exit
 }
 
+$ProgressPreference = 'SilentlyContinue'
+
 $AppXApps = @(
   #Unnecessary Windows 10 AppX Apps
   "*Microsoft.BingNews*"
