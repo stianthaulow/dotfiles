@@ -5,5 +5,5 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; iwr "https://stian.l
 ```
 
 ```powershell
-iwr "https://raw.githubusercontent.com/stianthaulow/dotfiles/main/install-winget.ps1" -Outfile install-winget.ps1
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; iwr "https://raw.githubusercontent.com/stianthaulow/dotfiles/main/install-winget.ps1" -Outfile install-winget.ps1; ./install-winget.ps1
 ```

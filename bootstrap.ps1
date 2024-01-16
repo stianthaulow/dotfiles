@@ -33,13 +33,45 @@ if (!$isAdmin) {
   exit
 }
 
+$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+$response = Invoke-RestMethod -Uri $wingetApiUrl
+
+function Get-Version($versionString) {
+  $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
+  return [System.Version]::new($versionString)
+}
+
+$latestVersion = Get-Version($response.tag_name)
+
+try {
+  $currentWingetVersionString = winget --version
+  $currentWingetVersion = Get-Version($currentWingetVersionString)
+}
+catch {
+  $currentWingetVersion = $false
+}
+
+if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
+  Write-Host "Downloading lastet winget..."
+  $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+  $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
+
+  $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
+  New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+  $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
+  $ProgressPreference = 'SilentlyContinue'  
+  Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
+  $ProgressPreference = 'Continue'
+  Write-Host "Installing winget..."
+  Add-AppxPackage -Path $packagePath
+  Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 Write-Debug "Disabling UAC"
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
 
 Write-Debug "Disabling Edge first run"
-New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
 
 Write-Debug "Pre-prompt chezmoi data"
@@ -162,48 +194,8 @@ if ($selectedApps.Count -ne 0) {
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
 
-
-$wingetApiUrl = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
-$response = Invoke-RestMethod -Uri $wingetApiUrl
-
-function Get-Version($versionString) {
-  $versionString = $versionString.TrimStart("v").TrimEnd("-preview")
-  return [System.Version]::new($versionString)
-}
-
-$latestVersion = Get-Version($response.tag_name)
-
-try {
-  $currentWingetVersionString = winget --version
-  $currentWingetVersion = Get-Version($currentWingetVersionString)
-}
-catch {
-  $currentWingetVersion = $false
-}
-
-if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
-  Write-Host "Downloading latest winget..."
-  $wingetPackageName = "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-  $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
-  $xamlUIUrl = "https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.7.3/Microsoft.UI.Xaml.2.7.x64.appx"
-  $vcLibsUrl = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
-
-  $tempFolderPath = Join-Path -Path $env:Temp -ChildPath "Winget"
-  New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
-  $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
-  $xamlUiPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $xamlUIUrl)
-  $vcLibsPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $vcLibsUrl)
-  $ProgressPreference = 'SilentlyContinue'
-  Invoke-WebRequest -Uri $xamlUIUrl -OutFile $xamlUiPath
-  Invoke-WebRequest -Uri $vcLibsUrl -OutFile $vcLibsPath
-  Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
-  $ProgressPreference = 'Continue'
-  Write-Host "Installing winget..."
-  Add-AppxPackage -Path $xamlUiPath
-  Add-AppxPackage -Path $vcLibsPath
-  Add-AppxPackage -Path $packagePath
-  Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
-}
+Write-Host "Press any key to continue after installing winget..."
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
 function Install-App($app) {
   Write-Debug "Installing $app"
@@ -215,7 +207,7 @@ Install-App "Microsoft.PowerShell"
 
 Install-App "Git.Git"
 $refreshEnvCommand = '$env:Path = [System.Environment]::GetEnvironmentVariable(''Path'', ''Machine'')'
-$gitHubArgs = @("-NoProfile", "-Command", "$refreshEnvCommand; git credential-manager github login")
+$gitHubArgs = @("-Command", "$refreshEnvCommand; git credential-manager github login")
 Write-Debug "Logging in to GitHub"
 Start-Process pwsh -ArgumentList $gitHubArgs
 
