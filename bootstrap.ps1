@@ -34,6 +34,8 @@ if (!$isAdmin) {
   exit
 }
 
+Write-Debug "Check winget"
+
 $installWinget = {
 
   Write-Host 'Checking for updated winget...'
