@@ -23,10 +23,19 @@ if (-not ("WinAPI.GetStr" -as [type])) {
   Add-Type @Signature
 }
 
-if (Test-Path -Path "$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk") {
-  # Call the shortcut context menu item
-  $Shell = (New-Object -ComObject Shell.Application).NameSpace("$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")
-  $Shortcut = $Shell.ParseName("Microsoft Edge.lnk")
-  # Extract the localized "Unpin from taskbar" string from shell32.dll
-  $Shortcut.Verbs() | Where-Object -FilterScript { $_.Name -eq "$([WinAPI.GetStr]::GetString(5387))" } | ForEach-Object -Process { $_.DoIt() }
+
+$TaskBar = (New-Object -ComObject Shell.Application).NameSpace("$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")
+$toRemove = @()
+
+# Edge
+$toRemove += $TaskBar.ParseName("Microsoft Edge.lnk")
+
+# Microsoft Store
+$toRemove += ((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items()) | Where-Object { $_.Name -like "Microsoft Store" }
+  
+# Extract the localized "Unpin from taskbar" string from shell32.dll
+foreach ($pinned in $toRemove) {
+  if ($pinned) {
+    $pinned.Verbs() | Where-Object -FilterScript { $_.Name -eq "$([WinAPI.GetStr]::GetString(5387))" } | ForEach-Object -Process { $_.DoIt() }
+  }
 }
