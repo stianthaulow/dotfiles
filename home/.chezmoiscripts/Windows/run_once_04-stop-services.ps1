@@ -1,3 +1,8 @@
+$isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
+if (-not $isBootstrapping) {
+  exit
+}
+
 Write-Host "Disabling services..." -ForegroundColor DarkYellow
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)

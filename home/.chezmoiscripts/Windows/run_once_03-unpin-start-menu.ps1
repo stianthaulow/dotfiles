@@ -1,3 +1,7 @@
+$isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
+if (-not $isBootstrapping) {
+  exit
+}
 
 Write-Host "Unpinning start menu tiles..." -ForegroundColor DarkYellow
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
