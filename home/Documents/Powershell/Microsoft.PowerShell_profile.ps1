@@ -13,7 +13,7 @@ Set-Alias c# csharprepl
 Set-Alias dot chezmoi
 
 function dotdir {
-  Set-Location -Path (chezmoi source-path) 
+  Set-Location -Path "$(chezmoi source-path)\.."
 }
 
 function nx {

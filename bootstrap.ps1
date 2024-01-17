@@ -65,7 +65,7 @@ $installWinget = {
     Write-Host 'Downloading latest winget...'
     $wingetPackageName = 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
     $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
-    $xamlUiUrl = 'https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.7.3/Microsoft.UI.Xaml.2.7.x64.appx'
+    $xamlUiUrl = 'https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.5/Microsoft.UI.Xaml.2.8.x64.appx'
     $vclibsUrl = 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx'
 
     $tempFolderPath = Join-Path -Path $env:Temp -ChildPath 'Winget'
