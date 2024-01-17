@@ -87,8 +87,6 @@ $installWinget = {
   }
 }
 
-Start-Process powershell -ArgumentList "-NoExit -NoProfile -Command `"$installWinget`""
-
 Write-Debug "Disabling UAC"
 [Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
@@ -96,6 +94,8 @@ Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\
 Write-Debug "Disabling Edge first run"
 New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
 Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
+
+Start-Process powershell -ArgumentList "-NoExit -NoProfile -Command `"$installWinget`""
 
 Write-Debug "Pre-prompt chezmoi data"
 function Read-HostBoolean([String]$Question) {
