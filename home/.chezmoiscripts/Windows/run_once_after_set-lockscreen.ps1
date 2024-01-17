@@ -1,8 +1,7 @@
 Write-Host "Setting lockscreen image..."
 # Run in Windows PowerShell to access System.Runtime.WindowsRuntime
 if ($PSVersionTable.PSEdition -eq "Core") {
-  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
-  Start-Process powershell -ArgumentList $arguments -Wait -WindowStyle Hidden
+  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait -WindowStyle Hidden
   exit
 }
 
