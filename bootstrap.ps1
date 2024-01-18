@@ -78,7 +78,8 @@ $installWinget = {
     Invoke-WebRequest -Uri $xamlUiUrl -OutFile $xamlUiPath
     Invoke-WebRequest -Uri $vclibsUrl -OutFile $vclibsPath
     $ProgressPreference = 'Continue'
-    Write-Host 'Installing winget...'
+    Write-Host 'Press any key to continue and install winget...'
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     Add-AppxPackage -Path $vclibsPath
     Add-AppxPackage -Path $xamlUiPath
     Add-AppxPackage -Path $packagePath
