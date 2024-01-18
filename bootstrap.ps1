@@ -47,12 +47,12 @@ function Install-Winget() {
     }
   
     $latestVersion = Get-Version($response.tag_name)
-    Write-Debug 'Latest version: $latestVersion'
+    Write-Debug 'Latest version: ' + $latestVersion
   
     try {
       $currentWingetVersionString = winget --version
       $currentWingetVersion = Get-Version($currentWingetVersionString)
-      Write-Debug 'Current version: $currentWingetVersion'
+      Write-Debug 'Current version: ' + $currentWingetVersion
     }
     catch {
       $currentWingetVersion = $false
@@ -99,6 +99,8 @@ function Initialize-Chezmoi() {
 Set-BoostrapDefaults
 
 Install-Winget
+
+
 
 Write-Debug "Pre-prompt chezmoi data"
 function Read-HostBoolean([String]$Question) {
@@ -220,6 +222,8 @@ if ($selectedApps.Count -ne 0) {
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
 
+# Open browser to authenticate with GitHub
+Start-Process "https://github.com"
 
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
@@ -228,7 +232,7 @@ $installGit = {
   Write-Host 'Installing Git...'
   winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
   $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-  git credential-manager github login
+  git credential-manager github login --browser --username $githubUserName
 }
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
 
@@ -240,5 +244,5 @@ function Install-App($app) {
 
 Install-App "Microsoft.PowerShell"
 Install-App "twpayne.chezmoi"
-pause
+
 Initialize-Chezmoi
