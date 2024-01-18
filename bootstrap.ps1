@@ -80,11 +80,11 @@ $installWinget = {
     $ProgressPreference = 'Continue'
     Write-Host 'Press any key to continue and install winget...'
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    Start-Job -Name vcLib -ScriptBlock { Add-AppxPackage -Path $vclibsPath }
+    Start-Job -Name vcLib -ScriptBlock { Add-AppxPackage -ForceApplicationShutdown -Path $vclibsPath }
     Wait-Job -Name vcLib
-    Start-Job -Name xamlUi -ScriptBlock { Add-AppxPackage -Path $xamlUiPath }
+    Start-Job -Name xamlUi -ScriptBlock { Add-AppxPackage -ForceApplicationShutdown -Path $xamlUiPath }
     Wait-Job -Name xamlUi
-    Start-Job -Name winget -ScriptBlock { Add-AppxPackage -Path $packagePath }
+    Start-Job -Name winget -ScriptBlock { Add-AppxPackage -ForceApplicationShutdown -Path $packagePath }
     Wait-Job -Name winget
     Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
     Write-Host 'Winget installed' -ForegroundColor Green
