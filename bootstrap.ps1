@@ -49,12 +49,10 @@ function Install-Winget() {
     }
   
     $latestVersion = Get-Version($response.tag_name)
-    Write-Debug 'Latest version: ' + $latestVersion
   
     try {
       $currentWingetVersionString = winget --version
       $currentWingetVersion = Get-Version($currentWingetVersionString)
-      Write-Debug 'Current version: ' + $currentWingetVersion
     }
     catch {
       $currentWingetVersion = $false
