@@ -27,19 +27,21 @@ $folders = @(
   @{Path = "$env:USERPROFILE\Scripts"; IconName = "Util.ico" }
 
   @{Path = "$myDocumentsPath\Powershell"; IconName = "Powershell.ico" }
-  @{Path = "$myDocumentsPath)\WindowsPowershell"; IconName = "Powershell.ico" }
+  @{Path = "$myDocumentsPath)\WindowsPowershell"; IconName = "WindowsPowershell.ico" }
   @{Path = "$myDocumentsPath)\Misc"; IconName = "project.ico" }
 )
 
 $isWorkMachine = [System.Environment]::GetEnvironmentVariable('DOTWORK', [System.EnvironmentVariableTarget]::User)
 if ($isWorkMachine) {
   $folders += @{Path = "C:\P"; IconName = "Personal-folder.ico"; QuickAccess = $true }
+} else {
+  $folders += @{Path = "$env:USERPROFILE\Vault"; IconName = "Obsidian.ico" }
+  $folders += @{Path = "$env:USERPROFILE\Zotero"; IconName = "Zotero.ico" }
 }
 
 
-Write-Debug "Folders: $($folders | ConvertTo-Json -Depth 3)"
-  
 $folderIconsPath = "$themePath\Icons\Folders"
+
 
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder.Path)) {

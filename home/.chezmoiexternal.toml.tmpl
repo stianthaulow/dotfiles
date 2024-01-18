@@ -2,6 +2,10 @@
 type = "git-repo"
 url = "https://github.com/stianthaulow/autohotkey.git"
 
+
+{{ $branch := printf "win%d" .chezmoi.windowsVersion.currentMajorVersionNumber }}
+
 ["Theme"]
 type = "git-repo"
+clone.args = ["-b {{- $branch -}}", "--single-branch"]
 url = "https://github.com/stianthaulow/theme.git"
