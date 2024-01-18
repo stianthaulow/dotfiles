@@ -234,7 +234,7 @@ $installGit = {
   Write-Host 'Installing Git...'
   winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
   $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-  git credential-manager github login --browser --username $githubUserName
+  git credential-manager github login --browser --username stianthaulow
 }
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
 
