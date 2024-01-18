@@ -36,7 +36,7 @@ function Install-Winget() {
 
     Write-Host 'Checking for updated winget...'
     $debug = [System.Environment]::GetEnvironmentVariable('DOTDEBUG', 'User')
-    if ($debug) { $DebugPreference = "Continue" }
+    if ($debug) { $DebugPreference = 'Continue' }
   
     $wingetApiUrl = 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'
     $response = Invoke-RestMethod -Uri $wingetApiUrl
