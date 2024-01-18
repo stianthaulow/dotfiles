@@ -35,6 +35,8 @@ function Install-Winget() {
   $wingetScriptBlock = {
 
     Write-Host 'Checking for updated winget...'
+    $debug = [System.Environment]::GetEnvironmentVariable('DOTDEBUG', 'User')
+    if ($debug) { $DebugPreference = "Continue" }
   
     $wingetApiUrl = 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'
     $response = Invoke-RestMethod -Uri $wingetApiUrl
@@ -74,13 +76,9 @@ function Install-Winget() {
       Invoke-WebRequest -Uri $xamlUiUrl -OutFile $xamlUiPath
       Invoke-WebRequest -Uri $vclibsUrl -OutFile $vclibsPath
       $ProgressPreference = 'Continue'
-      $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-      Start-Job -Name vcLib -ScriptBlock { Add-AppxPackage -ForceApplicationShutdown -Path $vclibsPath } | Out-Null
-      Wait-Job -Name vcLib
-      Start-Job -Name xamlUi -ScriptBlock { Add-AppxPackage -ForceApplicationShutdown -Path $xamlUiPath } | Out-Null
-      Wait-Job -Name xamlUi
-      Start-Job -Name winget -ScriptBlock { Add-AppxPackage -ForceApplicationShutdown -Path $packagePath } | Out-Null
-      Wait-Job -Name winget
+      Add-AppxPackage -ForceApplicationShutdown -Path $vclibsPath
+      Add-AppxPackage -ForceApplicationShutdown -Path $xamlUiPath
+      Add-AppxPackage -ForceApplicationShutdown -Path $packagePath
       Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
       Write-Host 'Winget installed' -ForegroundColor Green
     }
@@ -242,5 +240,5 @@ function Install-App($app) {
 
 Install-App "Microsoft.PowerShell"
 Install-App "twpayne.chezmoi"
-
+pause
 Initialize-Chezmoi
