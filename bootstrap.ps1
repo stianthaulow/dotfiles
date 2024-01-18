@@ -26,8 +26,10 @@ function Set-BoostrapDefaults() {
   Write-Debug "Disabling UAC and Edge first run"
   $defaultsScriptBlock = {
     Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
-    New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Edge" -Force | Out-Null
-    Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
+    New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
+    New-Item -Path "REGISTRY::HKEY_CURRENT_USER\Software\Policies\Microsoft\Edge" -Force | Out-Null
+    Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
+    Set-ItemProperty -Path "REGISTRY::CURRENT_USER\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
   }
   Start-Process powershell -Verb RunAs -Wait -WindowStyle Hidden -ArgumentList "-NoProfile -Command `"$defaultsScriptBlock`"" 
 }
