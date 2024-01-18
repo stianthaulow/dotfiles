@@ -27,14 +27,15 @@ $folders = @(
   @{Path = "$env:USERPROFILE\Scripts"; IconName = "Util.ico" }
 
   @{Path = "$myDocumentsPath\Powershell"; IconName = "Powershell.ico" }
-  @{Path = "$myDocumentsPath)\WindowsPowershell"; IconName = "WindowsPowershell.ico" }
-  @{Path = "$myDocumentsPath)\Misc"; IconName = "project.ico" }
+  @{Path = "$myDocumentsPath\WindowsPowershell"; IconName = "WindowsPowershell.ico" }
+  @{Path = "$myDocumentsPath\Misc"; IconName = "project.ico" }
 )
 
 $isWorkMachine = [System.Environment]::GetEnvironmentVariable('DOTWORK', [System.EnvironmentVariableTarget]::User)
 if ($isWorkMachine) {
   $folders += @{Path = "C:\P"; IconName = "Personal-folder.ico"; QuickAccess = $true }
-} else {
+}
+else {
   $folders += @{Path = "$env:USERPROFILE\Vault"; IconName = "Obsidian.ico" }
   $folders += @{Path = "$env:USERPROFILE\Zotero"; IconName = "Zotero.ico" }
 }
