@@ -1,7 +1,0 @@
-["Autohotkey"]
-type = "git-repo"
-url = "https://github.com/stianthaulow/autohotkey.git"
-
-["Theme"]
-type = "git-repo"
-url = "https://github.com/stianthaulow/theme.git"

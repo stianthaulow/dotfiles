@@ -2,7 +2,7 @@ param([switch]$Debug)
 
 if ($Debug -or $env:DOTDEBUG) {
   $DebugPreference = "Continue"
-  Start-Transcript -Path "$env:USERPROFILE\setup-folder-icons.log" -IncludeInvocationHeader
+  Start-Transcript -Path "$env:USERPROFILE\set-env-vars.log" -IncludeInvocationHeader
 }
 Write-Debug "Running $PSCommandPath"
 

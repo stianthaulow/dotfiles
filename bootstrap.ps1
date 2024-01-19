@@ -1,5 +1,17 @@
 param([switch]$Debug)
 
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+if ($isAdmin) {
+  Write-Host "Start boostrap in a non admin shell" -ForegroundColor Red
+  exit
+}
+
+[Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
+
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+
 if ($Debug -or $env:DOTDEBUG) {
   $DebugPreference = "Continue"
   [System.Environment]::SetEnvironmentVariable("DOTDEBUG", 1, "User")
@@ -8,94 +20,89 @@ if ($Debug -or $env:DOTDEBUG) {
 Write-Debug "Running $PSCommandPath"
 
 $githubUserName = "stianthaulow"
-
 $ErrorActionPreference = 'Stop'
 
-$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-
-if (!$isAdmin) {
-  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
-  Write-Debug "Restarting as admin"
-  if ($debug) {
-    $arguments += " -NoExit"
-    Stop-Transcript
+function Set-BoostrapDefaults() {
+  Write-Debug "Disabling UAC and Edge first run"
+  $defaultsScriptBlock = {
+    Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
+    New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
+    New-Item -Path "REGISTRY::HKEY_CURRENT_USER\Software\Policies\Microsoft\Edge" -Force | Out-Null
+    Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
+    Set-ItemProperty -Path "REGISTRY::CURRENT_USER\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
   }
-  Start-Process powershell -Verb RunAs -ArgumentList $arguments -Wait
-  $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+  Start-Process powershell -Verb RunAs -Wait -WindowStyle Hidden -ArgumentList "-NoProfile -Command `"$defaultsScriptBlock`"" 
+}
+
+
+function Install-Winget() {
+  $wingetScriptBlock = {
+
+    Write-Host 'Checking for updated winget...'
+    $debug = [System.Environment]::GetEnvironmentVariable('DOTDEBUG', 'User')
+    if ($debug) { $DebugPreference = 'Continue' }
+  
+    $wingetApiUrl = 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'
+    $response = Invoke-RestMethod -Uri $wingetApiUrl
+  
+    function Get-Version($versionString) {
+      $versionString = $versionString.TrimStart('v').TrimEnd('-preview')
+      return [System.Version]::new($versionString)
+    }
+  
+    $latestVersion = Get-Version($response.tag_name)
+  
+    try {
+      $currentWingetVersionString = winget --version
+      $currentWingetVersion = Get-Version($currentWingetVersionString)
+    }
+    catch {
+      $currentWingetVersion = $false
+      write-debug 'Winget not installed'
+    }
+  
+    if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
+      Write-Host 'Downloading latest winget...'
+      $wingetPackageName = 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
+      $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
+      $xamlUiUrl = 'https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.7.3/Microsoft.UI.Xaml.2.7.x64.appx'
+      $vclibsUrl = 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx'
+  
+      $tempFolderPath = Join-Path -Path $env:Temp -ChildPath 'Winget'
+      New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+      $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
+      $xamlUiPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $xamlUiUrl)
+      $vclibsPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $vclibsUrl)
+      $ProgressPreference = 'SilentlyContinue'  
+      Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
+      Invoke-WebRequest -Uri $xamlUiUrl -OutFile $xamlUiPath
+      Invoke-WebRequest -Uri $vclibsUrl -OutFile $vclibsPath
+      $ProgressPreference = 'Continue'
+      Add-AppxPackage -ForceApplicationShutdown -Path $vclibsPath
+      Add-AppxPackage -ForceApplicationShutdown -Path $xamlUiPath
+      Add-AppxPackage -ForceApplicationShutdown -Path $packagePath
+      Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
+      Write-Host 'Winget installed' -ForegroundColor Green
+    }
+  }
+  Start-Process powershell -ArgumentList "-NoExit -NoProfile -Command `"$wingetScriptBlock`""
+}
+
+function Initialize-Chezmoi() {
   Write-Debug "Installing chezmoi"
+  $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
   chezmoi init $githubUserName
+
   Write-Debug "Applying chezmoi as admin"
-  Write-Host "Press any key to continue and apply dotfiles..."
-  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply" -Wait
-  Write-Debug "Done"
-  exit
+  Write-Debug "Done 🎉"
 }
 
-Write-Debug "Check winget"
+Set-BoostrapDefaults
 
-$installWinget = {
+Install-Winget
 
-  Write-Host 'Checking for updated winget...'
 
-  $wingetApiUrl = 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'
-  $response = Invoke-RestMethod -Uri $wingetApiUrl
-
-  function Get-Version($versionString) {
-    $versionString = $versionString.TrimStart('v').TrimEnd('-preview')
-    return [System.Version]::new($versionString)
-  }
-
-  $latestVersion = Get-Version($response.tag_name)
-  Write-Debug 'Latest version: $latestVersion'
-
-  try {
-    $currentWingetVersionString = winget --version
-    $currentWingetVersion = Get-Version($currentWingetVersionString)
-    Write-Debug 'Current version: $currentWingetVersion'
-  }
-  catch {
-    $currentWingetVersion = $false
-    write-debug 'Winget not installed'
-  }
-
-  if (-not $currentWingetVersion -or $currentWingetVersion -lt $latestVersion) {
-    Write-Host 'Downloading latest winget...'
-    $wingetPackageName = 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
-    $packageUrl = $response.assets | Where-Object { $_.Name -eq $wingetPackageName } | Select-Object -ExpandProperty browser_download_url
-    $xamlUiUrl = 'https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.5/Microsoft.UI.Xaml.2.8.x64.appx'
-    $vclibsUrl = 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx'
-
-    $tempFolderPath = Join-Path -Path $env:Temp -ChildPath 'Winget'
-    New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
-    $packagePath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $packageUrl)
-    $xamlUiPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $xamlUiUrl)
-    $vclibsPath = Join-Path -Path $tempFolderPath -ChildPath $(Split-Path -Leaf $vclibsUrl)
-    $ProgressPreference = 'SilentlyContinue'  
-    Invoke-WebRequest -Uri $packageUrl -OutFile $packagePath
-    Invoke-WebRequest -Uri $xamlUiUrl -OutFile $xamlUiPath
-    Invoke-WebRequest -Uri $vclibsUrl -OutFile $vclibsPath
-    $ProgressPreference = 'Continue'
-    Write-Host 'Installing winget...'
-    Add-AppxPackage -Path $vclibsPath
-    Add-AppxPackage -Path $xamlUiPath
-    Add-AppxPackage -Path $packagePath
-    Remove-item $tempFolderPath -Recurse -Force -ErrorAction SilentlyContinue
-    Write-Host 'Winget installed' -ForegroundColor Green
-  }
-}
-
-Start-Process powershell -ArgumentList "-NoExit -NoProfile -Command `"$installWinget`""
-
-Write-Debug "Disabling UAC"
-[Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
-Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
-
-Write-Debug "Disabling Edge first run"
-New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
-Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Name "HideFirstRunExperience" -Value 1
 
 Write-Debug "Pre-prompt chezmoi data"
 function Read-HostBoolean([String]$Question) {
@@ -217,6 +224,9 @@ if ($selectedApps.Count -ne 0) {
   $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
 
+# Open browser to authenticate with GitHub
+Start-Process "https://github.com"
+
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 
@@ -224,7 +234,7 @@ $installGit = {
   Write-Host 'Installing Git...'
   winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
   $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-  git credential-manager github login
+  git credential-manager github login --browser --username stianthaulow
 }
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
 
@@ -236,3 +246,5 @@ function Install-App($app) {
 
 Install-App "Microsoft.PowerShell"
 Install-App "twpayne.chezmoi"
+
+Initialize-Chezmoi
