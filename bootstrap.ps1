@@ -2,8 +2,9 @@ param([switch]$Debug)
 
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+$isRunningInWindowsSandbox = $env:username -eq "WDAGUtilityAccount"
 
-if ($isAdmin) {
+if ($isAdmin -and -not $isRunningInWindowsSandbox) {
   Write-Host "Start boostrap in a non admin shell" -ForegroundColor Red
   exit
 }
