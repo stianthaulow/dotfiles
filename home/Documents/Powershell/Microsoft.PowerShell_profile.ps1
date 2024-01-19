@@ -146,6 +146,9 @@ function countc {
   (Get-Content -Path $Path -TotalCount 1).Split($Separator).Count
 }
 
+# Chezmoi completions
+. "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
+
 # PowerShell parameter completion shim for the dotnet CLI
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
   param($commandName, $wordToComplete, $cursorPosition)
@@ -170,4 +173,4 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 
 Import-Module DockerCompletion
 
-Clear-Host
+# Clear-Host
