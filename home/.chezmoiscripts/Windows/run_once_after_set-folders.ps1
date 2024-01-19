@@ -24,7 +24,7 @@ $folders = @(
 
   @{Path = $env:USERPROFILE; IconName = "Profile.ico" }
   @{Path = "$env:USERPROFILE\Autohotkey"; IconName = "AHK.ico" }
-  @{Path = "$env:USERPROFILE\Scripts"; IconName = "Scripts.ico" }
+  @{Path = "$env:USERPROFILE\Scripts"; IconName = "Script.ico" }
 
   @{Path = "$myDocumentsPath\Powershell"; IconName = "Powershell.ico" }
   @{Path = "$myDocumentsPath\WindowsPowershell"; IconName = "WindowsPowershell.ico" }
