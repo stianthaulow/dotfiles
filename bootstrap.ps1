@@ -102,8 +102,6 @@ Set-BoostrapDefaults
 
 Install-Winget
 
-
-
 Write-Debug "Pre-prompt chezmoi data"
 function Read-HostBoolean([String]$Question) {
   $QuestionString = "$($Question)"
