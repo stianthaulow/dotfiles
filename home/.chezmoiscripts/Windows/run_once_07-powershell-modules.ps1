@@ -1,14 +1,5 @@
 Write-Host "Installing Powershell modules..."
 
-$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-if (!$isAdmin) {
-  $script = $MyInvocation.MyCommand.Definition
-  Start-Process pwsh -ArgumentList "-NoProfile -File `"$script`"" -Verb RunAs -Wait  
-  exit
-}
-
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 
 $modules = @(
@@ -16,6 +7,7 @@ $modules = @(
   "DockerCompletion"
   "PSReadLine"
   "Terminal-Icons"
+  "z"
 )
 
 foreach ($module in $modules) {
