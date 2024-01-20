@@ -141,6 +141,7 @@ $apps = @(
   @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
   @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
   @{Id = "voidtools.Everything"; Name = "Everything search" }
+  @{Id = "lin-ycv.EverythingPowerToys"; Name = "Everything Powertoys plugin" }
   @{Id = "Ditto.Ditto"; Name = "Ditto" }
   @{Id = "Neovim.Neovim"; Name = "Neovim" }
   @{Id = "Google.Chrome"; Name = "Google Chrome" }
