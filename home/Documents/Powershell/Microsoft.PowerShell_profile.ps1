@@ -1,4 +1,5 @@
 Import-Module posh-git
+Import-Module Terminal-Icons
 
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\thaulow.omp.json" | Invoke-Expression
 

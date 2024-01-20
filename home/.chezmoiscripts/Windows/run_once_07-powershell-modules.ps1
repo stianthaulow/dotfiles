@@ -15,6 +15,7 @@ $modules = @(
   "posh-git"
   "DockerCompletion"
   "PSReadLine"
+  "Terminal-Icons"
 )
 
 foreach ($module in $modules) {
