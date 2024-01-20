@@ -161,7 +161,6 @@ $apps = @(
   @{Id = "Python.Python.3.10"; Name = "Python 3.10" }
   @{Id = "Python.Python.3.12"; Name = "Python 3.12" }
   @{Id = "Microsoft.DotNet.SDK.8"; Name = ".NET 8 SDK" }
-  @{Id = "JGraph.Draw"; Name = "Draw.io (Diagrams.net)" }
 )
 
 
