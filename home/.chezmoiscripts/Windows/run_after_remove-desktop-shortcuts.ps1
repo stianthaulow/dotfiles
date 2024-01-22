@@ -7,6 +7,7 @@ if ($Debug -or $env:DOTDEBUG) {
 Write-Debug "Running $PSCommandPath"
 
 Write-Host "Removing desktop shortcuts..."
+pause
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
 
