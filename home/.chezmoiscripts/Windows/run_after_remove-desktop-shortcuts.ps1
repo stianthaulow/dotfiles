@@ -1,3 +1,11 @@
+param([switch]$Debug)
+
+if ($Debug -or $env:DOTDEBUG) {
+  $DebugPreference = "Continue"
+  Start-Transcript -Path "$env:USERPROFILE\remove-desktop-shortcuts.log" -IncludeInvocationHeader
+}
+Write-Debug "Running $PSCommandPath"
+
 Write-Debug "Removing desktop shortcuts..."
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
