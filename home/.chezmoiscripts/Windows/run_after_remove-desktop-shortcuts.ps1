@@ -1,14 +1,16 @@
-# Remove all desktop shortcuts
+Write-Debug "Removing desktop shortcuts..."
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
 
 if ($desktopItems.Count -eq 0) {
+  Write-Debug "No desktop items found, exiting..."
   exit
 }
 
 $shortcuts = $desktopItems | Where-Object { $_.Extension -eq '.lnk' }
 
 foreach ($shortcut in $shortcuts) {
+  Write-Debug "Removing shortcut: $($shortcut.FullName)"
   Remove-Item $shortcut -Force
 }
 
@@ -21,18 +23,20 @@ if ($desktopItems.Count -ne 0) {
   $desktopItems | Move-Item -Destination $downloadsFolderPath -Force
 }
 
-# Remove all public desktop shortcuts if bootstrapping
+Write-Debug "Removing all users desktop shortcuts if bootstrapping..."
 if ($env:BOOTSTRAPPING) {
   $allUsersScriptblock = {
     $publicDesktopPath = [System.Environment]::GetFolderPath('"CommonDesktopDirectory"')
     $shortcuts = Get-ChildItem -Path $publicDesktopPath -Filter *.lnk
     foreach ($shortcut in $shortcuts) {
+      Write-Debug "Removing shortcut: $($shortcut.FullName)"
       Remove-Item $shortcut.FullName -Force
     }
   }
   Start-Process pwsh -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile -Command & { $allUsersScriptblock }" 
 }
 
+Write-Debug "Refreshing explorer..."
 $refreshcode = @'
 private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);
 private const int WM_SETTINGCHANGE = 0x1a;
