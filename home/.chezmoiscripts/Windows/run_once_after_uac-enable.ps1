@@ -1,12 +1,12 @@
 param([switch]$Debug)
 
-if ($Debug -or [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
+$isDebug = $Debug -or [Environment]::GetEnvironmentVariable("DOTDEBUG", [System.EnvironmentVariableTarget]::User)
+
+if ($isDebug) {
   $DebugPreference = "Continue"
   Start-Transcript -Path "$env:USERPROFILE\enable-uac.log" -IncludeInvocationHeader
 }
 Write-Debug "Running $PSCommandPath"
-Write-Debug "Enabling UAC..."
-pause
 
 if ([Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
   $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -14,6 +14,10 @@ if ([Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVa
   
   if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
     $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+    Write-Debug "Restarting as admin"
+    if ($isDebug) {
+      Stop-Transcript
+    }
     Start-Process powershell -Verb runAs -ArgumentList $arguments -Wait
     exit
   }
