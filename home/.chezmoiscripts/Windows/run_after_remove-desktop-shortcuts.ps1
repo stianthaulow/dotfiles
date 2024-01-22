@@ -7,6 +7,8 @@ if ($Debug -or $env:DOTDEBUG) {
 Write-Debug "Running $PSCommandPath"
 
 Write-Host "Removing desktop shortcuts..."
+Write-Host "env:BOOTSTRAPPING: $env:BOOTSTRAPPING"
+Write-Host "if: $($desktopItems.Count -eq 0 -and -not $env:BOOTSTRAPPING)"
 pause
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
