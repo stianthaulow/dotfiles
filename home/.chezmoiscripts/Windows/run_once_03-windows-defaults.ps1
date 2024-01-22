@@ -73,7 +73,11 @@ $defaults = @(
   # Disable Windows Meet Now
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"; Name = "HideSCAMeetNow"; Value = 1 }
 
+  # Disable "Friends" in Ditto
+  @{Path = "HKCU:\Software\Ditto"; Name = "AllowFriends"; Value = 0 }
 
+  # Hide Ditto startup message
+  @{Path = "HKCU:\Software\Ditto"; Name = "ShowStartupMessage"; Value = 0 }
 
 )
 
