@@ -224,7 +224,7 @@ if ($selectedApps.Count -ne 0) {
 }
 
 # Open browser to authenticate with GitHub
-Start-Process "https://github.com"
+Start-Process "https://github.com/login?login=$githubUserName"
 
 Write-Host "Press any key to continue after installing winget..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
@@ -233,7 +233,7 @@ $installGit = {
   Write-Host 'Installing Git...'
   winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
   $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-  git credential-manager github login --browser --username stianthaulow
+  git credential-manager github login --browser --username '"$githubUserNames"'
 }
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
 
