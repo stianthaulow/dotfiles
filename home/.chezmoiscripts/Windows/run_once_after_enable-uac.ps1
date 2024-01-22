@@ -5,6 +5,7 @@ if ($Debug -or $env:DOTDEBUG) {
   Start-Transcript -Path "$env:USERPROFILE\enable-uac.log" -IncludeInvocationHeader
 }
 Write-Debug "Running $PSCommandPath"
+pause
 
 if ([Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
   $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
