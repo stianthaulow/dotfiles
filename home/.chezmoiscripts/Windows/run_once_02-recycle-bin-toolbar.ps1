@@ -6,8 +6,8 @@ if (Test-Path $ShortcutPath) {
   exit
 }
 
-New-Item -ItemType Directory -Force -Path $toolbarFolderPath
-New-Item -ItemType Directory -Force -Path $emptyToolbarFolderPath
+New-Item -ItemType Directory -Force -Path $toolbarFolderPath | Out-Null
+New-Item -ItemType Directory -Force -Path $emptyToolbarFolderPath | Out-Null
 $WScriptShell = New-Object -ComObject WScript.Shell
 $TargetPath = "shell:RecycleBinFolder"
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
