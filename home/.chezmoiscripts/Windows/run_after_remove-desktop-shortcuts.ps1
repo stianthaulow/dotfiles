@@ -1,24 +1,18 @@
 param([switch]$Debug)
 
-if ($Debug -or $env:DOTDEBUG) {
+if ($Debug -or [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
   $DebugPreference = "Continue"
   Start-Transcript -Path "$env:USERPROFILE\remove-desktop-shortcuts.log" -IncludeInvocationHeader
 }
 Write-Debug "Running $PSCommandPath"
 
-Write-Host "Removing desktop shortcuts..."
-Write-Host "env:BOOTSTRAPPING: $env:BOOTSTRAPPING"
-$userbootstrap = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
-Write-Host "userbootstrap: $userbootstrap"
-$machinbootstrap = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::Machine)
-Write-Host "machinbootstrap: $machinbootstrap"
 
-Write-Host "if: $($desktopItems.Count -eq 0 -and -not $env:BOOTSTRAPPING)"
-pause
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
 
-if ($desktopItems.Count -eq 0 -and -not $env:BOOTSTRAPPING) {
+$isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
+
+if ($desktopItems.Count -eq 0 -and -not $isBootstrapping) {
   Write-Host "No desktop items found, exiting..."
   exit
 }
@@ -40,7 +34,7 @@ if ($desktopItems.Count -ne 0) {
 }
 
 Write-Debug "Removing all users desktop shortcuts if bootstrapping..."
-if ($env:BOOTSTRAPPING) {
+if ($isBootstrapping) {
   $allUsersScriptblock = {
     $publicDesktopPath = [System.Environment]::GetFolderPath('"CommonDesktopDirectory"')
     $shortcuts = Get-ChildItem -Path $publicDesktopPath -Filter *.lnk

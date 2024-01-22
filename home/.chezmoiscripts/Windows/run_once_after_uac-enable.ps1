@@ -1,11 +1,11 @@
 param([switch]$Debug)
 
-if ($Debug -or $env:DOTDEBUG) {
+if ($Debug -or [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
   $DebugPreference = "Continue"
   Start-Transcript -Path "$env:USERPROFILE\enable-uac.log" -IncludeInvocationHeader
 }
 Write-Debug "Running $PSCommandPath"
-Write-Host "Enabling UAC..."
+Write-Debug "Enabling UAC..."
 pause
 
 if ([Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)) {
