@@ -8,6 +8,11 @@ Write-Debug "Running $PSCommandPath"
 
 Write-Host "Removing desktop shortcuts..."
 Write-Host "env:BOOTSTRAPPING: $env:BOOTSTRAPPING"
+$userbootstrap = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
+Write-Host "userbootstrap: $userbootstrap"
+$machinbootstrap = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::Machine)
+Write-Host "machinbootstrap: $machinbootstrap"
+
 Write-Host "if: $($desktopItems.Count -eq 0 -and -not $env:BOOTSTRAPPING)"
 pause
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
