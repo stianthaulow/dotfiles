@@ -10,7 +10,7 @@ Write-Debug "Removing desktop shortcuts..."
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
 
-if ($desktopItems.Count -eq 0) {
+if ($desktopItems.Count -eq 0 -and -not $env:BOOTSTRAPPING) {
   Write-Debug "No desktop items found, exiting..."
   exit
 }
