@@ -5,6 +5,7 @@ if ($Debug -or $env:DOTDEBUG) {
   Start-Transcript -Path "$env:USERPROFILE\remove-desktop-shortcuts.log" -IncludeInvocationHeader
 }
 Write-Debug "Running $PSCommandPath"
+Write-Host "Removing desktop shortcuts..."
 pause
 Write-Debug "Removing desktop shortcuts..."
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
