@@ -28,18 +28,18 @@ if ($desktopItems.Count -ne 0) {
   $desktopItems | Move-Item -Destination $downloadsFolderPath -Force
 }
 
-# Write-Debug "Removing all users desktop shortcuts if bootstrapping..."
-# if ($isBootstrapping) {
-#   $allUsersScriptblock = {
-#     $publicDesktopPath = [System.Environment]::GetFolderPath('"CommonDesktopDirectory"')
-#     $shortcuts = Get-ChildItem -Path $publicDesktopPath -Filter *.lnk
-#     foreach ($shortcut in $shortcuts) {
-#       Write-Debug "Removing shortcut: $($shortcut.FullName)"
-#       Remove-Item $shortcut.FullName -Force
-#     }
-#   }
-#   Start-Process pwsh -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile -Command & { $allUsersScriptblock }" 
-# }
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+Write-Debug "Removing all users desktop shortcuts if running as admin..."
+if ($isAdmin) {
+  $publicDesktopPath = [System.Environment]::GetFolderPath("CommonDesktopDirectory")
+  $shortcuts = Get-ChildItem -Path $publicDesktopPath -Filter *.lnk
+  foreach ($shortcut in $shortcuts) {
+    Write-Debug "Removing shortcut: $($shortcut.FullName)"
+    Remove-Item $shortcut.FullName -Force
+  }
+}
 
 Write-Debug "Refreshing explorer..."
 $refreshcode = @'
