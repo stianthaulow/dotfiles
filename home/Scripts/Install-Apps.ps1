@@ -16,7 +16,7 @@ foreach ($app in $notInstalled) {
   $appId = $app.Id
   $appName = $app.Name
   $appArgs = $app.Args
-  Write-Debug "Installing: " $appName
+  Write-Debug "Installing: $appName"
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $appId $appArgs"
   Invoke-Expression "winget $wingetArgs"
 }
