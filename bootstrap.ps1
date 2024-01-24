@@ -9,16 +9,12 @@ if ($isAdmin -and -not $isRunningInWindowsSandbox) {
   exit
 }
 
-[Environment]::SetEnvironmentVariable("BOOTSTRAPPING", "true", [System.EnvironmentVariableTarget]::User)
-
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
-if ($Debug -or $env:DOTDEBUG) {
+if ($Debug -or $env:DOT_DEBUG -eq "1") {
   $DebugPreference = "Continue"
-  [System.Environment]::SetEnvironmentVariable("DOTDEBUG", 1, "User")
-  Start-Transcript -Path "$env:USERPROFILE\bootstrap.log" -IncludeInvocationHeader -Append
+  [System.Environment]::SetEnvironmentVariable("DOT_DEBUG", "1", "User")
 }
-Write-Debug "Running $PSCommandPath"
 
 $githubUserName = "stianthaulow"
 $ErrorActionPreference = 'Stop'
@@ -40,7 +36,7 @@ function Install-Winget() {
   $wingetScriptBlock = {
 
     Write-Host 'Checking for updated winget...'
-    $debug = [System.Environment]::GetEnvironmentVariable('DOTDEBUG', 'User')
+    $debug = [System.Environment]::GetEnvironmentVariable('DOT_DEBUG', 'User') -eq '1'
     if ($debug) { $DebugPreference = 'Continue' }
   
     $wingetApiUrl = 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'

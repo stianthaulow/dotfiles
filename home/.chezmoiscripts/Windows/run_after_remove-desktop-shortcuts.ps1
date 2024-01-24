@@ -1,18 +1,13 @@
-param([switch]$Debug)
 
-if ($Debug -or [Environment]::GetEnvironmentVariable("DOTDEBUG", [System.EnvironmentVariableTarget]::User)) {
+if ($env:DOT_DEBUG -eq "1") {
   $DebugPreference = "Continue"
-  Start-Transcript -Path "$env:USERPROFILE\remove-desktop-shortcuts.log" -IncludeInvocationHeader
 }
-Write-Debug "Running $PSCommandPath"
-
 
 $userDesktopPath = [System.Environment]::GetFolderPath("Desktop")
 $desktopItems = Get-ChildItem -Path $userDesktopPath
 
-$isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
 
-if ($desktopItems.Count -eq 0 -and -not $isBootstrapping) {
+if ($desktopItems.Count -eq 0) {
   Write-Debug "No desktop items found, exiting..."
   exit
 }
@@ -33,18 +28,18 @@ if ($desktopItems.Count -ne 0) {
   $desktopItems | Move-Item -Destination $downloadsFolderPath -Force
 }
 
-Write-Debug "Removing all users desktop shortcuts if bootstrapping..."
-if ($isBootstrapping) {
-  $allUsersScriptblock = {
-    $publicDesktopPath = [System.Environment]::GetFolderPath('"CommonDesktopDirectory"')
-    $shortcuts = Get-ChildItem -Path $publicDesktopPath -Filter *.lnk
-    foreach ($shortcut in $shortcuts) {
-      Write-Debug "Removing shortcut: $($shortcut.FullName)"
-      Remove-Item $shortcut.FullName -Force
-    }
-  }
-  Start-Process pwsh -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile -Command & { $allUsersScriptblock }" 
-}
+# Write-Debug "Removing all users desktop shortcuts if bootstrapping..."
+# if ($isBootstrapping) {
+#   $allUsersScriptblock = {
+#     $publicDesktopPath = [System.Environment]::GetFolderPath('"CommonDesktopDirectory"')
+#     $shortcuts = Get-ChildItem -Path $publicDesktopPath -Filter *.lnk
+#     foreach ($shortcut in $shortcuts) {
+#       Write-Debug "Removing shortcut: $($shortcut.FullName)"
+#       Remove-Item $shortcut.FullName -Force
+#     }
+#   }
+#   Start-Process pwsh -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile -Command & { $allUsersScriptblock }" 
+# }
 
 Write-Debug "Refreshing explorer..."
 $refreshcode = @'

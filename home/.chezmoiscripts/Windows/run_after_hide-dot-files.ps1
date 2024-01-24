@@ -1,10 +1,6 @@
-param([switch]$Debug)
-
-if ($Debug -or [Environment]::GetEnvironmentVariable("DOTDEBUG", [System.EnvironmentVariableTarget]::User)) {
+if ($env:DOT_DEBUG -eq "1") {
   $DebugPreference = "Continue"
-  Start-Transcript -Path "$env:USERPROFILE\hide-dot-files.log" -IncludeInvocationHeader
 }
-Write-Debug "Running $PSCommandPath"
 
 $homeChildrenDotFiles = Get-ChildItem -Path $env:USERPROFILE | Where-Object { $_.Name -like ".*" }
 
