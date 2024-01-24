@@ -20,3 +20,5 @@ foreach ($app in $notInstalled) {
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $appId $appArgs"
   Invoke-Expression "winget $wingetArgs"
 }
+
+Remove-Item $appListPath 
