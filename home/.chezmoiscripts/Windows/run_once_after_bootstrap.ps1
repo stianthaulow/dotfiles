@@ -78,6 +78,9 @@ function Test-PowershellCoreInstalled {
 # Show log file
 Start-Script "Show-Log" -ShowWindow
 
+# Disable UAC
+Start-Script "Disable-Uac" -AsAdmin
+
 # Set language and Keyboard layout
 Start-Script "Set-Locale" -AsAdmin
 
