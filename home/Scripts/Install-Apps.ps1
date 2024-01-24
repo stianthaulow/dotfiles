@@ -2,6 +2,8 @@
 
 $appListPath = "$env:USERPROFILE\apps.json"
 
+$Host.UI.RawUI.WindowTitle = "Installing Apps"
+
 if (-not (Test-Path $appListPath)) {
   Write-Log "$appListPath not found, skipping."
   exit

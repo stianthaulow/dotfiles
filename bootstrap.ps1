@@ -1,5 +1,7 @@
 param([switch]$Debug)
 
+$Host.UI.RawUI.WindowTitle = "Bootstrapping"
+
 $logFolderPath = Join-Path $env:USERPROFILE "Dotlog"
 $logPath = Join-Path $logFolderPath "bootstrap.log"
 Start-Transcript -Path $logPath
