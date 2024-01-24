@@ -21,7 +21,10 @@ function Start-Script {
     [switch]$UseCore,
 
     [Parameter()]
-    [switch]$ShowWindow
+    [switch]$ShowWindow,
+
+    [Parameter()]
+    [switch]$Wait
   )
 
   $ScriptPath = Join-Path $ScriptFolderPath "$ScriptName.ps1"
@@ -32,7 +35,7 @@ function Start-Script {
     $arguments = $defaultArgs + @("-NoExit") + @("-Command", "```$DebugPreference='Continue'; ```$ErrorActionPreference='Stop'; & '$ScriptPath'")
   }
 
-  $processArgs = "-Wait"
+  $processArgs = if ($Wait) { "-Wait" } else { "" }
 
   if (-not $Debug -and -not $ShowWindow) {
     $processArgs += " -WindowStyle Hidden"
@@ -97,7 +100,7 @@ Start-Script "Remove-TaskbarShortcuts"
 Start-Script "Remove-StartMenuTiles" -AsAdmin
 
 # Install apps
-Start-Script "Install-Apps" -ShowWindow
+Start-Script "Install-Apps" -ShowWindow -Wait
 
 # Install powershell modules
 if (Test-PowershellCoreInstalled) {
