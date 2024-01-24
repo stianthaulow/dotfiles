@@ -223,8 +223,12 @@ if ($selectedApps.Count -ne 0) {
 # Open browser to authenticate with GitHub
 Start-Process "https://github.com/login?login=$githubUserName"
 
-Write-Host "Press any key to continue after installing winget..."
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+$wingetCommand = Get-Command winget -ErrorAction SilentlyContinue
+
+if (-not $wingetCommand) {
+  Write-Host "Press any key to continue after installing winget..."
+  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+}
 
 $installGit = {
   Write-Host 'Installing Git...'

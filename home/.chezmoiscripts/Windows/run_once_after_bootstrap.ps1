@@ -18,7 +18,10 @@ function Start-Script {
     [switch]$AsAdmin,
 
     [Parameter()]
-    [switch]$UseCore
+    [switch]$UseCore,
+
+    [Parameter()]
+    [switch]$ShowWindow
   )
 
   $ScriptPath = Join-Path $ScriptFolderPath "$ScriptName.ps1"
@@ -31,7 +34,7 @@ function Start-Script {
 
   $processArgs = "-Wait"
 
-  if (-not $Debug) {
+  if (-not $Debug -and -not $ShowWindow) {
     $processArgs += " -WindowStyle Hidden"
   }
 
@@ -94,7 +97,7 @@ Start-Script "Remove-TaskbarShortcuts"
 Start-Script "Remove-StartMenuTiles" -AsAdmin
 
 # Install apps
-Start-Script "Install-Apps"
+Start-Script "Install-Apps" -ShowWindow
 
 # Install powershell modules
 if (Test-PowershellCoreInstalled) {
