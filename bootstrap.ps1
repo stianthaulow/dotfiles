@@ -147,6 +147,7 @@ $apps = @(
   @{Id = "Google.Chrome"; Name = "Google Chrome" }
   @{Id = "7zip.7zip"; Name = "7zip" }
   @{Id = "Spotify.Spotify"; Name = "Spotify" }
+  @{Id = "sharkdp.bat"; Name = "bat (cat alternative)" }
   @{Id = "GitHub.cli"; Name = "GitHub CLI" }
   @{Id = "jqlang.jq"; Name = "jq (JSON CLI)" }
   @{Id = "junegunn.fzf"; Name = "fzf (fuzzy finder)" }
