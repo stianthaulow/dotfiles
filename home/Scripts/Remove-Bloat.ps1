@@ -44,13 +44,13 @@ $AppXApps = @(
   "*Facebook*"
 )
 
-Write-Log "Removing AppX packages..." -WriteHost
+Write-Log "Removing AppX packages..."
 foreach ($App in $AppXApps) {
   Write-Log "Checking $App"
   # Check for the package for the current user
   $userPackage = Get-AppxPackage -Name $App -ErrorAction SilentlyContinue
   if ($userPackage) {
-    Write-Log "Removing Package $App for Current User" -WriteHost
+    Write-Log "Removing Package $App for Current User"
     Remove-AppxPackage -Package $userPackage.PackageFullName -ErrorAction SilentlyContinue
   }
 
