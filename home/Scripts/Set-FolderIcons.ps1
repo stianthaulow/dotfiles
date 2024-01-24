@@ -1,15 +1,14 @@
-param([switch]$Debug)
-
-if ($Debug -or [Environment]::GetEnvironmentVariable("DOTDEBUG", [System.EnvironmentVariableTarget]::User)) {
-  $DebugPreference = "Continue"
-  Start-Transcript -Path "$env:USERPROFILE\setup-folder-icons.log" -IncludeInvocationHeader
-}
-Write-Debug "Running $PSCommandPath"
-
 $themePath = "$env:USERPROFILE\Theme"
+$isWorkMachine = $env:DOT_WORK -eq "1"
+
+if (-not (Test-Path $themePath)) {
+  Write-Debug "Theme folder not found"
+  exit
+}
+
 $myDocumentsPath = [Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments)
 
-Write-Host "Setting up folder icons..."
+Write-Debug "Setting up folder icons..."
 # Folder icons
 $folders = @(
   @{Path = "$themePath"; IconName = "theme.ico" }
@@ -31,7 +30,6 @@ $folders = @(
   @{Path = "$myDocumentsPath\Misc"; IconName = "project.ico" }
 )
 
-$isWorkMachine = [System.Environment]::GetEnvironmentVariable('DOTWORK', [System.EnvironmentVariableTarget]::User)
 if ($isWorkMachine) {
   $folders += @{Path = "C:\P"; IconName = "Personal-folder.ico"; QuickAccess = $true }
 }
@@ -40,10 +38,7 @@ else {
   $folders += @{Path = "$env:USERPROFILE\Zotero"; IconName = "Zotero.ico" }
 }
 
-
 $folderIconsPath = "$themePath\Icons\Folders"
-
-
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder.Path)) {
     # The directory does not exist, so create it

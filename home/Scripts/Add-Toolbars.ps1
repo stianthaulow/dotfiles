@@ -1,8 +1,10 @@
+Write-Debug "Creating taskbar toolbar folders..."
 $toolbarFolderPath = "C:\Tools\Toolbar"
 $emptyToolbarFolderPath = "C:\Tools\Empty"
 $ShortcutPath = "$toolbarFolderPath\Recycle Bin.lnk"
 
 if (Test-Path $ShortcutPath) {
+  Write-Debug "Recycle Bin shortcut already exists, skipping toolbar folder creation."  
   exit
 }
 
@@ -13,4 +15,4 @@ $TargetPath = "shell:RecycleBinFolder"
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
 $Shortcut.TargetPath = $TargetPath
 $Shortcut.Save()
-
+Write-Debug "Done creating taskbar toolbar folders..."

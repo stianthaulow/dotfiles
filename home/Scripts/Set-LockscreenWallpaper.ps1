@@ -1,14 +1,15 @@
-Write-Host "Setting lockscreen image..."
-# Run in Windows PowerShell to access System.Runtime.WindowsRuntime
-if ($PSVersionTable.PSEdition -eq "Core") {
-  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait -WindowStyle Hidden
-  exit
-}
-
 $themePath = "$env:USERPROFILE\Theme"
+
+if (-not (Test-Path $themePath)) {
+    Write-Debug "Theme folder not found"
+    exit
+  }
+
+Write-Debug "Setting lockscreen image..."
 $lockscreenImagePath = "$themePath\Wallpaper\login.jpg"
 
 $tempImagePath = [System.IO.Path]::GetDirectoryName($lockscreenImagePath) + '\' + [System.Guid]::NewGuid().ToString() + [System.IO.Path]::GetExtension($lockscreenImagePath)
+Write-Debug "Copying $lockscreenImagePath to $tempImagePath"
 Copy-Item $lockscreenImagePath $tempImagePath
 
 [Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
@@ -26,6 +27,9 @@ Function AwaitAction($WinRtAction) {
   $netTask.Wait(-1) | Out-Null
 }
 [Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
+Write-Debug "Getting image StorageFile ref.."
 $image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($tempImagePath)) ([Windows.Storage.StorageFile])
+Write-Debug "Setting lockscreen image.."
 AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync($image))
+Write-Debug "Removing temp image from $tempImagePath"
 Remove-Item $tempImagePath

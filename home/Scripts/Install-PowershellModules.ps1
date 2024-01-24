@@ -1,4 +1,4 @@
-Write-Host "Installing Powershell modules..."
+Write-Debug "Installing Powershell modules..."
 
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 
@@ -11,15 +11,15 @@ $modules = @(
 )
 
 foreach ($module in $modules) {
-  Write-Host "Installing $module"
+  Write-Debug "Installing $module"
   Install-Module -Name $module -Scope CurrentUser
 }
 
 # Install PSFzf if fzf is installed
 if (Get-Command fzf -ErrorAction SilentlyContinue) {
-  Write-Host "Installing PSFzf"
+  Write-Debug "Installing PSFzf"
   Install-Module -Name PSFzf -Scope CurrentUser
 } 
 
 
-Write-Host "Powershell modules installed." -ForegroundColor Green
+Write-Debug "Powershell modules installed."

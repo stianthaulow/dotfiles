@@ -1,16 +1,3 @@
-$isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
-if (-not $isBootstrapping) {
-  exit
-}
-
-$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-if (!$isAdmin -or $PSVersionTable.PSEdition -eq "Core") {
-  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait
-  exit
-}
-
 $ProgressPreference = 'SilentlyContinue'
 
 $AppXApps = @(

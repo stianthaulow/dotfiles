@@ -13,7 +13,7 @@ $desktopItems = Get-ChildItem -Path $userDesktopPath
 $isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
 
 if ($desktopItems.Count -eq 0 -and -not $isBootstrapping) {
-  Write-Host "No desktop items found, exiting..."
+  Write-Debug "No desktop items found, exiting..."
   exit
 }
 

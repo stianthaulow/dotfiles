@@ -1,6 +1,10 @@
 $themePath = "$env:USERPROFILE\Theme"
 
-# Set Desktop wallpaper
+if (-not (Test-Path $themePath)) {
+  Write-Debug "Theme folder not found"
+  exit
+}
+
 $wallpaperPath = "$themePath\Wallpaper\wallpaper.jpg"
 
 $setwallpapersrc = @"
@@ -20,4 +24,5 @@ public class Wallpaper
 }
 "@
 Add-Type -TypeDefinition $setwallpapersrc
+Write-Debug "Setting wallpaper to $wallpaperPath"
 [Wallpaper]::SetWallpaper($wallpaperPath)

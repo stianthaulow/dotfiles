@@ -1,16 +1,4 @@
-$isBootstrapping = [Environment]::GetEnvironmentVariable("BOOTSTRAPPING", [System.EnvironmentVariableTarget]::User)
-if (-not $isBootstrapping) {
-  exit
-}
-
-Write-Host "Unpinning start menu tiles..." -ForegroundColor DarkYellow
-$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-if (!$isAdmin) {
-  Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -File `"$($MyInvocation.MyCommand.Path)`"" -Wait -WindowStyle Hidden
-  exit
-}
+Write-Debug "Unpinning start menu tiles..."
 
 $START_MENU_LAYOUT = @"
 <LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
@@ -67,4 +55,4 @@ Stop-Process -name explorer
 
 Remove-Item $layoutFile
 
-Write-Host "Start menu layout applied." -ForegroundColor Green
+Write-Debug "Start menu layout applied."

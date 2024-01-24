@@ -1,4 +1,4 @@
-Write-Host "Applying Windows defaults..." -ForegroundColor DarkYellow
+Write-Debug "Applying Windows defaults..."
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
@@ -84,7 +84,7 @@ $defaults = @(
 
 foreach ($setting in $defaults) {
   if (!(Test-Path -Path $setting.Path)) {
-    Write-Host "Creating registry path: $($setting.Path)"
+    Write-Debug "Creating registry path: $($setting.Path)"
     New-Item $setting.Path -Force | Out-Null
   }
   Set-ItemProperty @setting
