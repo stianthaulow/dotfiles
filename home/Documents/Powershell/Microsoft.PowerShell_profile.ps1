@@ -12,6 +12,7 @@ Set-Alias sqlite sqlite3
 Set-Alias n pnpm
 Set-Alias c# csharprepl
 Set-Alias dot chezmoi
+Set-Alias type bat
 
 function dotdir {
   Set-Location -Path "$(chezmoi source-path)\.."
