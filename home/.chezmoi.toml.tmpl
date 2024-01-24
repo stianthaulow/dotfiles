@@ -1,6 +1,6 @@
-{{ $email := promptStringOnce . "email" "What is your email address" }}
-{{ $isWork := promptBoolOnce . "isWork" "Is this a work machine"}}
-{{ $wantWsl := promptBoolOnce . "wantWsl" "Do you want WSL"}}
+{{- $email := promptStringOnce . "email" "What is your email address" -}}
+{{- $isWork := promptBoolOnce . "isWork" "Is this a work machine" -}}
+{{- $wantWsl := promptBoolOnce . "wantWsl" "Do you want WSL" -}}
 
 [interpreters.ps1]
 command = "pwsh"
@@ -10,3 +10,9 @@ args = ["-NoLogo", "-NoProfile"]
 email = {{ $email | quote }}
 isWork = {{ $isWork }}
 wantWsl = {{ $wantWsl }}
+
+[env]
+DOT_WORK = {{ ternary "1" "0" $isWork | quote }}
+DOT_WANT_WSL = {{ ternary "1" "0" $wantWsl | quote }}
+EMAIL = {{ $email | quote }}
+SCRIPTS = "{{ .chezmoi.homeDir }}/Scripts"
