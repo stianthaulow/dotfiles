@@ -75,12 +75,8 @@ function Test-PowershellCoreInstalled {
   }
 }
 
-# Show log file
-Start-Script "Show-Log" -ShowWindow
-
 # Disable UAC
-Start-Script "Disable-Uac" -AsAdmin
-
+Start-Script "Disable-Uac" -AsAdmin -Wait
 # Set language and Keyboard layout
 Start-Script "Set-Locale" -AsAdmin
 
@@ -134,4 +130,4 @@ Start-Script "Set-LockscreenWallpaper"
 Start-Script "Set-Wallpaper"
 
 # Enable UAC
-Start-Script "Enable-Uac" -AsAdmin
+Start-Script "Enable-Uac" -AsAdmin -Wait

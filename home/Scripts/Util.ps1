@@ -1,3 +1,7 @@
+$scriptName = Split-Path $MyInvocation.PSCommandPath -Leaf
+$logFolderPath = Join-Path $env:USERPROFILE "Dotlog"
+$logPath = Join-Path $logFolderPath "$scriptName.log"
+Start-Transcript -Path $logPath
 function Write-Log {
   param(
     [Parameter(Mandatory = $true)]
@@ -5,15 +9,7 @@ function Write-Log {
   )
   
   Write-Debug $Message
-
-  $logPath = "$env:USERPROFILE\dot.log"
-  if (-not (Test-Path $logPath)) {
-    New-Item -Path $logPath -ItemType File | Out-Null
-  }
-
   $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-  $callerScriptName = Split-Path $MyInvocation.PSCommandPath -Leaf
 
-  $logMessage = "$date - $callerScriptName - $Message"
-  Add-Content -Path $logPath -Value $logMessage
+  Write-Host "$date - $Message"
 }
