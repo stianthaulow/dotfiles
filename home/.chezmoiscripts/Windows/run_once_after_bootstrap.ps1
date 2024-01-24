@@ -59,7 +59,7 @@ function Start-Script {
   Write-Debug "Invoking: $expression"
   Invoke-Expression $expression
   if ($Wait) {
-    Write-Host "$ScriptName Done." -ForegroundColor Green
+    Write-Host "$ScriptName Done" -ForegroundColor Green
   }
 }
 
@@ -74,6 +74,9 @@ function Test-PowershellCoreInstalled {
     return $false
   }
 }
+
+# Show log file
+Start-Script "Show-Log" -ShowWindow
 
 # Set language and Keyboard layout
 Start-Script "Set-Locale" -AsAdmin
@@ -102,7 +105,7 @@ Start-Script "Remove-TaskbarShortcuts"
 Start-Script "Remove-StartMenuTiles" -AsAdmin
 
 # Install apps
-Start-Script "Install-Apps" -ShowWindow -Wait
+Start-Script "Install-Apps" -Wait
 
 # Install powershell modules
 if (Test-PowershellCoreInstalled) {

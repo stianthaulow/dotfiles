@@ -23,7 +23,7 @@ function Write-Log {
   )
   Write-Debug $Message
 
-  $logPath = "$env:USERPROFILE\dotlog.log"
+  $logPath = "$env:USERPROFILE\dot.log"
   if (-not (Test-Path $logPath)) {
     New-Item -Path $logPath -ItemType File | Out-Null
   }

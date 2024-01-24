@@ -1,19 +1,12 @@
 function Write-Log {
   param(
     [Parameter(Mandatory = $true)]
-    [string]$Message,
-
-    [Parameter()]
-    [switch]$WriteHost
+    [string]$Message
   )
-  if ($WriteHost) {
-    Write-Host $Message
-  }
-  else {
-    Write-Debug $Message
-  }
+  
+  Write-Debug $Message
 
-  $logPath = "$env:USERPROFILE\dotlog.log"
+  $logPath = "$env:USERPROFILE\dot.log"
   if (-not (Test-Path $logPath)) {
     New-Item -Path $logPath -ItemType File | Out-Null
   }
