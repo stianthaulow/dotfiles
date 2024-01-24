@@ -55,10 +55,12 @@ function Start-Script {
   }
   $message += "..."
 
-  Write-Host $message -ForegroundColor DarkGray
+  Write-Host $message -ForegroundColor DarkCyan
   Write-Debug "Invoking: $expression"
   Invoke-Expression $expression
-  Write-Host "$ScriptName Done." -ForegroundColor Green
+  if ($Wait) {
+    Write-Host "$ScriptName Done." -ForegroundColor Green
+  }
 }
 
 function Test-PowershellCoreInstalled {

@@ -1,7 +1,9 @@
+. (Join-Path $PSScriptRoot "Util.ps1")
+
 $themePath = "$env:USERPROFILE\Theme"
 
 if (-not (Test-Path $themePath)) {
-  Write-Debug "Theme folder not found"
+  Write-Log "Theme folder not found"
   exit
 }
 
@@ -24,5 +26,5 @@ public class Wallpaper
 }
 "@
 Add-Type -TypeDefinition $setwallpapersrc
-Write-Debug "Setting wallpaper to $wallpaperPath"
+Write-Log "Setting wallpaper to $wallpaperPath"
 [Wallpaper]::SetWallpaper($wallpaperPath)

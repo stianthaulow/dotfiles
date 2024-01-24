@@ -1,7 +1,9 @@
+. (Join-Path $PSScriptRoot "Util.ps1")
+
 $appListPath = "$env:USERPROFILE\apps.json"
 
 if (-not (Test-Path $appListPath)) {
-  Write-Debug "$appListPath not found, skipping."
+  Write-Log "$appListPath not found, skipping."
   exit
 }
 
@@ -16,7 +18,7 @@ foreach ($app in $notInstalled) {
   $appId = $app.Id
   $appName = $app.Name
   $appArgs = $app.Args
-  Write-Debug "Installing: $appName"
+  Write-Log "Installing: $appName"
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $appId $appArgs"
   Invoke-Expression "winget $wingetArgs"
 }

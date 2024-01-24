@@ -1,9 +1,11 @@
+. (Join-Path $PSScriptRoot "Util.ps1")
+
 $Signature = @{
-    Namespace        = "WinAPI"
-    Name             = "GetStr"
-    Language         = "CSharp"
-    UsingNamespace   = "System.Text"
-    MemberDefinition = @"
+  Namespace        = "WinAPI"
+  Name             = "GetStr"
+  Language         = "CSharp"
+  UsingNamespace   = "System.Text"
+  MemberDefinition = @"
 [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
 public static extern IntPtr GetModuleHandle(string lpModuleName);
 
@@ -20,7 +22,7 @@ return sb.ToString();
 "@
 }
 if (-not ("WinAPI.GetStr" -as [type])) {
-Add-Type @Signature
+  Add-Type @Signature
 }
 
 $TaskBar = (New-Object -ComObject Shell.Application).NameSpace("$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")
@@ -35,7 +37,7 @@ $toRemove += ((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0
 # Extract the localized "Unpin from taskbar" string from shell32.dll
 foreach ($pinned in $toRemove) {
   if ($pinned) {
-    Write-Debug "Removing $pinned from taskbar"
+    Write-Log "Removing $pinned from taskbar"
     $pinned.Verbs() | Where-Object -FilterScript { $_.Name -eq "$([WinAPI.GetStr]::GetString(5387))" } | ForEach-Object -Process { $_.DoIt() }
   }
 }

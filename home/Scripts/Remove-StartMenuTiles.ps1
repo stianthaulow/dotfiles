@@ -1,4 +1,6 @@
-Write-Debug "Unpinning start menu tiles..."
+. (Join-Path $PSScriptRoot "Util.ps1")
+
+Write-Log "Unpinning start menu tiles..."
 
 $START_MENU_LAYOUT = @"
 <LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
@@ -55,4 +57,4 @@ Stop-Process -name explorer
 
 Remove-Item $layoutFile
 
-Write-Debug "Start menu layout applied."
+Write-Log "Start menu layout applied."

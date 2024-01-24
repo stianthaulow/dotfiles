@@ -1,14 +1,16 @@
+. (Join-Path $PSScriptRoot "Util.ps1")
+
 $fontsPath = "$env:USERPROFILE\Theme\Fonts"
 
 if (-not (Test-Path $fontsPath)) {
-  Write-Debug "Theme Fonts folder not found"
+  Write-Log "Theme Fonts folder not found"
   exit
 }
 
 $jetBrainsFonts = Get-ChildItem -Path "$env:windir\Fonts" -Filter "*JetBrainsMonoNerdFont*.ttf"
 
 if ($jetBrainsFonts.Count -gt 0) {
-  Write-Debug "JetBrains Mono NerdFont already installed."
+  Write-Log "JetBrains Mono NerdFont already installed."
   exit
 }
 
@@ -33,22 +35,22 @@ function Install-Font {
       ".otf" { $fontName = "$fontName (OpenType)" }  
     }  
   
-    Write-Debug "Installing font: $fontFile with font name '$fontName'"
+    Write-Log "Installing font: $fontFile with font name '$fontName'"
   
     If (!(Test-Path ("$($env:windir)\Fonts\" + $fontFile.Name))) {  
-      Write-Debug "Copying font: $fontFile"
+      Write-Log "Copying font: $fontFile"
       Copy-Item -Path $fontFile.FullName -Destination ("$($env:windir)\Fonts\" + $fontFile.Name) -Force 
     }
-    else { Write-Debug "Font already exists: $fontFile" }
+    else { Write-Log "Font already exists: $fontFile" }
   
     If (!(Get-ItemProperty -Name $fontName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -ErrorAction SilentlyContinue)) {  
-      Write-Debug "Registering font: $fontFile"
+      Write-Log "Registering font: $fontFile"
       New-ItemProperty -Name $fontName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $fontFile.Name -Force -ErrorAction SilentlyContinue | Out-Null  
     }
-    else { Write-Debug "Font already registered: $fontFile" }
+    else { Write-Log "Font already registered: $fontFile" }
   }
   catch {            
-    Write-Debug "Error installing font: $fontFile. " $_.exception.message
+    Write-Log "Error installing font: $fontFile. " $_.exception.message
   }
     
 } 
@@ -73,26 +75,26 @@ function Uninstall-Font {
       ".otf" { $fontName = "$fontName (OpenType)" }  
     }  
   
-    Write-Debug "Uninstalling font: $fontFile with font name '$fontName'"
+    Write-Log "Uninstalling font: $fontFile with font name '$fontName'"
   
     If (Test-Path ("$($env:windir)\Fonts\" + $fontFile.Name)) {  
-      Write-Debug "Removing font: $fontFile"
+      Write-Log "Removing font: $fontFile"
       Remove-Item -Path "$($env:windir)\Fonts\$($fontFile.Name)" -Force 
     }
-    else { Write-Debug "Font does not exist: $fontFile" }
+    else { Write-Log "Font does not exist: $fontFile" }
   
     If (Get-ItemProperty -Name $fontName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -ErrorAction SilentlyContinue) {  
-      Write-Debug "Unregistering font: $fontFile"
+      Write-Log "Unregistering font: $fontFile"
       Remove-ItemProperty -Name $fontName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -Force                      
     }
-    else { Write-Debug "Font not registered: $fontFile" }
+    else { Write-Log "Font not registered: $fontFile" }
   }
   catch {            
-    Write-Debug "Error uninstalling font: $fontFile. " $_.exception.message
+    Write-Log "Error uninstalling font: $fontFile. " $_.exception.message
   }        
 }
 
-Write-Debug "Installing Fonts"
+Write-Log "Installing Fonts"
 foreach ($FontItem in (Get-ChildItem -Path $fontsPath | 
     Where-Object { ($_.Name -like '*.ttf') -or ($_.Name -like '*.otf') })) {  
   Install-Font -fontFile $FontItem.FullName  

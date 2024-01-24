@@ -16,11 +16,30 @@ if ($Debug -or $env:DOT_DEBUG -eq "1") {
   [System.Environment]::SetEnvironmentVariable("DOT_DEBUG", "1", "User")
 }
 
+function Write-Log {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Message
+  )
+  Write-Debug $Message
+
+  $logPath = "$env:USERPROFILE\dotlog.log"
+  if (-not (Test-Path $logPath)) {
+    New-Item -Path $logPath -ItemType File | Out-Null
+  }
+
+  $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  $callerScriptName = Split-Path $MyInvocation.PSCommandPath -Leaf
+
+  $logMessage = "$date - $callerScriptName - $Message"
+  Add-Content -Path $logPath -Value $logMessage
+}
+
 $githubUserName = "stianthaulow"
 $ErrorActionPreference = 'Stop'
 
 function Set-BoostrapDefaults() {
-  Write-Debug "Disabling UAC and Edge first run"
+  Write-Log "Disabling UAC and Edge first run"
   $defaultsScriptBlock = {
     Set-ItemProperty -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Value 0
     New-Item -Path "REGISTRY::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Edge" -Force | Out-Null
@@ -86,20 +105,20 @@ function Install-Winget() {
 }
 
 function Initialize-Chezmoi() {
-  Write-Debug "Installing chezmoi"
+  Write-Log "Installing chezmoi"
   $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
   chezmoi init $githubUserName
 
-  Write-Debug "Applying chezmoi as admin"
+  Write-Log "Applying chezmoi as admin"
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply" -Wait
-  Write-Debug "Done 🎉"
+  Write-Log "Done 🎉"
 }
 
 Set-BoostrapDefaults
 
 Install-Winget
 
-Write-Debug "Pre-prompt chezmoi data"
+Write-Log "Pre-prompt chezmoi data"
 function Read-HostBoolean([String]$Question) {
   $QuestionString = "$($Question)"
   if ($ReadHostBooleanWasInvalid) {
@@ -239,7 +258,7 @@ $installGit = {
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
 
 function Install-App($app) {
-  Write-Debug "Installing $app"
+  Write-Log "Installing $app"
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $app"
   Invoke-Expression "winget $wingetArgs"
 }

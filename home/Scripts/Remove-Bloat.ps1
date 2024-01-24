@@ -1,3 +1,5 @@
+. (Join-Path $PSScriptRoot "Util.ps1")
+
 $ProgressPreference = 'SilentlyContinue'
 
 $AppXApps = @(
@@ -42,27 +44,27 @@ $AppXApps = @(
   "*Facebook*"
 )
 
-Write-Host "Removing AppX packages..." -ForegroundColor DarkYellow
+Write-Log "Removing AppX packages..." -WriteHost
 foreach ($App in $AppXApps) {
-  Write-Host "Checking $App"
+  Write-Log "Checking $App"
   # Check for the package for the current user
   $userPackage = Get-AppxPackage -Name $App -ErrorAction SilentlyContinue
   if ($userPackage) {
-    Write-Host "Removing Package $App for Current User" -ForegroundColor DarkYellow
+    Write-Log "Removing Package $App for Current User" -WriteHost
     Remove-AppxPackage -Package $userPackage.PackageFullName -ErrorAction SilentlyContinue
   }
 
   # Check for the package for all users
   $allUsersPackage = Get-AppxPackage -Name $App -AllUsers -ErrorAction SilentlyContinue
   if ($allUsersPackage) {
-    Write-Host "Removing Package $App for All Users" -ForegroundColor DarkYellow
+    Write-Log "Removing Package $App for All Users"
     Remove-AppxPackage -Package $allUsersPackage.PackageFullName -AllUsers -ErrorAction SilentlyContinue
   }
 
   # Check for provisioned packages
   $provisionedPackage = Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App
   if ($provisionedPackage) {
-    Write-Host "Removing Provisioned Package $App" -ForegroundColor DarkYellow
+    Write-Log "Removing Provisioned Package $App"
     Remove-AppxProvisionedPackage -PackageName $provisionedPackage.PackageName -Online -ErrorAction SilentlyContinue
   }
 }

@@ -1,14 +1,16 @@
+. (Join-Path $PSScriptRoot "Util.ps1")
+
 $themePath = "$env:USERPROFILE\Theme"
 $isWorkMachine = $env:DOT_WORK -eq "1"
 
 if (-not (Test-Path $themePath)) {
-  Write-Debug "Theme folder not found"
+  Write-Log "Theme folder not found"
   exit
 }
 
 $myDocumentsPath = [Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments)
 
-Write-Debug "Setting up folder icons..."
+Write-Log "Setting up folder icons..."
 # Folder icons
 $folders = @(
   @{Path = "$themePath"; IconName = "theme.ico" }
@@ -42,18 +44,18 @@ $folderIconsPath = "$themePath\Icons\Folders"
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder.Path)) {
     # The directory does not exist, so create it
-    Write-Debug "Creating folder $($folder.Path)"
+    Write-Log "Creating folder $($folder.Path)"
     New-Item -Path $folder.Path -ItemType Directory -Force | Out-Null
   }   
   $IconPath = Join-Path $folderIconsPath $folder.IconName
 
   $iniPath = Join-Path $folder.Path "desktop.ini"
 
-  Write-Debug "Removing $iniPath"
+  Write-Log "Removing $iniPath"
   Remove-Item -Path $iniPath -Force -ErrorAction SilentlyContinue
 
   if (!(Test-Path $iniPath)) {
-    Write-Debug "Creating $iniPath"
+    Write-Log "Creating $iniPath"
     New-Item -Path $iniPath -ItemType File -Force | Out-Null
     # Set folder and ini as System files and ini as hidden
     attrib +s $folder.Path
@@ -65,7 +67,7 @@ foreach ($folder in $folders) {
 }
 
 # Refresh Quick Access
-Write-Debug "Refreshing Quick Access"
+Write-Log "Refreshing Quick Access"
 $shell = New-Object -ComObject shell.application
 $QuickAccess = $shell.Namespace("shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}")
 
@@ -77,7 +79,7 @@ foreach ($folder in $folders | Where-Object { $_.QuickAccess }) {
 }
 
 # Remove Pictures from Quick Access
-Write-Debug "Removing Pictures from Quick Access"
+Write-Log "Removing Pictures from Quick Access"
 $pictures = $QuickAccess.Items() | Where-Object { $_.Name -eq "Pictures" }
 if ($pictures) {
   $pictures.InvokeVerb("unpinfromhome")
@@ -87,16 +89,16 @@ $itemsExceptHome = @($QuickAccess.Items()) | Where-Object { $_.Path -ne $env:USE
 
 # Now remove all Quick Launch items
 foreach ($item in $QuickAccess.Items()) {
-  Write-Debug "Unpinning $($item.Path)"
+  Write-Log "Unpinning $($item.Path)"
   $item.InvokeVerb("unpinfromhome")
 }
 
 # Add home first
-Write-Debug "Pining $env:USERPROFILE"
+Write-Log "Pining $env:USERPROFILE"
 $shell.Namespace($env:USERPROFILE).Self.InvokeVerb("pintohome")
 
 # Re-add in reverse order
 foreach ($item in $itemsExceptHome[0..($itemsExceptHome.Length - 1)]) {
-  Write-Debug "Pinning $($item.Path)"
+  Write-Log "Pinning $($item.Path)"
   $shell.Namespace($item.Path).Self.InvokeVerb("pintohome")
 }

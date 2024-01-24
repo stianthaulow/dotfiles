@@ -1,4 +1,6 @@
-Write-Debug "Installing Powershell modules..."
+. (Join-Path $PSScriptRoot "Util.ps1")
+
+Write-Log "Installing Powershell modules..."
 
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 
@@ -11,15 +13,15 @@ $modules = @(
 )
 
 foreach ($module in $modules) {
-  Write-Debug "Installing $module"
+  Write-Log "Installing $module"
   Install-Module -Name $module -Scope CurrentUser
 }
 
 # Install PSFzf if fzf is installed
 if (Get-Command fzf -ErrorAction SilentlyContinue) {
-  Write-Debug "Installing PSFzf"
+  Write-Log "Installing PSFzf"
   Install-Module -Name PSFzf -Scope CurrentUser
 } 
 
 
-Write-Debug "Powershell modules installed."
+Write-Log "Powershell modules installed."
