@@ -255,7 +255,7 @@ $installGit = {
   $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
   git credential-manager github login --browser --username '"$githubUserNames"'
 }
-Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit"
+Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit" -Wait
 
 function Install-App($app) {
   Write-Log "Installing $app"
