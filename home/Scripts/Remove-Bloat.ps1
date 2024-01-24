@@ -1,6 +1,7 @@
 . (Join-Path $PSScriptRoot "Util.ps1")
 
 $ProgressPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'SilentlyContinue'
 
 $AppXApps = @(
   #Unnecessary Windows 10 AppX Apps
