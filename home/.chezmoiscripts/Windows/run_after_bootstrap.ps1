@@ -104,7 +104,7 @@ Start-Script "Remove-TaskbarShortcuts"
 Start-Script "Remove-StartMenuTiles" -AsAdmin
 
 # Install apps
-Start-Script "Install-Apps" -Wait
+Start-Script "Install-Apps" -Wait -ShowWindow
 
 # Install powershell modules
 if (Test-PowershellCoreInstalled) {
