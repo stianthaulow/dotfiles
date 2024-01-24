@@ -14,6 +14,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 if ($Debug -or $env:DOT_DEBUG -eq "1") {
   $DebugPreference = "Continue"
   [System.Environment]::SetEnvironmentVariable("DOT_DEBUG", "1", "User")
+  
 }
 
 function Write-Log {
@@ -21,6 +22,7 @@ function Write-Log {
     [Parameter(Mandatory = $true)]
     [string]$Message
   )
+  
   Write-Debug $Message
 
   $logPath = "$env:USERPROFILE\dot.log"
