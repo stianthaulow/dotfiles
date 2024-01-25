@@ -264,25 +264,26 @@ function Install-App($app) {
 }
 
 $installGit = {
-  Write-Host 'Installing Git...'
+  $Host.UI.RawUI.WindowTitle = 'Installing Git'
   winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
-  $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-
-  if ($env:DOT_GITHUB_PAT) {
-    $credential = @(
-      'protocol=https'
-      'host=github.com'
-      'username="$githubUserName"'
-      'password="$env:DOT_GITHUB_PAT"'
-    )
-  
-    $credential -join "`n" | git credential-manager store
-  }
-  else {
-    git credential-manager github login --browser --username '"$githubUserNames"'
-  }
 }
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit" -Wait
+
+#Refresh path
+$env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
+
+if ($env:DOT_GITHUB_PAT) {
+  $credential = @(
+    "protocol=https"
+    "host=github.com"
+    "username=$githubUserName"
+    "password=$env:DOT_GITHUB_PAT"
+  )
+  $credential -join '"`n"' | git credential-manager store
+}
+else {
+  git credential-manager github login --browser --username $githubUserName
+}
 
 Install-App "Microsoft.PowerShell"
 Install-App "twpayne.chezmoi"
