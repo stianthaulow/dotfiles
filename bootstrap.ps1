@@ -240,15 +240,15 @@ if (-not $isRunningInWindowsSandbox) {
     $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
   }
 
+  # Open browser to authenticate with GitHub
+  Start-Process "https://github.com/login?login=$githubUserName"
+
 }
 else {
   $appListPath = "$env:USERPROFILE\apps.json"
   $apps | ConvertTo-Json | Out-File $appListPath
 }
 
-
-# Open browser to authenticate with GitHub
-Start-Process "https://github.com/login?login=$githubUserName"
 
 $wingetCommand = Get-Command winget -ErrorAction SilentlyContinue
 
@@ -263,9 +263,26 @@ function Install-App($app) {
   Invoke-Expression "winget $wingetArgs"
 }
 
-Install-App "Git.Git"
-$env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-git credential-manager github login --browser --username "$githubUserName"
+$installGit = {
+  Write-Host 'Installing Git...'
+  winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
+  $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
+
+  if ($env:DOT_GITHUB_PAT) {
+    $credential = @(
+      'protocol=https'
+      'host=github.com'
+      'username="$githubUserName"'
+      'password="$env:DOT_GITHUB_PAT"'
+    )
+  
+    $credential -join "`n" | git credential-manager store
+  }
+  else {
+    git credential-manager github login --browser --username '"$githubUserNames"'
+  }
+}
+Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit" -Wait
 
 Install-App "Microsoft.PowerShell"
 Install-App "twpayne.chezmoi"
