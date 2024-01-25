@@ -279,7 +279,7 @@ if ($env:DOT_GITHUB_PAT) {
     "username=$githubUserName"
     "password=$env:DOT_GITHUB_PAT"
   )
-  $credential -join '"`n"' | git credential-manager store
+  $credential -join "`n" | git credential-manager store
 }
 else {
   git credential-manager github login --browser --username $githubUserName
