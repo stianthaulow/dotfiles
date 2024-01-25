@@ -134,9 +134,9 @@ function Read-HostBoolean([String]$Question) {
   }
 }
 $chezmoiConfigPath = "$env:USERPROFILE\.config\chezmoi\chezmoi.toml"
-$email = Read-Host 'What is your email address?'
-$isWork = Read-HostBoolean 'Is this a work computer? (y/n)'
-$wantWsl = Read-HostBoolean 'Do you want to install WSL? (y/n)'
+$email = if ($env:DOT_EMAIL) { $env:DOT_EMAIL } else { Read-Host 'What is your email address?' }
+$isWork = if ($env:DOT_IS_WORK) { $env:DOT_IS_WORK } else { Read-HostBoolean 'Is this a work computer? (y/n)' }
+$wantWsl = if ($env:DOT_WANT_WSL) { $env:DOT_WANT_WSL } else { Read-HostBoolean 'Do you want to install WSL? (y/n)' }
 
 New-Item -Path $chezmoiConfigPath -ItemType File -Force | Out-Null
 Add-Content -Path $chezmoiConfigPath -Value "[data]"
@@ -194,50 +194,58 @@ function Show-Apps($apps, $currentSelection, $selectedApps) {
   }
 }
 
-$currentIndex = 0
-$selectedApps = 0..($apps.Count - 1)
+if (-not $isRunningInWindowsSandbox) {
+  $currentIndex = 0
+  $selectedApps = 0..($apps.Count - 1)
 
-do {
-  Clear-Host
-  Write-Host "Select Applications to Install" -ForegroundColor Green
-  Write-Host "Press [Space] to toggle selection, [A] to select all, [Enter] to continue" -ForegroundColor DarkGray
-  Show-Apps $apps $currentIndex $selectedApps
+  do {
+    Clear-Host
+    Write-Host "Select Applications to Install" -ForegroundColor Green
+    Write-Host "Press [Space] to toggle selection, [A] to select all, [Enter] to continue" -ForegroundColor DarkGray
+    Show-Apps $apps $currentIndex $selectedApps
 
-  $key = [System.Console]::ReadKey($true)
+    $key = [System.Console]::ReadKey($true)
 
-  switch ($key.Key) {
-    'UpArrow' {
-      if ($currentIndex -gt 0) { $currentIndex-- }
-    }
-    'DownArrow' {
-      if ($currentIndex -lt $apps.Count - 1) { $currentIndex++ }
-    }
-    'Spacebar' {
-      if ($selectedApps -contains $currentIndex) {
-        $selectedApps = $selectedApps | Where-Object { $_ -ne $currentIndex }
+    switch ($key.Key) {
+      'UpArrow' {
+        if ($currentIndex -gt 0) { $currentIndex-- }
       }
-      else {
-        $selectedApps += $currentIndex
+      'DownArrow' {
+        if ($currentIndex -lt $apps.Count - 1) { $currentIndex++ }
+      }
+      'Spacebar' {
+        if ($selectedApps -contains $currentIndex) {
+          $selectedApps = $selectedApps | Where-Object { $_ -ne $currentIndex }
+        }
+        else {
+          $selectedApps += $currentIndex
+        }
+      }
+      'A' {
+        if ($selectedApps -contains $currentIndex) {
+          $selectedApps = @()
+        }
+        else {
+          $selectedApps = 0..($apps.Count - 1)
+        }
+      }
+      'Enter' {
+        break
       }
     }
-    'A' {
-      if ($selectedApps -contains $currentIndex) {
-        $selectedApps = @()
-      }
-      else {
-        $selectedApps = 0..($apps.Count - 1)
-      }
-    }
-    'Enter' {
-      break
-    }
+  } while ($key.Key -ne 'Enter')
+
+  if ($selectedApps.Count -ne 0) {
+    $appListPath = "$env:USERPROFILE\apps.json"
+    $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
   }
-} while ($key.Key -ne 'Enter')
 
-if ($selectedApps.Count -ne 0) {
-  $appListPath = "$env:USERPROFILE\apps.json"
-  $apps | Where-Object { $selectedApps -contains $apps.IndexOf($_) } | ConvertTo-Json | Out-File $appListPath
 }
+else {
+  $appListPath = "$env:USERPROFILE\apps.json"
+  $apps | ConvertTo-Json | Out-File $appListPath
+}
+
 
 # Open browser to authenticate with GitHub
 Start-Process "https://github.com/login?login=$githubUserName"
@@ -249,19 +257,15 @@ if (-not $wingetCommand) {
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 }
 
-$installGit = {
-  Write-Host 'Installing Git...'
-  winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
-  $env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
-  git credential-manager github login --browser --username '"$githubUserNames"'
-}
-Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit" -Wait
-
 function Install-App($app) {
   Write-Log "Installing $app"
   $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $app"
   Invoke-Expression "winget $wingetArgs"
 }
+
+Install-App "Git.Git"
+$env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
+git credential-manager github login --browser --username "$githubUserName"
 
 Install-App "Microsoft.PowerShell"
 Install-App "twpayne.chezmoi"
