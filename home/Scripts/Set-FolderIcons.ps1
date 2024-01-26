@@ -34,16 +34,20 @@ $folders = @(
 
 if ($isWorkMachine) {
   $folders += @{Path = "C:\P"; IconName = "Personal-folder.ico"; QuickAccess = $true }
+  $folders += @{Path = "C:\P\Vault"; IconName = "Obsidian.ico"; OnlyIfExist = $true }
 }
 else {
-  $folders += @{Path = "$env:USERPROFILE\Vault"; IconName = "Obsidian.ico" }
+  $folders += @{Path = "$env:USERPROFILE\Vault"; IconName = "Obsidian.ico"; OnlyIfExist = $true }
   $folders += @{Path = "$env:USERPROFILE\Zotero"; IconName = "Zotero.ico" }
 }
 
 $folderIconsPath = "$themePath\Icons\Folders"
 foreach ($folder in $folders) {
   if (-not (Test-Path $folder.Path)) {
-    # The directory does not exist, so create it
+    if ($folder.OnlyIfExist) {
+      Write-Log "Skipping $folder.Path as it does not exist yet"
+      continue
+    }
     Write-Log "Creating folder $($folder.Path)"
     New-Item -Path $folder.Path -ItemType Directory -Force | Out-Null
   }   
