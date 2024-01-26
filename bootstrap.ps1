@@ -111,7 +111,7 @@ function Initialize-Chezmoi() {
 
   Write-Log "Applying chezmoi as admin"
   Start-Process powershell -Verb RunAs -ArgumentList "chezmoi apply" -Wait
-  Write-Log "Done 🎉"
+  Write-Log "Done :-)"
 }
 
 Set-BoostrapDefaults
@@ -269,6 +269,7 @@ function Wait-ForWinget {
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 }
 
+Write-Host "Waiting for winget to be installed..."
 Wait-ForWinget
 
 # Refresh path
