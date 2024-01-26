@@ -102,9 +102,6 @@ Start-Script "Stop-Services" -AsAdmin
 # Remove taskbar shortcuts
 Start-Script "Remove-TaskbarShortcuts"
 
-# Unpin start menu tiles
-Start-Script "Remove-StartMenuTiles" -AsAdmin
-
 # Install apps
 Start-Script "Install-Apps" -Wait -ShowWindow
 
@@ -133,6 +130,9 @@ Start-Script "Set-Wallpaper"
 
 # Remove all users desktop shortcuts
 Start-Script "Remove-CommonDesktopShortcuts" -AsAdmin
+
+# Unpin start menu tiles
+Start-Script "Remove-StartMenuTiles" -AsAdmin
 
 # Enable UAC
 Start-Script "Enable-Uac" -AsAdmin -Wait
