@@ -53,7 +53,7 @@ function Set-BoostrapDefaults() {
 
 function Install-Winget() {
   $wingetScriptBlock = {
-
+    $Host.UI.RawUI.WindowTitle = 'Installing or updating winget'
     Write-Host 'Checking for updated winget...'
     $debug = [System.Environment]::GetEnvironmentVariable('DOT_DEBUG', 'User') -eq '1'
     if ($debug) { $DebugPreference = 'Continue' }
@@ -101,7 +101,7 @@ function Install-Winget() {
       Write-Host 'Winget installed' -ForegroundColor Green
     }
   }
-  Start-Process powershell -ArgumentList "-NoExit -NoProfile -Command `"$wingetScriptBlock`""
+  Start-Process powershell -ArgumentList "-NoProfile -Command `"$wingetScriptBlock`""
 }
 
 function Initialize-Chezmoi() {
@@ -244,18 +244,35 @@ if (-not $isRunningInWindowsSandbox) {
   Start-Process "https://github.com/login?login=$githubUserName"
 
 }
-else {
-  $appListPath = "$env:USERPROFILE\apps.json"
-  $apps | ConvertTo-Json | Out-File $appListPath
-}
 
+function Wait-ForWinget {
+  param(
+    [int]$IntervalSeconds = 1,
+    [int]$TimeoutSeconds = 180 # 3 mins
+  )
 
-$wingetCommand = Get-Command winget -ErrorAction SilentlyContinue
+  $startTime = Get-Date
+  $timeout = $startTime.AddSeconds($TimeoutSeconds)
 
-if (-not $wingetCommand) {
+  while ((Get-Date) -lt $timeout) {
+    try {
+      Get-Command winget -ErrorAction Stop | Out-Null
+      return
+    }
+    catch {
+      Write-Debug "winget not installed yet. Waiting for $IntervalSeconds seconds."
+      Start-Sleep -Seconds $IntervalSeconds
+    }
+  }
+
   Write-Host "Press any key to continue after installing winget..."
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 }
+
+Wait-ForWinget
+
+# Refresh path
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 function Install-App($app) {
   Write-Log "Installing $app"
@@ -269,8 +286,8 @@ $installGit = {
 }
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit" -Wait
 
-#Refresh path
-$env:Path = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
+# Refresh path
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 if ($env:DOT_GITHUB_PAT) {
   $credential = @(
