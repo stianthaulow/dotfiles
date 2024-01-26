@@ -131,5 +131,8 @@ Start-Script "Set-LockscreenWallpaper"
 # Set desktop wallpaper
 Start-Script "Set-Wallpaper"
 
+# Remove all users desktop shortcuts
+Start-Script "Remove-CommonDesktopShortcuts" -AsAdmin
+
 # Enable UAC
 Start-Script "Enable-Uac" -AsAdmin -Wait
