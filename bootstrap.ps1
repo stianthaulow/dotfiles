@@ -285,6 +285,7 @@ $installGit = {
   $Host.UI.RawUI.WindowTitle = 'Installing Git'
   winget install -e -h --accept-source-agreements --accept-package-agreements --id Git.Git
 }
+Write-Host "Installing Git"
 Start-Process powershell -Verb RunAs -ArgumentList "-Command $installGit" -Wait
 
 # Refresh path
