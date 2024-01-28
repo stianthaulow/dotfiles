@@ -23,7 +23,12 @@ function nx {
 }
 
 function cc {
-  code .
+  $vscodePath = "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe"
+  if (Test-Path $vscodePath) {
+    & $vscodePath .
+  } else {
+    & code .
+  }
 }
 
 function ds {
@@ -68,7 +73,13 @@ function e {
 
 # Edit powershell profile with vscode
 function ep() {
-  code $profile
+  $vscodePath = "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe"
+  $profilePath = "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+  if (Test-Path $vscodePath) {
+    & $vscodePath $profilePath
+  } else {
+    & code $profilePath
+  }
 }
 
 #Edit nvim config
