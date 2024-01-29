@@ -44,7 +44,6 @@ $defaults = @(
   @{Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer"; Name = "ShowRecent"; Value = 0 }
   @{Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer"; Name = "ShowFrequent"; Value = 0 }
 
-
   # Disable sticky keys by hitting shift 5 times shortcut
   @{Path = "HKCU:\Control Panel\Accessibility\StickyKeys"; Name = "Flags"; Value = 506 }
 
@@ -62,6 +61,9 @@ $defaults = @(
 
   # Disable creating Thumbs.db files on network folders
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"; Name = "DisableThumbnailsOnNetworkFolders"; Value = 1 }
+
+  # Enable long paths
+  @{Path = "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"; Name = "LongPathsEnabled"; Value = 1 }
 
   # Disable file deletion confirmation dialog
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"; Name = "ConfirmFileDelete"; Value = 0 }
