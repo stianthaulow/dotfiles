@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "windows" -}}
 ["Autohotkey"]
 type = "git-repo"
 url = "https://github.com/stianthaulow/autohotkey.git"
@@ -12,3 +13,4 @@ url = "https://github.com/stianthaulow/autohotkey.git"
 type = "git-repo"
 clone.args = ["-b {{- $branch -}}", "--single-branch"]
 url = "https://github.com/stianthaulow/theme.git"
+{{- end -}}
