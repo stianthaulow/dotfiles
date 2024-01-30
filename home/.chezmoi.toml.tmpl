@@ -6,9 +6,11 @@
 {{- $wantWsl = promptBoolOnce . "wantWsl" "Do you want WSL" -}}
 {{- end -}}
 
+{{- if eq .chezmoi.os "windows" -}}
 [interpreters.ps1]
 command = "pwsh"
 args = ["-NoLogo", "-NoProfile"]
+{{- end }}
 
 [data]
 email = {{ $email | quote }}
