@@ -1,11 +1,14 @@
 readme.md
-
 .vscode
-
 bootstrap.ps1
+
 {{ if ne .chezmoi.os "windows" }}
 .chezmoiscripts/Windows/**
 Documents
 AppData
 Scripts\*.ps1
+{{ end }}
+
+{{ if ne .chezmoi.os "linux" }}
+.config/gtk-3.0/**
 {{ end }}
