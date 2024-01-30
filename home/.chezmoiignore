@@ -12,3 +12,8 @@ Scripts\*.ps1
 {{ if ne .chezmoi.os "linux" }}
 .config/gtk-3.0/**
 {{ end }}
+
+{{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "debian") }}
+.chezmoiscripts/Debian/**
+{{ end }}
+
