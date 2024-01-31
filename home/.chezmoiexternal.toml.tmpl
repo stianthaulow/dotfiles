@@ -2,15 +2,18 @@
 ["Autohotkey"]
 type = "git-repo"
 url = "https://github.com/stianthaulow/autohotkey.git"
+{{- end -}}
 
-{{ $branch := "win11" }}
-{{ $currentBuild := atoi .chezmoi.windowsVersion.currentBuild }}
-{{ if lt $currentBuild 22000 }}
-  {{ $branch = "win10" }}
+{{ $branch := "debian" }}
+{{ if eq .chezmoi.os "windows" }}
+  {{ $branch = "win11" }}
+  {{ $currentBuild := atoi .chezmoi.windowsVersion.currentBuild }}
+  {{ if lt $currentBuild 22000 }}
+    {{ $branch = "win10" }}
+  {{ end }}
 {{ end }}
 
 ["Theme"]
 type = "git-repo"
 clone.args = ["-b {{- $branch -}}", "--single-branch"]
 url = "https://github.com/stianthaulow/theme.git"
-{{- end -}}
