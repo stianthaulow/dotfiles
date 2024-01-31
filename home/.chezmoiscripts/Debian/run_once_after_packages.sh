@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-echo "Installing packages..."
+echo "Installing packages"
