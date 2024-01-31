@@ -5,5 +5,5 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; iwr "https://stian.l
 ```
 
 ```sh
-sh -c "$(curl -fsLS https://raw.githubusercontent.com/stianthaulow/dotfiles/main/bootstrap.sh)"
+sudo apt-get -yq install curl && sudo sh -c "$(curl -fsLS https://raw.githubusercontent.com/stianthaulow/dotfiles/main/bootstrap.sh)"
 ```
