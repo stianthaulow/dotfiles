@@ -6,7 +6,7 @@ bootstrap.ps1
 .chezmoiscripts/Windows/**
 Documents
 AppData
-Scripts\*.ps1
+Scripts/*.ps1
 {{ end }}
 
 {{ if ne .chezmoi.os "linux" }}
