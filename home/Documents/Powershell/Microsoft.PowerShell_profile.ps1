@@ -47,7 +47,7 @@ function ddn {
 }
 
 function hot {
-  code C:\Dev\Autohotkey
+  code $env:USERPROFILE\Autohotkey
 }
 
 function rmrf {
