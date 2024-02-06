@@ -18,3 +18,7 @@ Scripts/*.bat
 .chezmoiscripts/Debian/**
 {{ end }}
 
+{{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "arch") }}
+.chezmoiscripts/Arch/**
+{{ end }}
+
