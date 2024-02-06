@@ -39,7 +39,8 @@
       "colorScheme": "Dracula+",
       "font": {
         "face": "JetBrainsMono Nerd Font Mono"
-      }
+      },
+      "opacity": 85
     },
     "list": [
       {
