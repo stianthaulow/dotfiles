@@ -1,4 +1,3 @@
-#!/bin/bash
+!#/bin/bash
 
-
-pacman -S --noconfirm zsh zsh-completions
+echo "hello"
