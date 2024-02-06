@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
-echo "Installing packages..."
+#!/bin/bash
 
 pacman -S --noconfirm zsh zsh-completions
