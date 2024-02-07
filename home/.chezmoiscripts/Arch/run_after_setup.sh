@@ -1,3 +1,6 @@
 #!/bin/bash
 
-echo "hello test"
+pacman -S --noconfirm \
+  zsh \
+  zsh-completions
+
