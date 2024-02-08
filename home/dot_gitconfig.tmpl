@@ -29,3 +29,7 @@
 	required = true
 [push]
 	autoSetupRemote = true
+{{ if eq .chezmoi.os "linux" }}
+[credential]
+	helper = store
+{{ end }}
