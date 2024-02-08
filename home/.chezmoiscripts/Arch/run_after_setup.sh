@@ -2,5 +2,5 @@
 
 sudo pacman -S --needed --noconfirm \
 zsh \
-zsh-completions
-
+zsh-completions \
+neovim
