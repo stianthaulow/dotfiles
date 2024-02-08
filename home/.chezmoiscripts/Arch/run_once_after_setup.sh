@@ -4,6 +4,7 @@ echo "Syncing packages..."
 sudo pacman --sync --needed --quiet --noconfirm \
 zsh \
 zsh-completions \
+bat \
 neovim \
 2> >(grep -v 'is up to date' >&2)
 
