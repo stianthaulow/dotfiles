@@ -11,6 +11,8 @@ autoload -Uz compinit
 # Initialize completion system, should be done after zstyle completion options
 compinit
 
+# Don't write duplicates to the command history
+setopt HIST_SAVE_NO_DUPS
 
 # Enable changing directory by typing the path (without `cd`)
 setopt autocd
@@ -18,8 +20,14 @@ setopt autocd
 # Disable beep sound on error
 unsetopt beep
 
+# Enable prompt substitution
+setopt promptsubst
+
 # Enable emacs-style keybindings
 bindkey -e
 
 # Aliases
-source $ZDOTDIR/aliases
+source $ZDOTDIR/aliases.sh
+
+# Theme
+source $ZDOTDIR/theme.sh
