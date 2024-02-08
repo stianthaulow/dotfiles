@@ -5,4 +5,6 @@ zsh \
 zsh-completions \
 neovim
 
-chsh -s /usr/bin/zsh
+if [[ $SHELL != */zsh ]]; then
+    chsh -s /usr/bin/zsh
+fi
