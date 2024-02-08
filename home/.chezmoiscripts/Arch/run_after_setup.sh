@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pacman -S --noconfirm \
-  zsh \
-  zsh-completions
+sudo pacman -S --noconfirm \
+zsh \
+zsh-completions
 

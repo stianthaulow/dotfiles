@@ -9,5 +9,5 @@ iwr "https://stian.link/init" | iex
 sudo apt-get -yq install curl
 #
 
-sudo sh -c "$(curl -fsLS https://stian.link/linux)"
+sh -c "$(curl -fsLS https://stian.link/linux)"
 ```
