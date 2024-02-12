@@ -1,7 +1,7 @@
 # Dotfiles
 
 ```powershell
-iwr "https://stian.link/init" | iex
+irm stian.link/init | iex
 ```
 
 ## Debian
