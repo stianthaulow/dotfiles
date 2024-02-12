@@ -1,5 +1,9 @@
 . (Join-Path $PSScriptRoot "Util.ps1")
 
+. (Join-Path $PSScriptRoot "Move-Win.ps1")
+
+Move-CurrentWindowRight
+
 $appListPath = "$env:USERPROFILE\apps.json"
 
 $Host.UI.RawUI.WindowTitle = "Installing Apps"

@@ -77,6 +77,10 @@ function Test-PowershellCoreInstalled {
 
 $Host.UI.RawUI.WindowTitle = "Setting up Windows"
 
+. (Join-Path $PSScriptRoot "Move-Win.ps1")
+
+Move-CurrentWindowLeft
+
 # Disable UAC
 Start-Script "Disable-Uac" -AsAdmin -Wait
 # Set language and Keyboard layout
