@@ -77,7 +77,7 @@ function Test-PowershellCoreInstalled {
 
 $Host.UI.RawUI.WindowTitle = "Setting up Windows"
 
-. (Join-Path $PSScriptRoot "Move-Win.ps1")
+. (Join-Path $ScriptFolderPath "Move-Win.ps1")
 
 Move-CurrentWindowLeft
 
