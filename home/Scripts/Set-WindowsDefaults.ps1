@@ -17,6 +17,10 @@ $defaults = @(
   # Set the sound scheme to 'No Sounds'
   @{Path = "HKCU:\AppEvents\Schemes"; Name = "(Default)"; Value = ".None" }
 
+  # Disable Wifi Sense
+  @{Path = "HKLM:\Software\Microsoft\PolicyManager\default\WiFi"; Name = "AllowWiFiHotSpotReporting"; Value = 0 }
+
+
   # Set dark mode and accent color "Storm"
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"; Name = "AppsUseLightTheme"; Value = 0 }
   @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"; Name = "SystemUsesLightTheme"; Value = 0 }
