@@ -13,6 +13,7 @@ Scripts/*.bat
 {{ if ne .chezmoi.os "linux" }}
 .config/gtk-3.0/**
 .config/zsh/**
+.zshenv
 {{ end }}
 
 {{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "debian") }}
