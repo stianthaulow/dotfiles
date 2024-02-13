@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 echo "Installing packages..."
 
-echo "console-data console-data/keymap/policy select Select keymap from full list" | sudo debconf-set-selections
-echo "console-data console-data/keymap/full select No layout" | sudo debconf-set-selections
-
+# Preseed console-data config
+echo "console-data console-data/keymap/policy select Select keymap from arch list" | sudo debconf-set-selections
+echo "console-data console-data/keymap/qwerty/layout select NO" | sudo debconf-set-selections
+echo "console-data console-data/keymap/family select qwerty" | sudo debconf-set-selections
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install \
 git \
