@@ -64,6 +64,13 @@
         "source": "Windows.Terminal.PowershellCore"
       },
       {
+        "guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
+        "hidden": false,
+        "name": "Debian",
+        "icon": "ms-appdata:///local/debian.png",
+        "source": "Windows.Terminal.Wsl"
+      },
+      {
         "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
         "hidden": false,
         "name": "Azure Cloud Shell",
@@ -92,12 +99,6 @@
         "hidden": true,
         "name": "Developer PowerShell for VS 2022",
         "source": "Windows.Terminal.VisualStudio"
-      },
-      {
-        "guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
-        "hidden": false,
-        "name": "Debian",
-        "source": "Windows.Terminal.Wsl"
       }
     ]
   },
