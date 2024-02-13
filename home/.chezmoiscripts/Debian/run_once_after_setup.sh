@@ -6,7 +6,7 @@ git \
 console-data \
 zsh
 
-loadkeys no
+sudo loadkeys no
 
 if command -v gnome-shell >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
