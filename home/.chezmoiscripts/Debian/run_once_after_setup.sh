@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 echo "Installing packages..."
 
-echo "console-data console-data/keymap/policy select Select keymap from full list" | debconf-set-selections
-echo "console-data console-data/keymap/full select No layout" | debconf-set-selections
+echo "console-data console-data/keymap/policy select Select keymap from full list" | sudo debconf-set-selections
+echo "console-data console-data/keymap/full select No layout" | sudo debconf-set-selections
 
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install \
