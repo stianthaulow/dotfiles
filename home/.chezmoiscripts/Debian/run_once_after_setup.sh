@@ -3,9 +3,16 @@ echo "Installing packages..."
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install \
 git \
+curl \
 console-data \
-zsh \
-neovim
+fuse \
+libfuse2 \
+zsh
+
+# Install latest neovim
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+mv nvim.appimage ~/.local/bin/nvim
 
 sudo loadkeys no
 
