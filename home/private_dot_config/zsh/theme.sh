@@ -17,7 +17,6 @@ fi
 
 # Characters
 SEGMENT_SEPARATOR="\ue0b0"
-START="\ue0d4"
 PLUSMINUS="\u00b1"
 BRANCH="\ue0a0"
 DETACHED="\u27a6"
@@ -121,7 +120,7 @@ prompt_virtualenv() {
 prompt_main() {
   RETVAL=$?
   CURRENT_BG='NONE'
-  print -n "%{%k%F{$CURRENT_BG}%}$START"
+  prompt_segment '' $PRIMARY_FG
   for prompt_segment in "${PROMPT_SEGMENTS[@]}"; do
     [[ -n $prompt_segment ]] && $prompt_segment
   done
