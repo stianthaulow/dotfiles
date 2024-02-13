@@ -1,4 +1,4 @@
-typeset -aHg AGNOSTER_PROMPT_SEGMENTS=(
+typeset -aHg PROMPT_SEGMENTS=(
     prompt_status
     #prompt_context
     prompt_virtualenv
@@ -17,6 +17,7 @@ fi
 
 # Characters
 SEGMENT_SEPARATOR="\ue0b0"
+START="\ue0d4"
 PLUSMINUS="\u00b1"
 BRANCH="\ue0a0"
 DETACHED="\u27a6"
@@ -117,26 +118,27 @@ prompt_virtualenv() {
 }
 
 ## Main prompt
-prompt_agnoster_main() {
+prompt__main() {
   RETVAL=$?
   CURRENT_BG='NONE'
-  for prompt_segment in "${AGNOSTER_PROMPT_SEGMENTS[@]}"; do
+  print -n "%{%k%F{$CURRENT_BG}%}$START"
+  for prompt_segment in "${PROMPT_SEGMENTS[@]}"; do
     [[ -n $prompt_segment ]] && $prompt_segment
   done
 }
 
-prompt_agnoster_precmd() {
+prompt_precmd() {
   vcs_info
-  PROMPT='%{%f%b%k%}$(prompt_agnoster_main) '
+  PROMPT='%{%f%b%k%}$(prompt_main) '
 }
 
-prompt_agnoster_setup() {
+prompt_setup() {
   autoload -Uz add-zsh-hook
   autoload -Uz vcs_info
 
   prompt_opts=(cr subst percent)
 
-  add-zsh-hook precmd prompt_agnoster_precmd
+  add-zsh-hook precmd prompt_precmd
 
   zstyle ':vcs_info:*' enable git
   zstyle ':vcs_info:*' check-for-changes false
@@ -144,4 +146,4 @@ prompt_agnoster_setup() {
   zstyle ':vcs_info:git*' actionformats '%b (%a)'
 }
 
-prompt_agnoster_setup "$@"
+prompt_setup "$@"
