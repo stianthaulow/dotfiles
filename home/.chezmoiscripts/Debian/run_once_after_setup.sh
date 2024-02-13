@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 echo "Installing packages..."
 
-DEBIAN_FRONTEND=noninteractive apt-get -yq install git
-DEBIAN_FRONTEND=noninteractive apt-get -yq install console-data
+DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install git
+DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install console-data
 
 loadkeys no
 
