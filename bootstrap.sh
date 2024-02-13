@@ -1,7 +1,10 @@
 #!/bin/sh
 
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
+
+localbin="${HOME}/.local/bin"
+if [ ! -d "$localbin" ]; then
+    mkdir -p "$dir"
+    PATH="$localbin:$PATH"
 fi
 
 if [ -f "/etc/arch-release" ]; then
