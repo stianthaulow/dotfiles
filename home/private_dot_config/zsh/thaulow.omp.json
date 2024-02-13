@@ -17,7 +17,7 @@
           "style": "powerline",
           "foreground": "#26C6DA",
           "background": "#546E7A",
-          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}}"
+          "template": " {{ if .WSL }}WSL {{ end }}{{.Icon}}"
         },
         {
           "background": "#91ddff",
