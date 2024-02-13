@@ -14,13 +14,10 @@
         },
         {
           "type": "os",
-          "style": "plain",
+          "style": "powerline",
           "foreground": "#26C6DA",
           "background": "#546E7A",
-          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}}",
-          "properties": {
-            "macos": "mac"
-          }
+          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}}"
         },
         {
           "background": "#91ddff",
