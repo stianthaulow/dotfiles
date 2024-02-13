@@ -7,7 +7,10 @@ curl \
 console-data \
 fuse \
 libfuse2 \
+unzip \
 zsh
+
+curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
 
 # Install latest neovim
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
