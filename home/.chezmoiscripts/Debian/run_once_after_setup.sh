@@ -4,7 +4,8 @@ echo "Installing packages..."
 DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install \
 git \
 console-data \
-zsh
+zsh \
+neovim
 
 sudo loadkeys no
 
