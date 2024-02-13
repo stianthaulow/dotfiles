@@ -40,4 +40,5 @@ bindkey -e
 source $ZDOTDIR/aliases.sh
 
 # Theme
-source $ZDOTDIR/theme.sh
+#source $ZDOTDIR/theme.sh
+eval "$(oh-my-posh init zsh --config $ZDOTDIR/thaulow.omp.json)"
