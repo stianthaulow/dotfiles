@@ -118,7 +118,7 @@ prompt_virtualenv() {
 }
 
 ## Main prompt
-prompt__main() {
+prompt_main() {
   RETVAL=$?
   CURRENT_BG='NONE'
   print -n "%{%k%F{$CURRENT_BG}%}$START"
