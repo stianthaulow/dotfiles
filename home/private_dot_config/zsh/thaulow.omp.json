@@ -15,7 +15,7 @@
         {
           "type": "os",
           "style": "powerline",
-          "template": "{{.Icon}}"
+          "template": "{{.Icon}}"
         },
         {
           "background": "#91ddff",
