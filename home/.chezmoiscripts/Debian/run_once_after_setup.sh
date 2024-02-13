@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 echo "Installing packages..."
 
+echo "console-data console-data/keymap/policy select Select keymap from full list" | debconf-set-selections
+echo "console-data console-data/keymap/full select No layout" | debconf-set-selections
+
+
 DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install \
 git \
 curl \
@@ -23,8 +27,6 @@ if ! command -v nvim &> /dev/null; then
     mv nvim.appimage ~/.local/bin/nvim
 fi
 
-sudo loadkeys no
-
 if command -v gnome-shell >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.background picture-uri-dark file:///$HOME/Theme/Wallpaper/wallpaper.jpg
@@ -32,5 +34,6 @@ fi
 
 
 if [[ $SHELL != */zsh ]]; then
+    echo "Changing shell to zsh..."
     chsh -s /bin/zsh
 fi
