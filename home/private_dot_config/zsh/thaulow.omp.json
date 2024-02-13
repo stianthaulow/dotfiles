@@ -14,10 +14,7 @@
         },
         {
           "type": "os",
-          "style": "powerline",
-          "foreground": "#26C6DA",
-          "background": "#546E7A",
-          "template": " {{ if .WSL }}WSL {{ end }}{{.Icon}}"
+          "style": "powerline"
         },
         {
           "background": "#91ddff",
