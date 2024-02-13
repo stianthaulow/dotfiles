@@ -8,6 +8,7 @@ console-data \
 fuse \
 libfuse2 \
 unzip \
+tmux \
 zsh
 
 # Install oh-my-posh if not installed
