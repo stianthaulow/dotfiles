@@ -14,4 +14,6 @@ else
     sh -c "$(curl -fsLS get.chezmoi.io/lb)"
 fi
 
+echo
+
 chezmoi init --apply stianthaulow
