@@ -1,7 +1,9 @@
 alias dot='chezmoi'
 alias dotdir='cd $(dot source-path)/..'
 
+{{ if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "debian") }}
 alias bat='batcat' # https://github.com/sharkdp/bat#on-ubuntu-using-apt
+{{ end }}
 
 if command -v lsd >/dev/null 2>&1; then
     alias ls='lsd'
