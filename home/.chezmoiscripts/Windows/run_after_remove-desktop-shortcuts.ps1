@@ -19,7 +19,7 @@ foreach ($shortcut in $shortcuts) {
   Remove-Item $shortcut -Force
 }
 
-$desktopItems = Get-ChildItem -Path $userDesktopPath
+$desktopItems = Get-ChildItem -Path $userDesktopPath | Where-Object Name -ne 'desktop.ini'
 
 $downloadsFolderPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 
