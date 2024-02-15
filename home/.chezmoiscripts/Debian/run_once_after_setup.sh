@@ -16,7 +16,8 @@ unzip \
 tmux \
 lsd \
 bat \
-zsh
+zsh \
+build-essential
 
 # Install oh-my-posh if not installed
 if ! command -v oh-my-posh &> /dev/null; then
