@@ -4,7 +4,7 @@
 localbin="${HOME}/.local/bin"
 if [ ! -d "$localbin" ]; then
     mkdir -p "$dir"
-    PATH="$localbin:$PATH"
+    export PATH="$localbin:$PATH"
 fi
 
 if [ -f "/etc/arch-release" ]; then
