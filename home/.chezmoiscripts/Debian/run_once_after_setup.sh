@@ -9,12 +9,12 @@ echo "console-data console-data/keymap/family select qwerty" | sudo debconf-set-
 DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install \
 git \
 curl \
-gpg \
 console-data \
 fuse \
 libfuse2 \
 unzip \
 tmux \
+lsd \
 zsh
 
 # Install oh-my-posh if not installed
@@ -27,15 +27,6 @@ if ! command -v nvim &> /dev/null; then
     curl -LOs https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
     chmod u+x nvim.appimage
     mv nvim.appimage ~/.local/bin/nvim
-fi
-
-# Install eza if not installed
-if ! command -v eza &> /dev/null; then
-    curl https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-    sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
-    sudo apt update -q
-    sudo apt install -yq eza
 fi
 
 if command -v gnome-shell >/dev/null 2>&1; then
