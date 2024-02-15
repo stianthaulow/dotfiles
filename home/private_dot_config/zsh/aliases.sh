@@ -1,7 +1,7 @@
 alias dot='chezmoi'
 alias dotdir='cd $(dot source-path)/..'
 
-alias ls='eza -icons'
+alias ls='eza --icons'
 
 alias zupdate='source $ZDOTDIR/.zshrc'
 
