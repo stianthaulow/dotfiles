@@ -3,4 +3,4 @@
 {{ if (eq .chezmoi.stdin "") }}
 {{ $content := .chezmoi.stdin }}
 {{ end }}
-{{ fromJson $content | setValueAtPath "dismissedMessages" (list "setAsDefault") | toPrettyJson }}
+{{ fromJson $content | setValueAtPath "dismissedMessages" (list "setAsDefault" "closeOnExitInfo") | toPrettyJson }}
