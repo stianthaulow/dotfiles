@@ -1,6 +1,7 @@
 alias dot='chezmoi'
 alias dotdir='cd $(dot source-path)/..'
 
+alias bat='batcat' # https://github.com/sharkdp/bat#on-ubuntu-using-apt
 
 if command -v lsd >/dev/null 2>&1; then
     alias ls='lsd'
