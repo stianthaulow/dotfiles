@@ -36,6 +36,6 @@ fi
 
 
 if [[ $SHELL != */zsh ]]; then
-    echo "\nChanging shell to zsh..."
+    echo -e "\nChanging shell to zsh..."
     chsh -s /bin/zsh
 fi
