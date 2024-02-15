@@ -14,6 +14,7 @@ Scripts/*.bat
 .config/gtk-3.0/**
 .config/zsh/**
 .zshenv
+.profile
 {{ end }}
 
 {{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "debian") }}
