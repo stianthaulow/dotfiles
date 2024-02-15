@@ -1,7 +1,15 @@
 alias dot='chezmoi'
 alias dotdir='cd $(dot source-path)/..'
 
-alias ls='lsd'
+
+if command -v lsd >/dev/null 2>&1; then
+    alias ls='lsd'
+fi
+
+if command -v bat >/dev/null 2>&1; then
+    alias cat='bat'
+fi
+
 
 alias zupdate='source $ZDOTDIR/.zshrc'
 

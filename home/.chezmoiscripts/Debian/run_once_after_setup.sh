@@ -15,6 +15,7 @@ libfuse2 \
 unzip \
 tmux \
 lsd \
+bat \
 zsh
 
 # Install oh-my-posh if not installed
