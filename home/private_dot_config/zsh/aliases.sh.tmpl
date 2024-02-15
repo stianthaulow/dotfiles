@@ -38,9 +38,9 @@ alias zedit='edit_config_and_apply'
 
 list_aliases() {
 	if command -v bat >/dev/null 2>&1; then
-		grep '^(alias|#)' $ZDOTDIR/aliases.sh | sed '/^#/s/^/\n/' | bat --language=zsh --file-name=Aliases
+		grep -E '^(alias|#)' $ZDOTDIR/aliases.sh | sed '/^#/s/^/\n/' | bat --language=zsh --file-name=Aliases
 	else
-		grep '^(alias|#)' $ZDOTDIR/aliases.sh
+		grep -E '^(alias|#)' $ZDOTDIR/aliases.sh
 	fi
 }
 alias lalias='list_aliases'
