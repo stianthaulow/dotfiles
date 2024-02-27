@@ -40,3 +40,7 @@ eval "$(oh-my-posh init zsh --config $ZDOTDIR/thaulow.omp.json)"
 
 # Load completions
 source $ZDOTDIR/chezmoi-completions
+
+# Colored man pages
+autoload colors && colors
+source $ZDOTDIR/colored-man-pages.zsh
