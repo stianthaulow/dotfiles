@@ -25,7 +25,7 @@ if ($notInstalled.Count -ne 0) {
     $appId = $app.Id
     $appName = $app.Name
     $appArgs = $app.Args
-    Write-Log "Installing: $appName"
+    Write-Host "Installing: $appName"
     $wingetArgs = "install -e -h --accept-source-agreements --accept-package-agreements --id $appId $appArgs"
     Invoke-Expression "winget $wingetArgs"
   }
