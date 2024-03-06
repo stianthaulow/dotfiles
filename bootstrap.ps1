@@ -166,6 +166,7 @@ $apps = @(
   @{Id = "GitHub.cli"; Name = "GitHub CLI" }
   @{Id = "jqlang.jq"; Name = "jq (JSON CLI)" }
   @{Id = "junegunn.fzf"; Name = "fzf (fuzzy finder)" }
+  @{Id = "ajeetdsouza.zoxide"; Name = "zoxide (smarter cd)" }
   @{Id = "Obsidian.Obsidian"; Name = "Obsidian" }
   @{Id = "Notepad++.Notepad++"; Name = "Notepad++" }
   @{Id = "DigitalScholar.Zotero"; Name = "Zotero" }
