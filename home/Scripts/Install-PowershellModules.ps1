@@ -9,7 +9,6 @@ $modules = @(
   "DockerCompletion"
   "PSReadLine"
   "Terminal-Icons"
-  "z"
 )
 
 foreach ($module in $modules) {
