@@ -1,7 +1,11 @@
 Import-Module posh-git
-Import-Module Terminal-Icons
+$env:POSH_GIT_ENABLED = $true
 
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\thaulow.omp.json" | Invoke-Expression
+
+Import-Module Terminal-Icons
+
+Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
 
 # Fix directory background color - https://github.com/PowerShell/PowerShell/issues/18550
 $PSStyle.FileInfo.Directory = "`e[38;2;255;255;255m"
@@ -59,6 +63,7 @@ function rmrf {
 }
 Set-Alias rmr rmrf
 
+# New File
 function touch($file) { "" | Out-File $file -Encoding UTF8 }
 
 # Open Explorer
@@ -75,6 +80,15 @@ function ep() {
 #Edit nvim config
 function ev() {
   nvim $env:LOCALAPPDATA\nvim\init.lua
+}
+
+# List upgradable winget packages
+function updates {
+  Get-WinGetPackage | Where-Object -Property IsUpdateAvailable -eq $true
+}
+
+function up {
+  Get-WinGetPackage | Where-Object -Property IsUpdateAvailable -eq $true | Select-Object @{Name = 'Name'; Expression = { $_.Id } } | Invoke-Fzf -Multi | Foreach-Object { Update-WinGetPackage -Id $_ }
 }
 
 # Tab completion like bash
@@ -98,7 +112,7 @@ function mcd {
     $Path
   )
 
-  New-Item -Path $Path -ItemType Directory
+  New-Item -Path $Path -ItemType Directory | Out-Null
 
   Set-Location -Path $Path
 }
@@ -149,17 +163,6 @@ function countc {
   (Get-Content -Path $Path -TotalCount 1).Split($Separator).Count
 }
 
-# Chezmoi completions
-. "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
-
-# PowerShell parameter completion shim for the dotnet CLI
-Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-  param($commandName, $wordToComplete, $cursorPosition)
-  dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
-    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-  }
-}
-
 # winget autocomplete
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
   param($wordToComplete, $commandAst, $cursorPosition)
@@ -171,9 +174,19 @@ Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
   }
 }
 
+# PowerShell parameter completion shim for the dotnet CLI
+Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
+  param($commandName, $wordToComplete, $cursorPosition)
+  dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
+    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+  }
+}
+
+# Chezmoi completions
+. "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
+
 # Fast Node Manager (fnm) autocomplete
 fnm env --use-on-cd | Out-String | Invoke-Expression
 
+# Docker completions
 Import-Module DockerCompletion
-
-# Clear-Host
