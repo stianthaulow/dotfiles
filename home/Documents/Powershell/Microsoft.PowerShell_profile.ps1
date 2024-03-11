@@ -186,7 +186,7 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 . "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
 
 # Fast Node Manager (fnm) autocomplete
-fnm env --use-on-cd | Out-String | Invoke-Expression
+fnm env | Out-String | Invoke-Expression
 
 # Docker completions
 Import-Module DockerCompletion
