@@ -159,8 +159,10 @@ $apps = @(
   @{Id = "lin-ycv.EverythingPowerToys"; Name = "Everything Powertoys plugin" }
   @{Id = "Ditto.Ditto"; Name = "Ditto" }
   @{Id = "Neovim.Neovim"; Name = "Neovim" }
+  @{Id = "Vivaldi.Vivaldi"; Name = "Vivaldi" }
   @{Id = "Google.Chrome"; Name = "Google Chrome" }
   @{Id = "7zip.7zip"; Name = "7zip" }
+  @{Id = "VideoLAN.VLC"; Name = "VLC" }
   @{Id = "Spotify.Spotify"; Name = "Spotify" }
   @{Id = "sharkdp.bat"; Name = "bat (cat alternative)" }
   @{Id = "GitHub.cli"; Name = "GitHub CLI" }
