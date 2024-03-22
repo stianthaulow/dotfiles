@@ -3,7 +3,7 @@
 
 localbin="${HOME}/.local/bin"
 if [ ! -d "$localbin" ]; then
-    mkdir -p "$dir"
+    mkdir -p "$localbin"
     export PATH="$localbin:$PATH"
 fi
 
