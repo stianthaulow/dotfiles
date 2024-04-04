@@ -185,6 +185,9 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 # Chezmoi completions
 . "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
 
+# az CLI completions
+. "$env:USERPROFILE\Documents\Powershell\az-completions.ps1"
+
 # Fast Node Manager (fnm) autocomplete
 fnm env | Out-String | Invoke-Expression
 
