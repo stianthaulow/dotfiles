@@ -188,6 +188,9 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 # az CLI completions
 . "$env:USERPROFILE\Documents\Powershell\az-completions.ps1"
 
+# Github CLI completions
+Invoke-Expression -Command $(gh completion -s powershell | Out-String)
+
 # Fast Node Manager (fnm) autocomplete
 fnm env | Out-String | Invoke-Expression
 
