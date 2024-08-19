@@ -90,6 +90,8 @@ $defaults = @(
   # Hide Ditto startup message
   @{Path = "HKCU:\Software\Ditto"; Name = "ShowStartupMessage"; Value = 0 }
 
+  # Hide Language bar from system tray
+  @{Path = "HKCU:\Software\Microsoft\CTF"; Name = "ShowStatus"; Value = 0 }
 )
 
 
