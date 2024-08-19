@@ -138,6 +138,11 @@ $email = if ($env:DOT_EMAIL) { $env:DOT_EMAIL } else { Read-Host 'What is your e
 $isWork = if ($env:DOT_IS_WORK) { $env:DOT_IS_WORK } else { Read-HostBoolean 'Is this a work computer? (y/n)' }
 $wantWsl = if ($env:DOT_WANT_WSL) { $env:DOT_WANT_WSL } else { Read-HostBoolean 'Do you want to install WSL? (y/n)' }
 
+if ( $isWork ) {
+  # Permanently set the environment variable
+  System.Environment]::SetEnvironmentVariable("DOT_IS_WORK", "1", "User")
+}
+
 New-Item -Path $chezmoiConfigPath -ItemType File -Force | Out-Null
 Add-Content -Path $chezmoiConfigPath -Value "[data]"
 Add-Content -Path $chezmoiConfigPath -Value "email = `"$email`""
