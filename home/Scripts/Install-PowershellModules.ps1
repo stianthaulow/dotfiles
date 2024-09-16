@@ -22,5 +22,13 @@ if (Get-Command fzf -ErrorAction SilentlyContinue) {
   Install-Module -Name PSFzf -Scope CurrentUser
 } 
 
+# Install Set-Bookmark
+if (-not (Get-Command Set-Bookmark -ErrorAction SilentlyContinue)) {
+  Write-Log "Cloning Set-Bookmark"
+  $modulesPath = $env:PSModulePath -split ";" | Select-Object -First 1
+  $cloneFolder = Join-Path $modulesPath "Set-Bookmark"
+  git clone https://github.com/stianthaulow/pwsh-bookmarks $cloneFolder
+}
+
 
 Write-Log "Powershell modules installed."
