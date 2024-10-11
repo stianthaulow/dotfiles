@@ -13,3 +13,8 @@ function Write-Log {
 
   Write-Host "$date - $Message"
 }
+
+function Test-Windows11 {
+  $osVersion = [System.Environment]::OSVersion.Version
+  return $osVersion.Major -eq 10 -and $osVersion.Build -ge 22000
+}
