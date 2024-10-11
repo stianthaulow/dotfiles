@@ -95,6 +95,14 @@ $defaults = @(
 )
 
 
+if (Test-Windows11) {
+  $defaults += @(
+    # Disable Snap Assist, suggestions for other windows to snap to the side, after snapping a window
+    @{Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"; Name = "SnapAssist"; Value = 0 }
+  )
+}
+
+
 foreach ($setting in $defaults) {
   if (!(Test-Path -Path $setting.Path)) {
     Write-Log "Creating registry path: $($setting.Path)"
