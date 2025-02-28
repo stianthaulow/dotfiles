@@ -151,7 +151,7 @@ Add-Content -Path $chezmoiConfigPath -Value "wantWsl = $("$wantWsl".ToLower())"
 
 $apps = @(
   @{Id = "Git.Git"; Name = "Git" }
-  @{Id = "JanDeDobbeleer.OhMyPosh"; Name = "Oh My Posh" }
+  @{Id = "Starship.Starship"; Name = "Starship" }
   @{Id = "Microsoft.WindowsTerminal"; Name = "Windows Terminal" }
   @{Id = "Schniz.fnm"; Name = "Fast Node Manager (fnm)" }
   @{Id = "Microsoft.VisualStudioCode"; Name = "Visual Studio Code"; Args = "--override '/SILENT /mergetasks=`"!runcode,addcontextmenufiles,addcontextmenufolders`"'" },

@@ -1,7 +1,4 @@
-Import-Module posh-git
-$env:POSH_GIT_ENABLED = $true
-
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\thaulow.omp.json" | Invoke-Expression
+Invoke-Expression (&starship init powershell)
 
 Import-Module Terminal-Icons
 
@@ -26,6 +23,19 @@ function nx {
   pnpm dlx @args
 }
 
+function s {
+  if (Test-Path -Path "./package.json") {
+    $packageJson = Get-Content -Path "./package.json" -Raw | ConvertFrom-Json
+    $packageJson.scripts.PSObject.Properties.Name | ForEach-Object { 
+      Write-Host "$($_): " -ForegroundColor Yellow -NoNewline
+      Write-Host "$($packageJson.scripts.$_)"
+    }
+  }
+  else {
+    Write-Host "No package.json found in the current directory." -ForegroundColor Red
+  }
+}
+
 function cc {
   code .
 }
@@ -36,10 +46,6 @@ function ds {
 
 function rr {
   npm run dev
-}
-
-function newapp {
-  npx create-t3-app@latest
 }
 
 function dup {
@@ -82,14 +88,6 @@ function ev() {
   nvim $env:LOCALAPPDATA\nvim\init.lua
 }
 
-# List upgradable winget packages
-function updates {
-  Get-WinGetPackage | Where-Object -Property IsUpdateAvailable -eq $true
-}
-
-function up {
-  Get-WinGetPackage | Where-Object -Property IsUpdateAvailable -eq $true | Select-Object @{Name = 'Name'; Expression = { $_.Id } } | Invoke-Fzf -Multi | Foreach-Object { Update-WinGetPackage -Id $_ }
-}
 
 # Tab completion like bash
 # Set-PSReadlineKeyHandler -Key RightArrow -Function MenuComplete
