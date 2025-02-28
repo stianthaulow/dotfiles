@@ -21,16 +21,34 @@ $folders = @(
   @{Path = "C:\Tools"; IconName = "SQL.ico" }
   @{Path = "C:\Dev"; IconName = "Dev.ico"; QuickAccess = $true }
   @{Path = "C:\Dev\Github"; IconName = "Github.ico" }
-  @{Path = "C:\Dev\Lab"; IconName = "Lab-folder.ico" }
+  @{Path = "C:\Dev\Lab"; IconName = "lab.ico" }
 
   @{Path = $env:USERPROFILE; IconName = "Profile.ico" }
   @{Path = "$env:USERPROFILE\Autohotkey"; IconName = "AHK.ico" }
-  @{Path = "$env:USERPROFILE\Scripts"; IconName = "Script.ico" }
+  @{Path = "$env:USERPROFILE\Scripts"; IconName = "Scripts.ico" }
+  @{Path = "$env:USERPROFILE\OneDrive"; IconName = "onedrive-1.ico"; OnlyIfExist = $true }
+  @{Path = "$env:USERPROFILE\OneDrive - Malling"; IconName = "onedrive.ico"; OnlyIfExist = $true }
 
   @{Path = "$myDocumentsPath\Powershell"; IconName = "Powershell.ico" }
   @{Path = "$myDocumentsPath\WindowsPowershell"; IconName = "WindowsPowershell.ico" }
   @{Path = "$myDocumentsPath\Misc"; IconName = "project.ico" }
+  @{Path = "$myDocumentsPath\PowerToys"; IconName = "power_toys.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Presentations"; IconName = "microsoft_power_point.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Visual Studio 2022"; IconName = "visual_studio.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Power BI Desktop"; IconName = "microsoft_power_bi.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\OneNote Notebooks"; IconName = "microsoft_onenote.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Altinn"; IconName = "altinn.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\CV"; IconName = "cv.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Diagrams"; IconName = "diagrams.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Zoom"; IconName = "zoom.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Zotero"; IconName = "Zotero.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Terms of Service"; IconName = "terms_of_service.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\HR"; IconName = "hr.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Manuals"; IconName = "manuals.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Kartverket"; IconName = "kartverket.ico"; OnlyIfExist = $true }
+  @{Path = "$myDocumentsPath\Keys"; IconName = "keys.ico"; OnlyIfExist = $true }
 )
+
 
 if ($isWorkMachine) {
   $folders += @{Path = "C:\P"; IconName = "Personal-folder.ico"; QuickAccess = $true }
@@ -70,6 +88,7 @@ foreach ($folder in $folders) {
   }
 }
 
+<#
 # Refresh Quick Access
 Write-Log "Refreshing Quick Access"
 $shell = New-Object -ComObject shell.application
@@ -106,3 +125,4 @@ foreach ($item in $itemsExceptHome[0..($itemsExceptHome.Length - 1)]) {
   Write-Log "Pinning $($item.Path)"
   $shell.Namespace($item.Path).Self.InvokeVerb("pintohome")
 }
+#>
