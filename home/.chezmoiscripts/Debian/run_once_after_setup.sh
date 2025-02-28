@@ -19,11 +19,6 @@ bat \
 zsh \
 build-essential
 
-# Install oh-my-posh if not installed
-if ! command -v oh-my-posh &> /dev/null; then
-    curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
-fi
-
 # Install latest neovim if not installed
 if ! command -v nvim &> /dev/null; then
     curl -LOs https://github.com/neovim/neovim/releases/latest/download/nvim.appimage

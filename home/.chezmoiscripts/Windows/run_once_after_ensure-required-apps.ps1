@@ -6,7 +6,7 @@ Write-Host -ForegroundColor DarkCyan "Ensuring required apps are installed..."
 
 $apps = @(
   @{Id = "Git.Git"; Name = "Git" }
-  @{Id = "JanDeDobbeleer.OhMyPosh"; Name = "Oh My Posh" }
+  @{Id = "Starship.Starship"; Name = "Starship" }
   @{Id = "Microsoft.WindowsTerminal"; Name = "Windows Terminal" }
   @{Id = "Schniz.fnm"; Name = "Fast Node Manager (fnm)" }
   @{Id = "Microsoft.PowerShell"; Name = "Powershell Core" }
