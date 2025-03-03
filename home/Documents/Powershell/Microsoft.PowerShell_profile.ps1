@@ -1,12 +1,5 @@
 Invoke-Expression (&starship init powershell)
 
-Import-Module Terminal-Icons
-
-Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
-
-# Fix directory background color - https://github.com/PowerShell/PowerShell/issues/18550
-$PSStyle.FileInfo.Directory = "`e[38;2;255;255;255m"
-
 Set-Alias g Set-Bookmark
 Set-Alias c code
 Set-Alias sqlite sqlite3
@@ -14,6 +7,7 @@ Set-Alias n pnpm
 Set-Alias c# csharprepl
 Set-Alias dot chezmoi
 Set-Alias type bat
+Set-Alias w winget
 
 function dotdir {
   Set-Location -Path "$(chezmoi source-path)\.."
@@ -161,36 +155,44 @@ function countc {
   (Get-Content -Path $Path -TotalCount 1).Split($Separator).Count
 }
 
-# winget autocomplete
-Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
-  param($wordToComplete, $commandAst, $cursorPosition)
-  [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
-  $Local:word = $wordToComplete.Replace('"', '""')
-  $Local:ast = $commandAst.ToString().Replace('"', '""')
-  winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
-    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -Action {
+  # Load modules
+  Import-Module posh-git
+  $env:POSH_GIT_ENABLED = $true
+  Import-Module Terminal-Icons
+
+  Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
+
+  # Winget autocomplete for both "winget" and "w"
+  $wingetCompletion = {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
+    $Local:word = $wordToComplete.Replace('"', '""')
+    $Local:ast = $commandAst.ToString().Replace('"', '""')
+    winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
+      [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    }
   }
-}
 
-# PowerShell parameter completion shim for the dotnet CLI
-Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-  param($commandName, $wordToComplete, $cursorPosition)
-  dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
-    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+  # Register for both "winget" and "w"
+  Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock $wingetCompletion
+  Register-ArgumentCompleter -Native -CommandName w -ScriptBlock $wingetCompletion
+
+  # Dotnet CLI autocompletion
+  Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
+    param($commandName, $wordToComplete, $cursorPosition)
+    dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
+      [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    }
   }
-}
 
-# Chezmoi completions
-. "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
+  # Load external completions
+  . "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
+  . "$env:USERPROFILE\Documents\Powershell\az-completions.ps1"
+  Invoke-Expression -Command $(gh completion -s powershell | Out-String)
+  fnm env | Out-String | Invoke-Expression
+  Import-Module DockerCompletion
 
-# az CLI completions
-. "$env:USERPROFILE\Documents\Powershell\az-completions.ps1"
-
-# Github CLI completions
-Invoke-Expression -Command $(gh completion -s powershell | Out-String)
-
-# Fast Node Manager (fnm) autocomplete
-fnm env | Out-String | Invoke-Expression
-
-# Docker completions
-Import-Module DockerCompletion
+  # Remove event after execution
+  Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
+} | Out-Null
