@@ -5,10 +5,10 @@
 #   b <name>              # cd to <name>
 #   b <name> --add        # add current dir as <name>
 #   b <name> --delete     # delete <name>
-# Add to your shell:  source /path/to/b
+# Place anywhere; you can store this file itself at ~/.config/bash/bookmarks/b
+# Data lives beside it by default.
 
-set -euo pipefail
-
+# --- config storage (XDG) ---
 BOOK_DIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/bash/bookmarks"
 BOOK_FILE="$BOOK_DIR/dirs"
 TMP_FILE="$BOOK_FILE.tmp"
@@ -17,13 +17,14 @@ _mkdirp() { mkdir -p "$BOOK_DIR"; [[ -f "$BOOK_FILE" ]] || : > "$BOOK_FILE"; }
 _load()   { _mkdirp; }
 _valid_name() { [[ "${1:-}" =~ ^[A-Za-z0-9._-]+$ ]]; }
 
+# percent-encode tabs/newlines to keep file line-oriented
 _encode() { local p=$1; p=${p//$'\t'/%09}; p=${p//$'\n'/%0A}; printf '%s' "$p"; }
 _decode() { local p=$1; p=${p//%09/$'\t'}; p=${p//%0A/$'\n'}; printf '%s' "$p"; }
 
 _phys() {
   local p=${1:-"$PWD"}
-  if command -v realpath >/dev/null 2>&1; then realpath -m "$p"
-  elif command -v readlink >/dev/null 2>&1; then readlink -f "$p" 2>/dev/null || printf '%s\n' "$p"
+  if command -v realpath >/dev/null 2>&1; then realpath -m -- "$p"
+  elif command -v readlink >/dev/null 2>&1; then readlink -f -- "$p" 2>/dev/null || printf '%s\n' "$p"
   else printf '%s\n' "$p"; fi
 }
 
@@ -43,7 +44,7 @@ save_bookmark() {
   _valid_name "$n" || { printf 'invalid name: %s\n' "$n" >&2; return 2; }
   [[ -d "$p" ]] || { printf 'path not found: %s\n' "$p" >&2; return 2; }
   _load
-  awk -F'\t' -v n="$n" '$1!=n' "$BOOK_FILE" > "$TMP_FILE" 2>/dev/null || :
+  awk -F'\t' -v n="$n" '$1!=n' "$BOOK_FILE" > "$TMP_FILE" 2>/dev/null || : 
   printf '%s\t%s\n' "$n" "$(_encode "$p")" >> "$TMP_FILE"
   mv "$TMP_FILE" "$BOOK_FILE"
 }
@@ -58,6 +59,7 @@ delete_bookmark() {
 list_bookmarks() {
   _load
   [[ -s "$BOOK_FILE" ]] || return 0
+  # sort by name; print "name<TAB>path"
   sort -t$'\t' -k1,1 "$BOOK_FILE" | awk -F'\t' '{print $1 "\t" $2}'
 }
 
@@ -85,15 +87,24 @@ b() {
   esac
 }
 
-# tab completion (names + flags)
+# --- tab completion (only for `b`) ---
+# Make it resilient: never propagate errors; produce no stderr.
 __b_complete() {
+  # Guard against shells without bash-completion context
+  type compgen >/dev/null 2>&1 || return 0
   COMPREPLY=()
-  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local cur
+  cur="${COMP_WORDS[COMP_CWORD]:-}"
   if (( COMP_CWORD == 1 )); then
-    local names; names=$(list_bookmarks | cut -f1)
+    # complete names
+    local names
+    names="$(list_bookmarks 2>/dev/null | cut -f1 2>/dev/null)"
     COMPREPLY=( $(compgen -W "$names" -- "$cur") )
   else
     COMPREPLY=( $(compgen -W "--add --delete" -- "$cur") )
   fi
+  return 0
 }
-complete -F __b_complete b 2>/dev/null || true
+
+# Register completion if `complete` exists (bash), ignore errors.
+type complete >/dev/null 2>&1 && complete -F __b_complete b 2>/dev/null || true

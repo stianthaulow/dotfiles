@@ -27,7 +27,7 @@ ep() {
 eval "$(fnm env --use-on-cd --shell bash)"
 
 # Bookmarks
-# source ~/.config/bash/bookmarks/b
+source ~/.config/bash/bookmarks/b
 
 # Load user-specific bash completions
 if [ -d ~/.config/bash_completion.d ]; then
