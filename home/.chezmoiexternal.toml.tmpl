@@ -13,7 +13,9 @@ url = "https://github.com/stianthaulow/autohotkey.git"
   {{ end }}
 {{ end }}
 
+{{- if ne .chezmoi.os "linux" -}}
 ["Theme"]
 type = "git-repo"
 clone.args = ["-b {{- $branch -}}", "--single-branch"]
 url = "https://github.com/stianthaulow/theme.git"
+{{- end -}}

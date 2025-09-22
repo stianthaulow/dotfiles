@@ -17,8 +17,6 @@
 	del = branch -D
 	br = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 	undo = reset HEAD~1 --mixed
-[core]
-	editor = code --wait
 {{ if eq .chezmoi.os "windows" }}
 	autocrlf = true
 {{ end }}
