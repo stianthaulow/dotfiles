@@ -1,0 +1,34 @@
+# Ohmarchy defaults
+source ~/.local/share/omarchy/default/bash/rc
+
+
+# Aliases
+alias dot=chezmoi
+alias s='jq ".scripts" package.json'
+alias p='pnpm'
+
+
+# ~/.bashrc (managed by chezmoi)
+ep() {
+  local file="$HOME/.bashrc"
+
+  # Open source state, then apply to target when editor exits
+  chezmoi edit --apply "$file" || return
+
+  # Re-source only if we're in an interactive shell
+  if [[ $- == *i* ]]; then
+    # shellcheck source=/dev/null
+    . "$file"
+    echo "Reloaded $file"
+  fi
+}
+
+eval "$(fnm env --use-on-cd --shell bash)"
+
+# Load user-specific bash completions
+if [ -d ~/.config/bash_completion.d ]; then
+  for f in ~/.config/bash_completion.d/*; do
+    [ -r "$f" ] && source "$f"
+  done
+fi
+
