@@ -7,8 +7,7 @@ bootstrap.sh
 .chezmoiscripts/Windows/**
 Documents
 AppData
-Scripts/*.ps1
-Scripts/*.bat
+Scripts
 {{ end }}
 
 {{ if ne .chezmoi.os "linux" }}
