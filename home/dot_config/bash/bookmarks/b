@@ -1,0 +1,99 @@
+
+#!/usr/bin/env bash
+# b: directory bookmarks (XDG). Usage:
+#   b                     # list all
+#   b <name>              # cd to <name>
+#   b <name> --add        # add current dir as <name>
+#   b <name> --delete     # delete <name>
+# Add to your shell:  source /path/to/b
+
+set -euo pipefail
+
+BOOK_DIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/bash/bookmarks"
+BOOK_FILE="$BOOK_DIR/dirs"
+TMP_FILE="$BOOK_FILE.tmp"
+
+_mkdirp() { mkdir -p "$BOOK_DIR"; [[ -f "$BOOK_FILE" ]] || : > "$BOOK_FILE"; }
+_load()   { _mkdirp; }
+_valid_name() { [[ "${1:-}" =~ ^[A-Za-z0-9._-]+$ ]]; }
+
+_encode() { local p=$1; p=${p//$'\t'/%09}; p=${p//$'\n'/%0A}; printf '%s' "$p"; }
+_decode() { local p=$1; p=${p//%09/$'\t'}; p=${p//%0A/$'\n'}; printf '%s' "$p"; }
+
+_phys() {
+  local p=${1:-"$PWD"}
+  if command -v realpath >/dev/null 2>&1; then realpath -m "$p"
+  elif command -v readlink >/dev/null 2>&1; then readlink -f "$p" 2>/dev/null || printf '%s\n' "$p"
+  else printf '%s\n' "$p"; fi
+}
+
+_get_line() {
+  _load; local n=$1
+  awk -F'\t' -v n="$n" '$1==n{print; exit}' "$BOOK_FILE" 2>/dev/null || true
+}
+
+get_path() {
+  local n=$1 line; line=$(_get_line "$n") || true
+  [[ -n "${line:-}" ]] || return 1
+  printf '%s\n' "$line" | cut -f2-
+}
+
+save_bookmark() {
+  local n=$1 p=$(_phys "${2:-$PWD}")
+  _valid_name "$n" || { printf 'invalid name: %s\n' "$n" >&2; return 2; }
+  [[ -d "$p" ]] || { printf 'path not found: %s\n' "$p" >&2; return 2; }
+  _load
+  awk -F'\t' -v n="$n" '$1!=n' "$BOOK_FILE" > "$TMP_FILE" 2>/dev/null || :
+  printf '%s\t%s\n' "$n" "$(_encode "$p")" >> "$TMP_FILE"
+  mv "$TMP_FILE" "$BOOK_FILE"
+}
+
+delete_bookmark() {
+  local n=$1; _valid_name "$n" || { printf 'invalid name: %s\n' "$n" >&2; return 2; }
+  _load
+  awk -F'\t' -v n="$n" '$1!=n' "$BOOK_FILE" > "$TMP_FILE" 2>/dev/null || :
+  mv "$TMP_FILE" "$BOOK_FILE"
+}
+
+list_bookmarks() {
+  _load
+  [[ -s "$BOOK_FILE" ]] || return 0
+  sort -t$'\t' -k1,1 "$BOOK_FILE" | awk -F'\t' '{print $1 "\t" $2}'
+}
+
+b() {
+  case "${1-}" in
+    "" ) list_bookmarks ;;
+    -* ) printf 'usage: b [<name> [--add|--delete]]\n' >&2; return 2 ;;
+    *  )
+      local name=$1 action=${2-}
+      case "$action" in
+        "" )
+          local enc; enc=$(get_path "$name") || { printf 'no bookmark: %s\n' "$name" >&2; return 2; }
+          cd -- "$(_decode "$enc")"
+          ;;
+        --add )
+          save_bookmark "$name"
+          ;;
+        --delete )
+          delete_bookmark "$name"
+          ;;
+        * )
+          printf 'unknown option: %s\n' "$action" >&2; return 2 ;;
+      esac
+      ;;
+  esac
+}
+
+# tab completion (names + flags)
+__b_complete() {
+  COMPREPLY=()
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  if (( COMP_CWORD == 1 )); then
+    local names; names=$(list_bookmarks | cut -f1)
+    COMPREPLY=( $(compgen -W "$names" -- "$cur") )
+  else
+    COMPREPLY=( $(compgen -W "--add --delete" -- "$cur") )
+  fi
+}
+complete -F __b_complete b 2>/dev/null || true
