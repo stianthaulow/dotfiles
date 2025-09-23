@@ -6,6 +6,9 @@ source ~/.local/share/omarchy/default/bash/rc
 
 {{/* If not on Omarchy */}}
 {{- if not (lookPath "omarchy-version") }}
+
+export PATH="$HOME/.local/bin:$PATH"
+
 alias ..='cd ..'
 alias ...='cd ../..'
 
