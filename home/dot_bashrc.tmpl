@@ -9,7 +9,10 @@ source ~/.local/share/omarchy/default/bash/rc
 alias ..='cd ..'
 alias ...='cd ../..'
 
-
+{{- if lookPath "starship" }}
+# Starship prompt
+eval "$(starship init bash)"
+{{- end }}
 
 {{- end }}
 
