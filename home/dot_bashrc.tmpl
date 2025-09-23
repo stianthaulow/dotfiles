@@ -42,11 +42,12 @@ ep() {
   fi
 }
 
-
-{{- if lookPath "fnm" }}
 # Fast Node Manager
-eval "$(fnm env --use-on-cd --shell bash)"
-{{- end }}
+FNM_PATH="~/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "$(fnm env --use-on-cd --shell bash)"
+fi
 
 # Bookmarks
 source ~/.config/bash/bookmarks/b
