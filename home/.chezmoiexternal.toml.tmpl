@@ -21,7 +21,7 @@ url = "https://github.com/stianthaulow/theme.git"
 {{- end -}}
 
 
-{{- if eq .chezmoi.osRelease.id "ubuntu" -}}
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") -}}
 [".local/share/fonts/NerdFonts/JetBrainsMono"]
 type = "archive"
 url = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
