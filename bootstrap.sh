@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 localbin="${HOME}/.local/bin"
 if [ ! -d "$localbin" ]; then
