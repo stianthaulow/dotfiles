@@ -24,13 +24,19 @@ url = "https://github.com/stianthaulow/theme.git"
 {{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") -}}
 [".local/share/fonts/NerdFonts/JetBrainsMono"]
 type = "archive"
-url = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+url = "{{ gitHubLatestReleaseAssetURL "ryanoasis/nerd-fonts" "JetBrainsMono.zip" }}"
 stripComponents = 0
 exact = true
 refreshPeriod = "168h"  # re-check weekly
 
 [".local/bin"]
 type = "archive"
-url = "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz"
+url = "{{ gitHubLatestReleaseAssetURL "starship/starship" "starship-x86_64-unknown-linux-gnu.tar.gz" }}"
+refreshPeriod = "168h"  # re-check weekly
+
+[".local/bin/eza"]
+type = "archive-file"
+url = "{{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" }}"
+executable = true
 refreshPeriod = "168h"  # re-check weekly
 {{- end -}}
