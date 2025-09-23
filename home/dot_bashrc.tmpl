@@ -1,6 +1,13 @@
+{{/* Omarchy specific */}}
 {{- if lookPath "omarchy-version" }}
-# Ohmarchy defaults
+# Omarchy defaults
 source ~/.local/share/omarchy/default/bash/rc
+{{- end }}
+
+{{/* If not on Omarchy */}}
+{{- if not (lookPath "omarchy-version") }}
+alias ..='cd ..'
+alias ...='cd ../..'
 {{- end }}
 
 
