@@ -13,8 +13,8 @@ Scripts
 {{ if ne .chezmoi.os "linux" }}
 {{ end }}
 
-{{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "debian") }}
-.chezmoiscripts/Debian/**
+{{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "ubuntu") }}
+.chezmoiscripts/Ubuntu/**
 {{ end }}
 
 {{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "arch") }}
