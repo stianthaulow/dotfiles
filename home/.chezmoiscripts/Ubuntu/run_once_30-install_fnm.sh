@@ -5,4 +5,4 @@ sudo apt-get install -y curl unzip
 
 curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 
-$HOME/.local/share/fnm install --lts
+$HOME/.local/share/fnm/fnm install --lts
