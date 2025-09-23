@@ -36,7 +36,7 @@ refreshPeriod = "168h"  # re-check weekly
 
 [".local/bin/eza"]
 type = "archive-file"
-url = "{{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" }}"
+url = {{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" | quote }}
 executable = true
-refreshPeriod = "168h"  # re-check weekly
+path = "./eza"
 {{- end -}}
