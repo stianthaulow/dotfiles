@@ -8,8 +8,14 @@ source ~/.local/share/omarchy/default/bash/rc
 {{- if not (lookPath "omarchy-version") }}
 alias ..='cd ..'
 alias ...='cd ../..'
+
+
+
 {{- end }}
 
+
+# Add ~/.local/bin to PATH
+export PATH="$HOME/.local/bin:$PATH"
 
 # Aliases
 alias dot=chezmoi
