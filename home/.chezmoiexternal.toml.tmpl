@@ -19,3 +19,11 @@ type = "git-repo"
 clone.args = ["-b {{- $branch -}}", "--single-branch"]
 url = "https://github.com/stianthaulow/theme.git"
 {{- end -}}
+
+
+[".local/share/fonts/NerdFonts/JetBrainsMono"]
+type = "archive"
+url = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+stripComponents = 0
+exact = true
+refreshPeriod = "168h"  # re-check weekly
