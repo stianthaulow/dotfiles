@@ -21,9 +21,18 @@ url = "https://github.com/stianthaulow/theme.git"
 {{- end -}}
 
 
+
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.linuxDistribution "ubuntu") -}}
 [".local/share/fonts/NerdFonts/JetBrainsMono"]
 type = "archive"
 url = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
 stripComponents = 0
 exact = true
 refreshPeriod = "168h"  # re-check weekly
+
+[".local/bin/starship"]
+type = "archive"
+url = "https://github.com/starship/starship/releases/lastest/download/starship-x86_64-unknown-linux-gnu.tar.gz"
+stripComponents = 0
+refreshPeriod = "168h"  # re-check weekly
+{{- end -}}
