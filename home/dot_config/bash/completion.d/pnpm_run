@@ -1,0 +1,68 @@
+
+# ~/.pnpm-run-scripts.bash
+
+# If pnpm already registered a completion function, clone it so we can call it.
+if complete -p pnpm 2>/dev/null | grep -q -- '-F'; then
+  _pnpm_fn=$(complete -p pnpm | sed -n 's/.*-F \([^ ]\+\).*/\1/p')
+  if [[ -n $_pnpm_fn ]] && declare -F "$_pnpm_fn" >/dev/null && ! declare -F __pnpm_orig_complete >/dev/null; then
+    eval "$(declare -f "$_pnpm_fn" | sed '1s/'"$_pnpm_fn"'/__pnpm_orig_complete/')"
+  fi
+fi
+
+_pnpm_scripts_bc() {
+  COMPREPLY=()
+
+  # Tokenize by spaces only (so ":" stays in the word)
+  local line=${COMP_LINE:0:COMP_POINT}
+  local -a parts
+  IFS=' ' read -r -a parts <<< "$line"
+
+  local cword=$(( ${#parts[@]} - 1 ))
+  local cur=${parts[cword]}
+  local prev=""; (( cword > 0 )) && prev=${parts[cword-1]}
+
+  # Load scripts
+  [[ -f package.json ]] || { [[ $(type -t __pnpm_orig_complete) ]] && __pnpm_orig_complete; return 0; }
+  mapfile -t SCRIPTS < <(jq -r '.scripts | keys[]?' package.json 2>/dev/null)
+  ((${#SCRIPTS[@]})) || { [[ $(type -t __pnpm_orig_complete) ]] && __pnpm_orig_complete; return 0; }
+
+  # namespace + leaf (split on last ':')
+  local ns="" leaf="$cur"
+  [[ $cur == *:* ]] && { ns=${cur%:*}; leaf=${cur##*:}; }
+
+  # Only offer scripts when first arg (shorthand) or after run/dlx/exec
+  local want_scripts=false
+  if [[ $cword -eq 1 || "$prev" == "run" || "$prev" == "dlx" || "$prev" == "exec" ]]; then
+    want_scripts=true
+  fi
+
+  if $want_scripts; then
+    if [[ -n $ns ]]; then
+      local s suffix
+      for s in "${SCRIPTS[@]}"; do
+        [[ $s == "$ns:"* ]] || continue
+        suffix=${s#"$ns:"}
+        [[ $suffix == "$leaf"* ]] && COMPREPLY+=("$suffix")
+      done
+    else
+      local s
+      for s in "${SCRIPTS[@]}"; do
+        [[ $s == "$leaf"* ]] && COMPREPLY+=("$s")
+      done
+    fi
+
+    if ((${#COMPREPLY[@]})); then
+      compopt +o filenames 2>/dev/null
+      compopt -o nospace  2>/dev/null
+      return 0
+    fi
+    # no matches → delegate to pnpm's original completer if present
+  fi
+
+  if [[ $(type -t __pnpm_orig_complete) ]]; then
+    __pnpm_orig_complete
+  fi
+}
+
+# Register our wrapper (works for both 'pnpm' and alias 'p')
+complete -o bashdefault -o default -F _pnpm_scripts_bc pnpm p
