@@ -29,7 +29,7 @@ alias dot=chezmoi
 alias s='jq ".scripts" package.json'
 alias p='pnpm'
 alias rmr='rm -rf --one-file-system --preserve-root'
-
+alias galias="git config --get-regexp '^alias\.'"
 
 # Edit bash profile
 ep() {
@@ -56,9 +56,10 @@ fi
 # Bookmarks
 source ~/.config/bash/bookmarks/b
 
+
 # Load user-specific bash completions
 if [ -d ~/.config/bash/completion.d ]; then
-  for f in ~/.config/bash_completion.d/*; do
+  for f in ~/.config/bash/completion.d/*; do
     [ -r "$f" ] && source "$f"
   done
 fi
