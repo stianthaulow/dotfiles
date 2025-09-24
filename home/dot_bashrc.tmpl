@@ -57,7 +57,7 @@ fi
 source ~/.config/bash/bookmarks/b
 
 # Load user-specific bash completions
-if [ -d ~/.config/bash_completion.d ]; then
+if [ -d ~/.config/bash/completion.d ]; then
   for f in ~/.config/bash_completion.d/*; do
     [ -r "$f" ] && source "$f"
   done
