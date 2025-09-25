@@ -33,6 +33,10 @@ alias p='pnpm'
 alias rmr='rm -rf --one-file-system --preserve-root'
 alias galias="git config --get-regexp '^alias\.'"
 
+mcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
 # Edit bash profile
 ep() {
   local file="$HOME/.bashrc"
