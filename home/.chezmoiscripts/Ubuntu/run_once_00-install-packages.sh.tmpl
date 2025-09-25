@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+packages=(
+  {{- range .packages.apt }}
+  "{{ . }}"
+  {{- end }}
+)
+
+echo "Updating apt cache..."
+sudo apt-get update -y
+
+for pkg in "${packages[@]}"; do
+  if dpkg -s "$pkg" >/dev/null 2>&1; then
+    echo "✓ $pkg already installed"
+  else
+    echo "Installing $pkg..."
+    sudo apt-get install -y --no-upgrade "$pkg"
+  fi
+done
