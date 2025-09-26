@@ -15,6 +15,7 @@ Scripts
 
 {{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "ubuntu") }}
 .chezmoiscripts/Ubuntu/**
+dot_hushlogin
 {{ end }}
 
 {{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "arch") }}
