@@ -52,6 +52,10 @@ ep() {
   fi
 }
 
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"           # or: "$HOME/.run" with 700 perms if headless
+export FNM_MULTISHELL_PATH="$HOME/.cache/fnm_multishells"
+mkdir -p "$FNM_MULTISHELL_PATH"
+
 # Fast Node Manager
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
