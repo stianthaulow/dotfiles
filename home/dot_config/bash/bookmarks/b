@@ -59,8 +59,30 @@ delete_bookmark() {
 list_bookmarks() {
   _load
   [[ -s "$BOOK_FILE" ]] || return 0
-  # sort by name; print "name<TAB>path"
-  sort -t$'\t' -k1,1 "$BOOK_FILE" | awk -F'\t' '{print $1 "\t" $2}'
+  local output
+  output=$(sort -t$'\t' -k1,1 "$BOOK_FILE" | awk -F'\t' '
+    {
+      path = $2
+      name = $1
+      if (!(path in groups)) {
+        order[++count] = path
+        groups[path] = name
+      } else {
+        groups[path] = groups[path] ", " name
+      }
+    }
+    END {
+      for (i = 1; i <= count; ++i) {
+        path = order[i]
+        printf "%s\t%s\n", groups[path], path
+      }
+    }
+  ')
+  if [[ -t 1 ]] && command -v column >/dev/null 2>&1; then
+    printf '%s\n' "$output" | column -t -s $'\t'
+  else
+    printf '%s\n' "$output"
+  fi
 }
 
 b() {
