@@ -18,7 +18,10 @@ Scripts
 dot_hushlogin
 {{ end }}
 
-{{ if or (ne .chezmoi.os "linux") (ne .chezmoi.osRelease.id "arch") }}
-.chezmoiscripts/Arch/**
+
+{{ if not (and (eq .chezmoi.os "linux")
+          (eq .chezmoi.osRelease.id "arch")
+          (stat (joinPath .chezmoi.homeDir ".local" "share" "omarchy"))) }}
+.chezmoiscripts/Omarchy/**
 {{ end }}
 

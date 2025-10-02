@@ -52,7 +52,8 @@ ep() {
   fi
 }
 
-export XDG_RUNTIME_DIR="/run/user/$(id -u)"           # or: "$HOME/.run" with 700 perms if headless
+
+export XDG_RUNTIME_DIR="/run/user/$(id -u)" 
 export FNM_MULTISHELL_PATH="$HOME/.cache/fnm_multishells"
 mkdir -p "$FNM_MULTISHELL_PATH"
 
