@@ -1,6 +1,0 @@
-{{ /* chezmoi:modify-template */ }}
-{{ $content := "{}" }}
-{{ if (eq .chezmoi.stdin "") }}
-{{ $content := .chezmoi.stdin }}
-{{ end }}
-{{ fromJson $content | setValueAtPath "dismissedMessages" (list "setAsDefault" "closeOnExitInfo") | toPrettyJson }}
