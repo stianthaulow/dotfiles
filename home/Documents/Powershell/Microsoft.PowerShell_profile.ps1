@@ -1,6 +1,6 @@
 Invoke-Expression (&starship init powershell)
 
-Set-Alias g Set-Bookmark
+Set-Alias b Set-Bookmark
 Set-Alias c code
 Set-Alias sqlite sqlite3
 Set-Alias n pnpm
