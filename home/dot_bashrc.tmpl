@@ -17,7 +17,6 @@ alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
 alias g='git'
 alias gcm='git cm'
-alias gtree='git ls-files | tree --fromfile'
 
 {{- if lookPath "starship" }}
 # Starship prompt
@@ -33,6 +32,7 @@ alias s='jq ".scripts" package.json'
 alias p='pnpm'
 alias rmr='rm -rf --one-file-system --preserve-root'
 alias galias="git config --get-regexp '^alias\.'"
+alias gtree='git ls-files | tree --fromfile'
 
 mcd() {
   mkdir -p "$1" && cd "$1"
