@@ -25,6 +25,12 @@ eval "$(starship init bash)"
 
 {{- end }}
 
+{{/* Homebrew */}}
+{{- if or (lookPath "brew") (stat "/home/linuxbrew/.linuxbrew/bin/brew") }}
+# Homebrew
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+{{- end }}
+
 
 # Aliases
 alias dot=chezmoi
