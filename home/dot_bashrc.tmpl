@@ -60,18 +60,17 @@ ep() {
   fi
 }
 
-
-# export XDG_RUNTIME_DIR="/run/user/$(id -u)" 
-# export FNM_MULTISHELL_PATH="$HOME/.cache/fnm_multishells"
-# mkdir -p "$FNM_MULTISHELL_PATH"
-
-# Fast Node Manager
-# FNM_PATH="$HOME/.local/share/fnm"
-#  if [ -d "$FNM_PATH" ]; then
-#   export PATH="$FNM_PATH:$PATH"
-#   eval "$(fnm env --use-on-cd --shell bash)"
-# fi
+# npm global path
 export PATH="$HOME/.npm-global/bin:$PATH"
+
+{{/* Fast Node Manager */}}
+{{- if or (lookPath "fnm") (stat (joinPath .chezmoi.homeDir ".local" "share" "fnm")) }}
+export FNM_MULTISHELL_PATH="$HOME/.cache/fnm_multishells"
+mkdir -p "$FNM_MULTISHELL_PATH"
+FNM_PATH="$HOME/.local/share/fnm"
+export PATH="$FNM_PATH:$PATH"
+eval "$(fnm env --use-on-cd --shell bash)"
+{{- end }}
 
 # Bookmarks
 source ~/.config/bash/bookmarks/b
