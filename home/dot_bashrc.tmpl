@@ -87,8 +87,11 @@ fi
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
 
-export PNPM_HOME="/home/stian/.local/share/pnpm"
+{{/* pnpm */}}
+{{- if or (lookPath "pnpm") (stat (joinPath .chezmoi.homeDir ".local" "share" "pnpm")) }}
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
+{{- end }}
