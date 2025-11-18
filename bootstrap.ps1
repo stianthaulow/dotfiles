@@ -140,7 +140,7 @@ $wantWsl = if ($env:DOT_WANT_WSL) { $env:DOT_WANT_WSL } else { Read-HostBoolean 
 
 if ( $isWork ) {
   # Permanently set the environment variable
-  System.Environment]::SetEnvironmentVariable("DOT_IS_WORK", "1", "User")
+  [System.Environment]::SetEnvironmentVariable("DOT_IS_WORK", "1", "User")
 }
 
 New-Item -Path $chezmoiConfigPath -ItemType File -Force | Out-Null
