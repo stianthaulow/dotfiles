@@ -12,3 +12,7 @@ sudo apt-get -yq install curl
 ```sh
 sh -c "$(curl -fsLS https://stian.link/linux)"
 ```
+
+## Arch
+sudo pacman -S chezmoi
+chezmoi init --apply stianthaulow
