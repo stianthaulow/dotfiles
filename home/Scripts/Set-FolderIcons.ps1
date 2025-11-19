@@ -28,9 +28,9 @@ $folders = @(
   @{Path = "$env:USERPROFILE\Scripts"; IconName = "Scripts.ico" }
   @{Path = "$env:USERPROFILE\OneDrive"; IconName = "onedrive-1.ico"; OnlyIfExist = $true }
   @{Path = "$env:USERPROFILE\OneDrive - Malling"; IconName = "onedrive.ico"; OnlyIfExist = $true }
+  @{Path = "$env:USERPROFILE\Powershell"; IconName = "Powershell.ico"; OnlyIfExist = $true }
+  @{Path = "$env:USERPROFILE\WindowsPowershell"; IconName = "WindowsPowershell.ico"; OnlyIfExist = $true }
 
-  @{Path = "$myDocumentsPath\Powershell"; IconName = "Powershell.ico" }
-  @{Path = "$myDocumentsPath\WindowsPowershell"; IconName = "WindowsPowershell.ico" }
   @{Path = "$myDocumentsPath\Misc"; IconName = "project.ico" }
   @{Path = "$myDocumentsPath\PowerToys"; IconName = "power_toys.ico"; OnlyIfExist = $true }
   @{Path = "$myDocumentsPath\Presentations"; IconName = "microsoft_power_point.ico"; OnlyIfExist = $true }
