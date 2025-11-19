@@ -106,6 +106,9 @@ if (Test-Windows11) {
   )
 }
 
+# Use the legacy language bar (which is hidden)
+Set-WinLanguageBarOption -UseLegacyLanguageBar
+
 
 foreach ($setting in $defaults) {
   if (!(Test-Path -Path $setting.Path)) {
