@@ -25,7 +25,7 @@ wantWsl = {{ $wantWsl }}
 
 {{ if eq .chezmoi.os "windows" }}
 [env]
-DOT_WORK = {{ ternary "1" "0" $isWork | quote }}
+DOT_IS_WORK = {{ ternary "1" "0" $isWork | quote }}
 DOT_WANT_WSL = {{ ternary "1" "0" $wantWsl | quote }}
 EMAIL = {{ $email | quote }}
 SCRIPTS = "{{ .chezmoi.homeDir }}/Scripts"
