@@ -1,7 +1,7 @@
 . (Join-Path $PSScriptRoot "Util.ps1")
 
 $themePath = "$env:USERPROFILE\Theme"
-$isWorkMachine = $env:DOT_WORK -eq "1"
+$isWorkMachine = $env:DOT_IS_WORK -eq "1"
 
 if (-not (Test-Path $themePath)) {
   Write-Log "Theme folder not found"
