@@ -5,8 +5,8 @@ bootstrap.sh
 
 {{ if ne .chezmoi.os "windows" }}
 .chezmoiscripts/Windows/**
-PowerShell
-WindowsPowerShell
+Powershell
+WindowsPowershell
 Scripts
 {{ end }}
 
