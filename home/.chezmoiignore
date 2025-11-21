@@ -8,6 +8,7 @@ bootstrap.sh
 Powershell
 WindowsPowershell
 Scripts
+AppData
 {{ end }}
 
 {{ if ne .chezmoi.os "linux" }}
