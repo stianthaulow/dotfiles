@@ -1,0 +1,108 @@
+{
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "actions": [],
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "defaultProfile": "{77e7a3b6-fa5b-534d-9505-1e9f83e95876}",
+  "keybindings": [
+    {
+      "id": "Terminal.CopyToClipboard",
+      "keys": "ctrl+c"
+    },
+    {
+      "id": "Terminal.FindText",
+      "keys": "ctrl+shift+f"
+    },
+    {
+      "id": "Terminal.PasteFromClipboard",
+      "keys": "ctrl+v"
+    },
+    {
+      "id": "Terminal.DuplicatePaneAuto",
+      "keys": "alt+shift+d"
+    }
+  ],
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    }
+  ],
+  "profiles": {
+    "defaults": {
+      "colorScheme": "Atom",
+      "font": {
+        "face": "JetBrainsMono Nerd Font Mono"
+      },
+      "opacity": 95
+    },
+    "list": [
+      {
+        "guid": "{77e7a3b6-fa5b-534d-9505-1e9f83e95876}",
+        "hidden": false,
+        "name": "Ubuntu",
+        "source": "Microsoft.WSL"
+      },
+      {
+        "commandline": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" --nologo",
+        "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+        "hidden": false,
+        "name": "PowerShell",
+        "source": "Windows.Terminal.PowershellCore"
+      },
+      {
+        "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "hidden": false,
+        "name": "Windows PowerShell"
+      },
+      {
+        "commandline": "%SystemRoot%\\System32\\cmd.exe",
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "hidden": false,
+        "name": "Command Prompt"
+      },
+      {
+        "commandline": "\"C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\" --login -i",
+        "guid": "{d5b58c5c-83ea-4c25-8f5e-f92f6cb2f2dc}",
+        "hidden": false,
+        "icon": "C:\\\\Program Files\\\\Git\\\\mingw64\\\\share\\\\git\\\\git-for-windows.ico",
+        "name": "Git Bash",
+        "startingDirectory": "%USERPROFILE%"
+      },
+      {
+        "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+        "hidden": false,
+        "name": "Azure Cloud Shell",
+        "source": "Windows.Terminal.Azure"
+      }
+    ]
+  },
+  "schemes": [
+    {
+      "name": "Atom",
+      "background": "#161719",
+      "black": "#444444",
+      "blue": "#85BEFD",
+      "brightBlack": "#555555",
+      "brightBlue": "#96CBFE",
+      "brightCyan": "#85BEFD",
+      "brightGreen": "#94FA36",
+      "brightPurple": "#B9B6FC",
+      "brightRed": "#FD5FF1",
+      "brightWhite": "#E0E0E0",
+      "brightYellow": "#F5FFA8",
+      "cursorColor": "#D0D0D0",
+      "cyan": "#85BEFD",
+      "foreground": "#C5C8C6",
+      "green": "#87C38A",
+      "purple": "#B9B6FC",
+      "red": "#FD5FF1",
+      "selectionBackground": "#444444",
+      "white": "#E0E0E0",
+      "yellow": "#FFD7B1"
+    }
+  ],
+  "themes": [],
+  "windowingBehavior": "useAnyExisting"
+}
