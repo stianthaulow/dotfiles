@@ -110,3 +110,12 @@ esac
 export PATH="/home/stian/.local/bin:$PATH"
 {{- end }}
 
+
+{{/* Rust (cargo) */}}
+{{- if lookPath "rustc" }}
+export CARGO_HOME="$HOME/.cargo"
+case ":$PATH:" in
+  *":$CARGO_HOME/bin:"*) ;;
+  *) export PATH="$CARGO_HOME/bin:$PATH" ;;
+esac
+{{- end }}
