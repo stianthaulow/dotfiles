@@ -1,2 +1,16 @@
 [packages]
-apt = ["jq", "git", "curl"]
+apt = [
+  "build-essential",
+  "jq",
+  "git",
+  "curl",
+  "ffmpeg",
+  "fd-find",
+  "ripgrep",
+  "fzf",
+  "zoxide",
+  "7zip",
+  "poppler-utils",
+  "imagemagick",
+  "neovim",
+]
