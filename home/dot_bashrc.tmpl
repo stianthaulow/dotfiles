@@ -9,7 +9,6 @@ source ~/.local/share/omarchy/default/bash/rc
 
 {{/* If not on Omarchy */}}
 {{- if not (lookPath "omarchy-version") }}
-
 export PATH="$HOME/.local/bin:$PATH"
 
 alias ..='cd ..'
@@ -64,8 +63,10 @@ ep() {
   fi
 }
 
+{{- if lookPath "npm" }}
 # npm global path
 export PATH="$HOME/.npm-global/bin:$PATH"
+{{- end }}
 
 {{/* Fast Node Manager */}}
 {{- if or (lookPath "fnm") (stat (joinPath .chezmoi.homeDir ".local" "share" "fnm")) }}
@@ -87,9 +88,12 @@ if [ -d ~/.config/bash/completion.d ]; then
   done
 fi
 
+
+{{- if lookPath "adb" }}
 # Android sdk
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+{{- end }}
 
 {{/* pnpm */}}
 {{- if or (lookPath "pnpm") (stat (joinPath .chezmoi.homeDir ".local" "share" "pnpm")) }}
@@ -100,5 +104,8 @@ case ":$PATH:" in
 esac
 {{- end }}
 
+{{- if lookPath "uv" }}
 # uv
 export PATH="/home/stian/.local/bin:$PATH"
+{{- end }}
+
