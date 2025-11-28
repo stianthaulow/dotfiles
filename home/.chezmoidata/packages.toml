@@ -1,6 +1,7 @@
 [packages]
 apt = [
   "build-essential",
+  "bat",
   "jq",
   "git",
   "curl",
