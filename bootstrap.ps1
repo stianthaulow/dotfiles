@@ -160,11 +160,8 @@ $apps = @(
   @{Id = "Bitwarden.CLI"; Name = "Bitwarden CLI" }
   @{Id = "Bitwarden.Bitwarden"; Name = "Bitwarden" }
   @{Id = "AutoHotkey.AutoHotkey"; Name = "AutoHotkey" }
-  @{Id = "voidtools.Everything"; Name = "Everything search" }
-  @{Id = "lin-ycv.EverythingPowerToys"; Name = "Everything Powertoys plugin" }
   @{Id = "Ditto.Ditto"; Name = "Ditto" }
   @{Id = "Neovim.Neovim"; Name = "Neovim" }
-  @{Id = "Vivaldi.Vivaldi"; Name = "Vivaldi" }
   @{Id = "Google.Chrome"; Name = "Google Chrome" }
   @{Id = "7zip.7zip"; Name = "7zip" }
   @{Id = "VideoLAN.VLC"; Name = "VLC" }
@@ -180,9 +177,6 @@ $apps = @(
   @{Id = "Discord.Discord"; Name = "Discord" }
   @{Id = "tailscale.tailscale"; Name = "Tailscale" }
   @{Id = "NickeManarin.ScreenToGif"; Name = "ScreenToGif" }
-  @{Id = "WireGuard.WireGuard"; Name = "WireGuard" }
-  @{Id = "suse.RancherDesktop"; Name = "Rancher Desktop" }
-  @{Id = "Python.Python.3.10"; Name = "Python 3.10" }
   @{Id = "Python.Python.3.12"; Name = "Python 3.12" }
   @{Id = "Microsoft.DotNet.SDK.8"; Name = ".NET 8 SDK" }
 )
