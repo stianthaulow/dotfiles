@@ -1,0 +1,13 @@
+# Ignore letter casing when completing paths/commands
+set completion-ignore-case on
+# Immediately show the completion menu if there are multiple matches
+set show-all-if-ambiguous on
+
+# Cycle forward with Tab
+"\t": menu-complete
+
+# Cycle backward with Shift+Tab
+"\e[Z": menu-complete-backward
+
+# keep common prefix visible
+set menu-complete-display-prefix on
