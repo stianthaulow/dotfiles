@@ -89,10 +89,10 @@ b() {
     -* )
       printf 'b: directory bookmarks\n' >&2
       printf 'usage:\n' >&2
-      printf '  b\n' >&2
-      printf '  b <name>\n' >&2
-      printf '  b <name> --add\n' >&2
-      printf '  b <name> --delete\n' >&2
+      printf '  b                   # list all bookmarks\n' >&2
+      printf '  b <name>            # cd to bookmark\n' >&2
+      printf '  b <name> --add      # add current dir as bookmark\n' >&2
+      printf '  b <name> --delete   # delete bookmark\n' >&2
       return 2
       ;;
     *  )
