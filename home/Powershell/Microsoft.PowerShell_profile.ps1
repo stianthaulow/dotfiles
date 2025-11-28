@@ -3,7 +3,8 @@ Invoke-Expression (&starship init powershell)
 Set-Alias b Set-Bookmark
 Set-Alias c code
 Set-Alias sqlite sqlite3
-Set-Alias n pnpm
+Set-Alias p pnpm
+Set-Alias g git
 Set-Alias c# csharprepl
 Set-Alias dot chezmoi
 Set-Alias type bat
