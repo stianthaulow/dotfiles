@@ -123,3 +123,9 @@ case ":$PATH:" in
   *) export PATH="$CARGO_HOME/bin:$PATH" ;;
 esac
 {{- end }}
+
+
+{{/* Zoxide config if not on omarchy, where it is enabled already */}}
+{{- if and (lookPath "zoxide") (not (lookPath "omarchy-version")) }}
+eval "$(zoxide init bash)"
+{{- end }}
