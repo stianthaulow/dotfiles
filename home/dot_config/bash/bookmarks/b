@@ -5,8 +5,6 @@
 #   b <name>              # cd to <name>
 #   b <name> --add        # add current dir as <name>
 #   b <name> --delete     # delete <name>
-# Place anywhere; you can store this file itself at ~/.config/bash/bookmarks/b
-# Data lives beside it by default.
 
 # --- config storage (XDG) ---
 BOOK_DIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/bash/bookmarks"
@@ -88,7 +86,15 @@ list_bookmarks() {
 b() {
   case "${1-}" in
     "" ) list_bookmarks ;;
-    -* ) printf 'usage: b [<name> [--add|--delete]]\n' >&2; return 2 ;;
+    -* )
+      printf 'b: directory bookmarks\n' >&2
+      printf 'usage:\n' >&2
+      printf '  b\n' >&2
+      printf '  b <name>\n' >&2
+      printf '  b <name> --add\n' >&2
+      printf '  b <name> --delete\n' >&2
+      return 2
+      ;;
     *  )
       local name=$1 action=${2-}
       case "$action" in
