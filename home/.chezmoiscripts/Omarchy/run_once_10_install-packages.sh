@@ -3,6 +3,10 @@ set -eu
 
 PACKAGES_TO_INSTALL=(
   bitwarden
+  7zip
+  resvg
+  ueberzugpp
+  yazi
 )
 
 missing=()
