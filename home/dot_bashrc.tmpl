@@ -127,7 +127,7 @@ eval "$(mise activate bash)"
 {{- end }}
 
 {{/* tobi/try */}}
-{{- if and (lookPath "~/.local/try.rb") (lookPath "ruby") }}
+{{- if lookPath "~/.local/try.rb" }}
 export TRY_PATH=~/lab
 eval "$(ruby ~/.local/try.rb init $TRY_PATH)"
 {{- end }}
