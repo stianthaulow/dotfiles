@@ -126,6 +126,13 @@ eval "$(fnm env --use-on-cd --shell bash)"
 eval "$(mise activate bash)"
 {{- end }}
 
+{{/* tobi/try */}}
+{{- if and (lookPath "~/.local/try.rb") (lookPath "ruby") }}
+export TRY_PATH=~/lab
+eval "$(ruby ~/.local/try.rb init $TRY_PATH)"
+{{- end }}
+
+
 # Bookmarks
 source ~/.config/bash/bookmarks/b
 

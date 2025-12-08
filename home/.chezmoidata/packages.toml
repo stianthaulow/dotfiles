@@ -1,6 +1,16 @@
 [packages]
 apt = [
   "build-essential",
+  "libssl-dev",
+  "zlib1g-dev",
+  "libreadline-dev",
+  "libyaml-dev",
+  "libffi-dev",
+  "libgdbm-dev",
+  "libncurses5-dev",
+  "libncursesw5-dev",
+  "libdb-dev",
+  "uuid-dev",
   "bat",
   "jq",
   "git",
