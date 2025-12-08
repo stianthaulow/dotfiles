@@ -28,6 +28,12 @@ $folders = @(
   @{Path = "$env:USERPROFILE\Scripts"; IconName = "Scripts.ico" }
   @{Path = "$env:USERPROFILE\OneDrive"; IconName = "onedrive-1.ico"; OnlyIfExist = $true }
   @{Path = "$env:USERPROFILE\OneDrive - Malling"; IconName = "onedrive.ico"; OnlyIfExist = $true }
+  @{Path = "$env:USERPROFILE\Iso"; IconName = "iso.ico"; OnlyIfExist = $true }
+  @{Path = "$env:USERPROFILE\DataGripProjects"; IconName = "jetbrains_datagrip.ico"; OnlyIfExist = $true }
+  @{Path = "$env:USERPROFILE\go"; IconName = "golang.ico"; OnlyIfExist = $true }
+
+
+
   
   @{Path = "$env:USERPROFILE\Powershell"; IconName = "Powershell.ico"; OnlyIfExist = $true }
   @{Path = "$env:USERPROFILE\WindowsPowershell"; IconName = "WindowsPowershell.ico"; OnlyIfExist = $true }
