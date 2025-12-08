@@ -121,6 +121,11 @@ export PATH="$FNM_PATH:$PATH"
 eval "$(fnm env --use-on-cd --shell bash)"
 {{- end }}
 
+{{/* Mise */}}
+{{- if lookPath "mise" }}
+eval "$(mise activate bash)"
+{{- end }}
+
 # Bookmarks
 source ~/.config/bash/bookmarks/b
 
