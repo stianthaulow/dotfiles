@@ -56,13 +56,13 @@ function hot {
 }
 
 function y {
-    $tmp = (New-TemporaryFile).FullName
-    yazi $args --cwd-file="$tmp"
-    $cwd = Get-Content -Path $tmp -Encoding UTF8
-    if (-not [String]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
-        Set-Location -LiteralPath (Resolve-Path -LiteralPath $cwd).Path
-    }
-    Remove-Item -Path $tmp
+  $tmp = (New-TemporaryFile).FullName
+  yazi $args --cwd-file="$tmp"
+  $cwd = Get-Content -Path $tmp -Encoding UTF8
+  if (-not [String]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
+    Set-Location -LiteralPath (Resolve-Path -LiteralPath $cwd).Path
+  }
+  Remove-Item -Path $tmp
 }
 
 function rmrf {
@@ -197,11 +197,14 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -Action {
     }
   }
 
+  # Mise
+  (&mise activate pwsh) | Out-String | Invoke-Expression
+
   # Load external completions
   . "$env:USERPROFILE\Documents\Powershell\chezmoi-completions.ps1"
   . "$env:USERPROFILE\Documents\Powershell\az-completions.ps1"
   Invoke-Expression -Command $(gh completion -s powershell | Out-String)
-  fnm env | Out-String | Invoke-Expression
+  
   Import-Module DockerCompletion
 
   # Remove event after execution
