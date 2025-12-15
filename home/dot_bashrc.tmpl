@@ -175,6 +175,14 @@ case ":$PATH:" in
 esac
 {{- end }}
 
+# bun
+{{- if or (lookPath "bun") (stat (joinPath .chezmoi.homeDir ".bun")) }}
+export BUN_INSTALL="$HOME/.bun"
+case ":$PATH:" in
+  *":$BUN_INSTALL/bin:"*) ;;
+  *) export PATH="$BUN_INSTALL/bin:$PATH" ;;
+esac
+{{- end }}
 
 {{/* Zoxide config if not on omarchy, where it is enabled already */}}
 {{- if and (lookPath "zoxide") (not (lookPath "omarchy-version")) }}
