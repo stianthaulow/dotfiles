@@ -175,8 +175,8 @@ case ":$PATH:" in
 esac
 {{- end }}
 
-# bun
 {{- if or (lookPath "bun") (stat (joinPath .chezmoi.homeDir ".bun")) }}
+# bun
 export BUN_INSTALL="$HOME/.bun"
 case ":$PATH:" in
   *":$BUN_INSTALL/bin:"*) ;;
