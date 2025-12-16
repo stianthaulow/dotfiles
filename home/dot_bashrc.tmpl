@@ -23,6 +23,7 @@ alias lta='lt -a'
 alias g='git'
 alias gcm='git cm'
 alias doc='lazydocker'
+alias ghp='gh repo create "$(basename "$PWD")" --private --source=. --remote=origin --push'
 
 {{- if lookPath "starship" }}
 # Starship prompt
@@ -53,6 +54,10 @@ alias rmr='rm -rf --one-file-system --preserve-root'
 alias galias="git config --get-regexp '^alias\.'"
 alias gtree='git ls-files | tree --fromfile'
 alias cc='cursor . 2>/dev/null'
+
+{{- if and .chezmoi.osRelease (eq .chezmoi.osRelease.id "ubuntu") (lookPath "fdfind") }}
+alias fd='fdfind --hidden --follow'
+{{- end }}
 
 {{/* yazi */}}
 {{- if lookPath "yazi" }}
@@ -182,6 +187,7 @@ case ":$PATH:" in
   *":$BUN_INSTALL/bin:"*) ;;
   *) export PATH="$BUN_INSTALL/bin:$PATH" ;;
 esac
+bi() { CURSOR_TRACE_ID=1 bun init "$@"; }
 {{- end }}
 
 {{/* Zoxide config if not on omarchy, where it is enabled already */}}
