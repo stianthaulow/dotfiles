@@ -96,6 +96,10 @@ $defaults = @(
 
   # Hide Language bar from system tray
   @{Path = "HKCU:\Software\Microsoft\CTF\LangBar"; Name = "ShowStatus"; Value = 3 }
+
+  # Disable 'Click to do'
+  @{Path = "HKCU:\Software\Microsoft\Windows\Shell\ClickToDo"; Name = "DisableClickToDo"; Value = 0 }
+
 )
 
 
