@@ -26,3 +26,7 @@ dot_hushlogin
 .chezmoiscripts/Omarchy/**
 {{ end }}
 
+{{ if not (stat (joinPath .chezmoi.homeDir "Documents" "PowerShell")) }}
+Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+{{ end }}
+
