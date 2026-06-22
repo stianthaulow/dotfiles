@@ -11,6 +11,9 @@ source ~/.local/share/omarchy/default/bash/rc
 {{- if not (lookPath "omarchy-version") }}
 export PATH="$HOME/.local/bin:$PATH"
 
+# Dark mode
+export GTK_THEME=Adwaita:dark
+
 alias ..='cd ..'
 alias ...='cd ../..'
 if [[ "${OSTYPE:-}" != "msys" ]]; then
@@ -22,6 +25,7 @@ alias lsa='ls -a'
 alias lta='lt -a'
 alias g='git'
 alias gcm='git cm'
+alias ncu='pnpx npm-check-updates'
 alias doc='lazydocker'
 alias ghp='gh repo create "$(basename "$PWD")" --private --source=. --remote=origin --push'
 
@@ -132,6 +136,12 @@ eval "$(fnm env --use-on-cd --shell bash)"
 eval "$(mise activate bash)"
 {{- end }}
 
+
+{{/* Direnv */}}
+{{- if lookPath "direnv" }}
+eval "$(direnv hook bash)"
+{{- end }}
+
 {{/* tobi/try */}}
 {{- if stat (joinPath .chezmoi.homeDir ".local" "try.rb") }}
 export TRY_PATH=~/lab
@@ -184,10 +194,12 @@ esac
 {{- if or (lookPath "bun") (stat (joinPath .chezmoi.homeDir ".bun")) }}
 # bun
 export BUN_INSTALL="$HOME/.bun"
+
 case ":$PATH:" in
   *":$BUN_INSTALL/bin:"*) ;;
   *) export PATH="$BUN_INSTALL/bin:$PATH" ;;
 esac
+
 bi() { CURSOR_TRACE_ID=1 bun init "$@"; }
 {{- end }}
 
