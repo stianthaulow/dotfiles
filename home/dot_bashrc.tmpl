@@ -113,3 +113,12 @@ case ":$PATH:" in
   *) export PATH="$CARGO_HOME/bin:$PATH" ;;
 esac
 {{- end }}
+
+{{/* Go */}}
+{{- if lookPath "go" }}
+export GOPATH="$HOME/go"
+case ":$PATH:" in
+  *":$GOPATH/bin:"*) ;;
+  *) export PATH="$GOPATH/bin:$PATH" ;;
+esac
+{{- end }}
