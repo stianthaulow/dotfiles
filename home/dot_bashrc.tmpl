@@ -9,36 +9,24 @@ source ~/.local/share/omarchy/default/bash/rc
 
 {{/* If not on Omarchy */}}
 {{- if not (lookPath "omarchy-version") }}
-export PATH="$HOME/.local/bin:$PATH"
 
-# Dark mode
-export GTK_THEME=Adwaita:dark
+export PATH="$HOME/.local/bin:$PATH"
 
 alias ..='cd ..'
 alias ...='cd ../..'
-if [[ "${OSTYPE:-}" != "msys" ]]; then
-  alias ls='eza -lh --group-directories-first --icons=auto'
-  alias lt='eza --tree --level=2 --long --icons --git'
-
-fi
+alias ls='eza -lh --group-directories-first --icons=auto'
 alias lsa='ls -a'
+alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
 alias g='git'
 alias gcm='git cm'
-alias ncu='pnpx npm-check-updates'
 alias doc='lazydocker'
-alias ghp='gh repo create "$(basename "$PWD")" --private --source=. --remote=origin --push'
 
 {{- if lookPath "starship" }}
 # Starship prompt
 eval "$(starship init bash)"
 {{- end }}
 
-{{- if lookPath "batcat" }}
-alias cat=batcat
-{{- end}}
-
-{{/* end non Omarchy: */}}
 {{- end }}
 
 {{/* Homebrew */}}
@@ -51,7 +39,6 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Aliases
 alias dot=chezmoi
-alias bup="dot apply && source ~/.bashrc"
 alias s='jq ".scripts" package.json'
 alias p='pnpm'
 alias rmr='rm -rf --one-file-system --preserve-root'
@@ -59,47 +46,8 @@ alias galias="git config --get-regexp '^alias\.'"
 alias gtree='git ls-files | tree --fromfile'
 alias cc='cursor . 2>/dev/null'
 
-{{- if and .chezmoi.osRelease (eq .chezmoi.osRelease.id "ubuntu") (lookPath "fdfind") }}
-alias fd='fdfind --hidden --follow'
-{{- end }}
-
-{{/* yazi */}}
-{{- if lookPath "yazi" }}
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	IFS= read -r -d '' cwd < "$tmp"
-	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
-	rm -f -- "$tmp"
-}
-{{- end }}
-
 mcd() {
   mkdir -p "$1" && cd "$1"
-}
-
-newapp() {
-  local target="." app_name
-
-  if [[ -n "$1" ]]; then
-    target="$1"
-    app_name="$1"
-  else
-    [[ -z "$(ls -A 2>/dev/null)" ]] || { echo "current folder not empty" >&2; return 1; }
-    app_name="$(basename "$PWD")"
-  fi
-
-  pnpx create-react-router@latest "$target" \
-    --git-init \
-    --install \
-    --package-manager pnpm \
-    --yes \
-    --template stianthaulow/rr-template \
-    --show-install-output false \
-    >/dev/null \
-    || { echo "create-react-router failed" >&2; return 1; }
-
-  [[ "$target" != "." ]] && cd "$target"
 }
 
 # Edit bash profile
@@ -117,10 +65,8 @@ ep() {
   fi
 }
 
-{{- if lookPath "npm" }}
 # npm global path
 export PATH="$HOME/.npm-global/bin:$PATH"
-{{- end }}
 
 {{/* Fast Node Manager */}}
 {{- if or (lookPath "fnm") (stat (joinPath .chezmoi.homeDir ".local" "share" "fnm")) }}
@@ -130,24 +76,6 @@ FNM_PATH="$HOME/.local/share/fnm"
 export PATH="$FNM_PATH:$PATH"
 eval "$(fnm env --use-on-cd --shell bash)"
 {{- end }}
-
-{{/* Mise */}}
-{{- if lookPath "mise" }}
-eval "$(mise activate bash)"
-{{- end }}
-
-
-{{/* Direnv */}}
-{{- if lookPath "direnv" }}
-eval "$(direnv hook bash)"
-{{- end }}
-
-{{/* tobi/try */}}
-{{- if stat (joinPath .chezmoi.homeDir ".local" "try.rb") }}
-export TRY_PATH=~/lab
-eval "$(ruby ~/.local/try.rb init $TRY_PATH)"
-{{- end }}
-
 
 # Bookmarks
 source ~/.config/bash/bookmarks/b
@@ -160,12 +88,9 @@ if [ -d ~/.config/bash/completion.d ]; then
   done
 fi
 
-
-{{- if lookPath "adb" }}
 # Android sdk
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
-{{- end }}
 
 {{/* pnpm */}}
 {{- if or (lookPath "pnpm") (stat (joinPath .chezmoi.homeDir ".local" "share" "pnpm")) }}
@@ -176,11 +101,8 @@ case ":$PATH:" in
 esac
 {{- end }}
 
-{{- if lookPath "uv" }}
 # uv
 export PATH="/home/stian/.local/bin:$PATH"
-{{- end }}
-
 
 {{/* Rust (cargo) */}}
 {{- if lookPath "rustc" }}
@@ -189,21 +111,4 @@ case ":$PATH:" in
   *":$CARGO_HOME/bin:"*) ;;
   *) export PATH="$CARGO_HOME/bin:$PATH" ;;
 esac
-{{- end }}
-
-{{- if or (lookPath "bun") (stat (joinPath .chezmoi.homeDir ".bun")) }}
-# bun
-export BUN_INSTALL="$HOME/.bun"
-
-case ":$PATH:" in
-  *":$BUN_INSTALL/bin:"*) ;;
-  *) export PATH="$BUN_INSTALL/bin:$PATH" ;;
-esac
-
-bi() { CURSOR_TRACE_ID=1 bun init "$@"; }
-{{- end }}
-
-{{/* Zoxide config if not on omarchy, where it is enabled already */}}
-{{- if and (lookPath "zoxide") (not (lookPath "omarchy-version")) }}
-eval "$(zoxide init bash)"
 {{- end }}
