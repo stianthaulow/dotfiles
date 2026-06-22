@@ -35,6 +35,10 @@ function cc {
   code .
 }
 
+function ai {
+  claude --dangerously-skip-permissions @args
+}
+
 function ds {
   azuredatastudio .
 }
