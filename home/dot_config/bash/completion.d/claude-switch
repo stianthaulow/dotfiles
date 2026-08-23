@@ -1,0 +1,21 @@
+# bash completion for claude-switch (sourced by ~/.bashrc completion.d loop)
+_claude_switch() {
+    local cur subs profiles d name
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    subs="list create delete launch help"
+    profiles="default"
+    for d in "$HOME"/.claude-*/; do
+        [ -d "$d" ] || continue
+        name=${d%/}; name=${name##*/}; name=${name#.claude-}
+        profiles+=" $name"
+    done
+    if [ "$COMP_CWORD" -eq 1 ]; then
+        COMPREPLY=( $(compgen -W "$subs $profiles" -- "$cur") )
+    else
+        case "${COMP_WORDS[1]}" in
+            delete|rm|launch|run|start) COMPREPLY=( $(compgen -W "$profiles" -- "$cur") ) ;;
+            *) COMPREPLY=() ;;
+        esac
+    fi
+}
+complete -F _claude_switch claude-switch
