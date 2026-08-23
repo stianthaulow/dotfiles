@@ -4,7 +4,16 @@
 {{/* Omarchy specific */}}
 {{- if lookPath "omarchy-version" }}
 # Omarchy defaults
-source ~/.local/share/omarchy/default/bash/rc
+# /etc/omarchy.conf is written by omarchy-dev-link. When absent, force the
+# package default instead of preserving a stale inherited dev-link value before
+# we decide which rc file to source.
+if [[ -f /etc/omarchy.conf ]]; then
+  source /etc/omarchy.conf
+  export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
+else
+  export OMARCHY_PATH=/usr/share/omarchy
+fi
+source "$OMARCHY_PATH/default/bash/rc"
 {{- end }}
 
 {{/* If not on Omarchy */}}
@@ -45,7 +54,7 @@ alias rmr='rm -rf --one-file-system --preserve-root'
 alias galias="git config --get-regexp '^alias\.'"
 alias gtree='git ls-files | tree --fromfile'
 alias cc='cursor . 2>/dev/null'
-alias ai='claude --dangerously-skip-permissions'
+alias ai='CLAUDE_SWITCH_ARGS=--dangerously-skip-permissions claude-switch'
 
 mcd() {
   mkdir -p "$1" && cd "$1"

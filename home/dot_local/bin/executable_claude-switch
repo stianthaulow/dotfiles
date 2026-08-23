@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+# claude-switch — run multiple Claude Code accounts/orgs on one machine.
+# Managed by chezmoi: home/dot_local/bin/executable_claude-switch
+#
+# Each profile is an isolated CLAUDE_CONFIG_DIR (~/.claude-<name>/) with its own
+# OAuth credentials + sessions. "default" is ~/.claude. The SAME Anthropic account
+# can be logged into a different org per profile — you pick the org at login, and
+# each profile stores its own token scoped to that org. Linux only (bash).
+set -euo pipefail
+
+CLAUDE_HOME="$HOME/.claude"
+PREFIX="$HOME/.claude-"
+
+if [ -t 1 ]; then
+    BOLD=$'\033[1m'; DIM=$'\033[2m'; RED=$'\033[31m'
+    GRN=$'\033[32m'; YEL=$'\033[33m'; CYN=$'\033[36m'; RST=$'\033[0m'
+else
+    BOLD=; DIM=; RED=; GRN=; YEL=; CYN=; RST=
+fi
+
+die()  { printf '%s\u2718%s %s\n' "$RED" "$RST" "$*" >&2; exit 1; }
+info() { printf '%s\u25b6%s %s\n' "$CYN" "$RST" "$*"; }
+ok()   { printf '%s\u2714%s %s\n' "$GRN" "$RST" "$*"; }
+
+have_gum() { command -v gum >/dev/null 2>&1; }
+
+tilde() { printf '%s' "${1/#$HOME/\~}"; }
+
+profile_dir() {                       # name -> config dir
+    [ "$1" = default ] && { printf '%s' "$CLAUDE_HOME"; return; }
+    printf '%s%s' "$PREFIX" "$1"
+}
+
+valid_name() {
+    [ "$1" = default ] && die "'default' is the ~/.claude profile; use it directly."
+    printf '%s' "$1" | grep -qE '^[a-zA-Z][a-zA-Z0-9_-]{0,31}$' \
+        || die "invalid name '$1' (letters/digits/-/_ , start with a letter, max 32 chars)"
+}
+
+list_profiles() {                     # profile names (excludes default), one per line
+    local d name
+    for d in "${PREFIX}"*/; do
+        [ -d "$d" ] || continue       # no-match glob stays literal -> skipped
+        name=${d%/}; name=${name##*/}; name=${name#.claude-}
+        printf '%s\n' "$name"
+    done
+}
+
+account_line() {                      # dir -> "email  ·  tier"  from .claude.json
+    local f="$1/.claude.json" email tier
+    [ -f "$f" ] || return 0
+    command -v jq >/dev/null 2>&1 || return 0
+    email=$(jq -r '.oauthAccount.emailAddress // empty' "$f" 2>/dev/null || true)
+    tier=$(jq -r '.oauthAccount.seatTier // empty' "$f" 2>/dev/null || true)
+    [ -n "$email" ] || return 0
+    if [ -n "$tier" ] && [ "$tier" != null ]; then
+        printf '%s  \u00b7  %s' "$email" "$tier"
+    else
+        printf '%s' "$email"
+    fi
+}
+
+pick() {                              # prints chosen profile name (may be empty)
+    local prompt="${1:-Select a profile}" names n
+    names=$(printf 'default\n%s' "$(list_profiles)")
+    if have_gum; then
+        printf '%s\n' "$names" | gum choose --header "${prompt}:" || true
+    else
+        local -a arr=()
+        while IFS= read -r n; do [ -n "$n" ] && arr+=("$n"); done <<<"$names"
+        local PS3="${prompt} (number): "
+        select n in "${arr[@]}"; do [ -n "$n" ] && { printf '%s' "$n"; break; }; done
+    fi
+}
+
+cmd_list() {
+    printf '\n%sProfiles%s\n\n' "$BOLD" "$RST"
+    local names name dir acct
+    names=$(printf 'default\n%s' "$(list_profiles)")
+    while IFS= read -r name; do
+        [ -n "$name" ] || continue
+        dir=$(profile_dir "$name")
+        acct=$(account_line "$dir")
+        if [ -n "$acct" ]; then
+            printf '  %s%-12s%s %s%-18s%s %s%s%s\n' \
+                "$BOLD" "$name" "$RST" "$DIM" "$(tilde "$dir")" "$RST" "$GRN" "$acct" "$RST"
+        else
+            printf '  %s%-12s%s %s%-18s%s %snot logged in%s\n' \
+                "$BOLD" "$name" "$RST" "$DIM" "$(tilde "$dir")" "$RST" "$YEL" "$RST"
+        fi
+    done <<<"$names"
+    echo
+}
+
+cmd_create() {
+    local name="${1:-}"
+    if [ -z "$name" ]; then
+        if have_gum; then
+            name=$(gum input --placeholder "profile name (e.g. oslo, private)" --header "New profile" || true)
+        else
+            read -rp "New profile name: " name || true
+        fi
+    fi
+    [ -n "$name" ] || { info "cancelled"; exit 0; }
+    valid_name "$name"
+    local dir; dir=$(profile_dir "$name")
+    [ -d "$dir" ] && die "profile '$name' already exists ($(tilde "$dir"))"
+    mkdir -p "$dir"
+    ok "created $(tilde "$dir")"
+    echo
+    printf 'Launch it and log in — %spick the right org at the login prompt%s:\n\n' "$BOLD" "$RST"
+    printf '    %sclaude-switch %s%s\n\n' "$BOLD" "$name" "$RST"
+    printf '%sThe same account works across profiles; each stores its own token\n' "$DIM"
+    printf 'scoped to whichever org you select at login.%s\n' "$RST"
+}
+
+cmd_delete() {
+    local name="${1:-}"
+    [ -z "$name" ] && name=$(pick "Delete which profile")
+    [ -n "$name" ] || { info "cancelled"; exit 0; }
+    [ "$name" = default ] && die "refusing to delete the default (~/.claude) profile"
+    local dir; dir=$(profile_dir "$name")
+    [ -d "$dir" ] || die "profile '$name' not found"
+    printf '%sPermanently removes %s%s (credentials, sessions, history).%s\n' \
+        "$YEL" "$(tilde "$dir")" "$YEL" "$RST"
+    if have_gum; then
+        gum confirm "Delete profile '$name'?" --default=false || { info "cancelled"; exit 0; }
+    else
+        local confirm
+        read -rp "Re-type the profile name to confirm: " confirm || true
+        [ "$confirm" = "$name" ] || { info "cancelled"; exit 0; }
+    fi
+    rm -rf -- "$dir"
+    ok "removed $(tilde "$dir")"
+}
+
+cmd_launch() {
+    local name="${1:-}"
+    if [ -z "$name" ]; then
+        name=$(pick "Launch which profile")
+        [ -n "$name" ] || exit 0
+    else
+        shift
+    fi
+    local dir; dir=$(profile_dir "$name")
+    # Default args applied to every launch (e.g. the 'ai' alias sets
+    # CLAUDE_SWITCH_ARGS=--dangerously-skip-permissions). Explicit args win.
+    local -a extra=()
+    [ -n "${CLAUDE_SWITCH_ARGS:-}" ] && read -ra extra <<<"$CLAUDE_SWITCH_ARGS"
+    if [ "$name" = default ]; then
+        exec claude "${extra[@]}" "$@"
+    fi
+    [ -d "$dir" ] || die "profile '$name' not found. Create it: claude-switch create $name"
+    info "launching '$name' ($(tilde "$dir"))"
+    exec env CLAUDE_CONFIG_DIR="$dir" claude "${extra[@]}" "$@"
+}
+
+cmd_interactive() {
+    local action
+    if have_gum; then
+        action=$(gum choose \
+            "Launch a profile" "List profiles" "Create a profile" "Delete a profile" "Quit" \
+            --header "claude-switch:" || true)
+    else
+        local PS3="claude-switch (number): "
+        select action in "Launch a profile" "List profiles" "Create a profile" "Delete a profile" "Quit"; do
+            [ -n "$action" ] && break
+        done
+    fi
+    case "$action" in
+        "Launch a profile") cmd_launch ;;
+        "List profiles")    cmd_list ;;
+        "Create a profile") cmd_create ;;
+        "Delete a profile") cmd_delete ;;
+        *) exit 0 ;;
+    esac
+}
+
+cmd_help() {
+    cat <<EOF
+
+${BOLD}claude-switch${RST} — run multiple Claude Code accounts/orgs side by side
+
+${BOLD}USAGE${RST}
+    claude-switch                 interactive menu
+    claude-switch <name> [args]   launch a profile (args pass through to claude)
+    claude-switch list            list profiles + account/tier
+    claude-switch create [name]   create a new profile (log in on first launch)
+    claude-switch delete [name]   delete a profile
+    claude-switch help            this help
+
+${BOLD}EXAMPLES${RST}
+    claude-switch default         your ~/.claude profile
+    claude-switch drammen --resume
+    claude-switch create oslo     then: claude-switch oslo  (pick the org at login)
+
+${BOLD}HOW IT WORKS${RST}
+    A profile is an isolated CLAUDE_CONFIG_DIR at ~/.claude-<name>/ holding its own
+    OAuth token + sessions. The same account can back several profiles — the org is
+    chosen at login and baked into that profile's token. No rc-file edits, no shared
+    keychain: on Linux each token lives in the profile dir, so profiles never collide.
+
+${BOLD}ENV${RST}
+    CLAUDE_SWITCH_ARGS   default args added to every launch, e.g.
+                         CLAUDE_SWITCH_ARGS=--dangerously-skip-permissions
+EOF
+}
+
+main() {
+    command -v claude >/dev/null 2>&1 || die "'claude' not found in PATH."
+    case "${1:-}" in
+        list|ls)          cmd_list ;;
+        create|new)       shift; cmd_create "${1:-}" ;;
+        delete|rm|remove) shift; cmd_delete "${1:-}" ;;
+        launch|run|start) shift; cmd_launch "$@" ;;
+        help|-h|--help)   cmd_help ;;
+        "")               cmd_interactive ;;
+        *)                cmd_launch "$@" ;;   # bare profile name
+    esac
+}
+
+main "$@"
