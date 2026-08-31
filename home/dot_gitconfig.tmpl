@@ -22,6 +22,8 @@
 {{ end }}
 [init]
 	defaultBranch = main
+[branch]
+	sort = -committerdate
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -32,6 +34,12 @@
 {{ if eq .chezmoi.os "linux" }}
 [credential]
 	helper = store
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
 {{ end }}
 [help]
 	autocorrect = prompt
