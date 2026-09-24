@@ -78,6 +78,11 @@ ep() {
 # npm global path
 export PATH="$HOME/.npm-global/bin:$PATH"
 
+{{- if lookPath "mise" }}
+# node + cli tools via mise (honors .node-version / .tool-versions / mise.toml)
+eval "$(mise activate bash)"
+{{- end }}
+
 {{/* Fast Node Manager */}}
 {{- if or (lookPath "fnm") (stat (joinPath .chezmoi.homeDir ".local" "share" "fnm")) }}
 export FNM_MULTISHELL_PATH="$HOME/.cache/fnm_multishells"
@@ -131,3 +136,12 @@ case ":$PATH:" in
   *) export PATH="$GOPATH/bin:$PATH" ;;
 esac
 {{- end }}
+
+# Auto-attach to the persistent herdr session on SSH/mosh login.
+# HERDR_ENV is set inside herdr panes, so this only fires on the outer
+# login shell, never when herdr spawns a new pane/tab that re-sources this file.
+# mosh sessions inherit SSH_CONNECTION from the bootstrap ssh connection that
+# started mosh-server, so this check catches both.
+if [[ -z "$HERDR_ENV" ]] && [[ -n "$SSH_CONNECTION" ]] && command -v herdr >/dev/null 2>&1; then
+  herdr
+fi
