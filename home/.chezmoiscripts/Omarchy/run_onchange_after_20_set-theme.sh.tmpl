@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# theme: {{ .omarchy.theme }}
+set -eu
+
+theme={{ .omarchy.theme | quote }}
+
+if [[ $(cat ~/.local/state/omarchy/current/theme.name 2>/dev/null) == "$theme" ]]; then
+  exit 0
+fi
+
+# Theme switching talks to Hyprland and the shell; fail so chezmoi retries next apply
+if [[ -z ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
+  echo "Not in a Hyprland session, skipping omarchy theme set $theme" >&2
+  exit 1
+fi
+
+omarchy theme set "$theme"
