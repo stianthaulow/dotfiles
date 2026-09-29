@@ -33,7 +33,3 @@ dot_hushlogin
 Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ end }}
 
-
-{{ if ne .chezmoi.hostname "stth-zbook-8" }}
-.config/t3code-flags.conf
-{{ end }}
