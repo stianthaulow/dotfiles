@@ -5,6 +5,7 @@ bootstrap.sh
 
 {{ if ne .chezmoi.os "windows" }}
 .chezmoiscripts/Windows/**
+Documents/PowerShell
 Powershell
 WindowsPowershell
 Scripts
@@ -21,7 +22,7 @@ dot_hushlogin
 
 
 {{ if not (and (eq .chezmoi.os "linux")
-          (eq .chezmoi.osRelease.id "arch")
+          (or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "omarchy"))
           (stat (joinPath .chezmoi.homeDir ".local" "share" "omarchy"))) }}
 .chezmoiscripts/Omarchy/**
 {{ end }}
