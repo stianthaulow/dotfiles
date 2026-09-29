@@ -23,7 +23,7 @@ dot_hushlogin
 
 {{ if not (and (eq .chezmoi.os "linux")
           (or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "omarchy"))
-          (stat (joinPath .chezmoi.homeDir ".local" "share" "omarchy"))) }}
+          (stat "/usr/share/omarchy")) }}
 .chezmoiscripts/Omarchy/**
 {{ end }}
 
