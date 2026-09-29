@@ -1,12 +1,11 @@
 [omarchy]
 # Applied with `omarchy theme set` whenever this value changes
-theme = "inkypinky"
+theme = "thaulow"
 
-# Cloned into ~/.config/omarchy/themes/<name>
+# Third-party themes, cloned into ~/.config/omarchy/themes/<name>
 [omarchy.themes]
 ash = "https://github.com/bjarneo/omarchy-ash-theme.git"
 dracula = "https://github.com/catlee/omarchy-dracula-theme.git"
 flat-dracula = "https://github.com/OldJobobo/omarchy-flat-dracula-theme.git"
-inkypinky = "https://github.com/HANCORE-linux/omarchy-inkypinky-theme.git"
 rose-pine-moon = "https://github.com/Memnoc/omarchy-rose-pine-moon-theme.git"
 void = "https://github.com/vyrx-dev/omarchy-void-theme.git"
