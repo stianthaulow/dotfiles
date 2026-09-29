@@ -1,0 +1,62 @@
+#!/bin/bash
+# Build custom home-folder icons from the theme's folder-icons/*.svg glyphs,
+# composited onto the active icon theme's folder, and apply them via GIO metadata.
+# Each SVG is named after the folder in $HOME it decorates (e.g. Projects.svg -> ~/Projects).
+# Placeholders in the SVG: GLYPH_COLOR (sampled from the icon theme), STROKE (px at 256).
+set -u
+STATE=$HOME/.local/state/omarchy
+THEME_DIR=$STATE/current/theme
+GLYPHS=$THEME_DIR/folder-icons
+OUT=$HOME/.local/share/icons/hicolor
+MANAGED=$STATE/folder-icons.managed
+
+ICON_THEME=$(cat "$THEME_DIR/icons.theme" 2>/dev/null || gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
+ICON_ROOT=/usr/share/icons/$ICON_THEME
+[[ -d $ICON_ROOT ]] || ICON_ROOT=/usr/share/icons/Yaru
+
+# Drop icons from folders we managed previously
+if [[ -f $MANAGED ]]; then
+  while read -r d; do [[ -d $d ]] && gio set -t unset "$d" metadata::custom-icon 2>/dev/null; done <"$MANAGED"
+  rm -f "$MANAGED"
+fi
+
+if [[ ! -d $GLYPHS ]] || ! ls "$GLYPHS"/*.svg &>/dev/null; then
+  pgrep -x nautilus >/dev/null && nautilus -q
+  exit 0
+fi
+
+# Glyph color: darkest opaque color in the icon theme's documents folder
+ref=$ICON_ROOT/256x256/places/folder-documents.png
+[[ -f $ref ]] || ref=/usr/share/icons/Yaru/256x256/places/folder-documents.png
+GLYPH_COLOR=$(magick "$ref" -background white -alpha remove -colors 8 -format %c histogram:info: \
+  | awk '$1+0 > 400 { match($0, /#[0-9A-Fa-f]{6}/); c=substr($0, RSTART, 6+1); r=strtonum("0x" substr(c,2,2)); g=strtonum("0x" substr(c,4,2)); b=strtonum("0x" substr(c,6,2)); print r+g+b, c }' \
+  | sort -n | head -1 | awk '{print $2}')
+[[ -n $GLYPH_COLOR ]] || GLYPH_COLOR="#5E1761"
+
+# size:source directory inside the icon theme
+SIZES="16:16x16 22:48x48 24:24x24 32:32x32 48:48x48 64:32x32@2x 96:48x48@2x 128:256x256 256:256x256 512:256x256@2x"
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+
+for svg in "$GLYPHS"/*.svg; do
+  folder=$(basename "$svg" .svg)
+  target=$HOME/$folder
+  [[ -d $target ]] || continue
+  icon=folder-$(echo "$folder" | tr '[:upper:]' '[:lower:]')
+  for spec in $SIZES; do
+    s=${spec%%:*}; src=${spec#*:}
+    base=$ICON_ROOT/$src/places/folder.png
+    [[ -f $base ]] || base=$ICON_ROOT/256x256/places/folder.png
+    [[ -f $base ]] || base=/usr/share/icons/Yaru/256x256/places/folder.png
+    stroke=$(python3 -c "print(max(6, 1.2*256/$s))")
+    sed -e "s/GLYPH_COLOR/$GLYPH_COLOR/g" -e "s/STROKE/$stroke/g" "$svg" | rsvg-convert -w "$s" -h "$s" -o "$tmp/glyph.png"
+    mkdir -p "$OUT/${s}x${s}/places"
+    magick "$base" -resize "${s}x${s}!" "$tmp/glyph.png" -gravity center -composite "$OUT/${s}x${s}/places/$icon.png"
+  done
+  gio set "$target" metadata::custom-icon "file://$OUT/256x256/places/$icon.png"
+  echo "$target" >>"$MANAGED"
+done
+
+gtk-update-icon-cache -f -t "$OUT" &>/dev/null || true
+# Nautilus caches icon paintables; restart it so it picks up the new files
+pgrep -x nautilus >/dev/null && nautilus -q
+exit 0
