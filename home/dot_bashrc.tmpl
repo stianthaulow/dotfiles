@@ -116,9 +116,6 @@ case ":$PATH:" in
 esac
 {{- end }}
 
-# uv
-export PATH="/home/stian/.local/bin:$PATH"
-
 {{/* Rust (cargo) */}}
 {{- if lookPath "rustc" }}
 export CARGO_HOME="$HOME/.cargo"
