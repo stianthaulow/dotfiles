@@ -25,6 +25,8 @@ dot_hushlogin
           (or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "omarchy"))
           (stat "/usr/share/omarchy")) }}
 .chezmoiscripts/Omarchy/**
+.config/omarchy
+.local/state/omarchy
 {{ end }}
 
 {{ if not (stat (joinPath .chezmoi.homeDir "Documents" "PowerShell")) }}
