@@ -11,6 +11,7 @@
 	ll = log --oneline
 	lg = !git log --pretty=format:\"%C(magenta)%h%Creset -%C(red)%d%Creset %s %C(dim green)(%cr) [%an]\" --abbrev-commit -30
 	last = log -1 HEAD --stat
+	ci = commit
 	cm = commit -m
 	rv = remote -v
 	d = diff
@@ -29,6 +30,8 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[pull]
+	rebase = true
 [push]
 	autoSetupRemote = true
 {{ if eq .chezmoi.os "linux" }}
