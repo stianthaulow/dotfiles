@@ -33,3 +33,7 @@ dot_hushlogin
 Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ end }}
 
+
+{{ if ne (output "hostnamectl" "chassis" | trim) "laptop" }}
+.local/bin/mute-on-lock
+{{ end }}
