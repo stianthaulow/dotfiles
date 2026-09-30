@@ -1,9 +1,9 @@
 @define-color selected-text #d18ba2;
 @define-color text #fafafa;
-@define-color base #13131D;
+@define-color base #121212;
 @define-color border #9f859f;
 @define-color foreground #c8c8c8;
-@define-color background #13131D;
+@define-color background #121212;
 
 window * {
     all: unset;
@@ -39,7 +39,7 @@ window .box-wrapper {
 }
 
 window .search-container {
-    border: 2px solid alpha(#434353, 0.5);    /* visible border */
+    border: 2px solid alpha(#434343, 0.5);    /* visible border */
     border-radius: 3px;
     padding: 4px 6px;
     margin: 0x;
@@ -61,7 +61,7 @@ window .input {
     background: transparent;
     padding: 0px 0px;
     color: @base;
-    caret-color: #434353;
+    caret-color: #434343;
 }
 
 window .preview {

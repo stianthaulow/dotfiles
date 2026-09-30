@@ -8,10 +8,10 @@
     
 
     :root {
-        --color00: #13131D;
-        --color01: #191923;
-        --color02: #2b2b35;
-        --color03: #434353;
+        --color00: #121212;
+        --color01: #1A1A1A;
+        --color02: #2B2B2B;
+        --color03: #434343;
         --color04: #f6bfce;
         --color05: #c8c8c8;
         --color06: #f6bfce;
@@ -621,12 +621,12 @@ div[class*="numberBadge"] {
         fill: var(--status-positive) !important;
     }
     /*--- Status Icon Recolor (OFFLINE) ---*/
-    svg[fill^="#83838b"],
-    rect[fill^="#83838b"],
-    path[fill^="#83838b"],
-    svg[fill^="#82838b"],
-    rect[fill^="#82838b"],
-    path[fill^="#82838b"] {
+    svg[fill^="#838383"],
+    rect[fill^="#838383"],
+    path[fill^="#838383"],
+    svg[fill^="#838383"],
+    rect[fill^="#838383"],
+    path[fill^="#838383"] {
         fill: var(--base03) !important;
     }
 }

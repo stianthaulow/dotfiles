@@ -4,14 +4,14 @@ cursor = "#c8c8c8"
 
 # Primary colors
 foreground = "#c8c8c8"
-background = "#13131D"
+background = "#121212"
 
 # Selection colors
-selection_foreground = "#13131D"
+selection_foreground = "#121212"
 selection_background = "#c8c8c8"
 
 # Normal colors (ANSI 0-7)
-color0 = "#13131D"
+color0 = "#121212"
 color1 = "#EA90A8"
 color2 = "#a6b2c7"
 color3 = "#D18BA2"
@@ -21,7 +21,7 @@ color6 = "#919ab7"
 color7 = "#a1a2a7"
 
 # Bright colors (ANSI 8-15)
-color8 = "#434353"
+color8 = "#434343"
 color9 = "#f6bfce"
 color10 = "#d1d9e4"
 color11 = "#e3aebf"
