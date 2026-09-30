@@ -1,0 +1,5 @@
+-- Extra autostart processes.
+-- o.launch_on_start("my-service")
+{{- if eq (output "hostnamectl" "chassis" | trim) "laptop" }}
+o.launch_on_start("~/.local/bin/mute-on-lock")
+{{- end }}
