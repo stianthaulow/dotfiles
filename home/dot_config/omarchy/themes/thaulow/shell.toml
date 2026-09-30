@@ -3,7 +3,7 @@
 # accents while all legacy application theme files remain installed.
 
 [bar]
-background = "#13131D"
+background = "#121212"
 background-alpha = 1.0
 text = "#FAFAFA"
 active = "#EA90A8"
@@ -55,7 +55,7 @@ heading = 16
 icon-large = 18
 
 [popups]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.96
 text = "#D18BA2"
 border = "hyprland.active-border"
@@ -63,7 +63,7 @@ border-alpha = 1.0
 border-width = 2
 
 [tooltip]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.96
 text = "#C8C8C8"
 border = "#9F859F"
@@ -71,7 +71,7 @@ border-alpha = 1.0
 border-width = 1
 
 [notifications]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.96
 text = "#C8C8C8"
 border = "hyprland.active-border"
@@ -80,13 +80,13 @@ border-width = 2
 countdown = "#EA90A8"
 
 [launcher]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.96
 text = "#FAFAFA"
 border = "hyprland.active-border"
 border-alpha = 1.0
 border-width = 2
-scrim = "#13131D"
+scrim = "#121212"
 scrim-alpha = 0.0
 selected-background = "#9F859F"
 selected-background-alpha = 0.30
@@ -96,13 +96,13 @@ selected-border-alpha = 0.94
 selected-border-width = 1
 
 [menu]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.96
 text = "#FAFAFA"
 border = "hyprland.active-border"
 border-alpha = 1.0
 border-width = 2
-scrim = "#13131D"
+scrim = "#121212"
 scrim-alpha = 0.0
 selected-background = "#9F859F"
 selected-background-alpha = 0.30
@@ -112,7 +112,7 @@ selected-border-alpha = 0.94
 selected-border-width = 1
 
 [polkit]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.96
 text = "#C8C8C8"
 text-error = "#EA90A8"
@@ -120,12 +120,12 @@ border = "hyprland.active-border"
 border-error = "#EA90A8"
 border-alpha = 1.0
 border-width = 2
-scrim = "#13131D"
+scrim = "#121212"
 scrim-alpha = 0.5
 accent = "#7C7CA8"
 
 [lock]
-background = "#13131D"
+background = "#121212"
 background-alpha = 0.72
 text = "#C8C8C8"
 placeholder = "#C8C8C8B3"
@@ -139,7 +139,7 @@ selection = "#7C7CA8"
 selection-alpha = 0.45
 
 [image-picker]
-scrim = "#13131D"
+scrim = "#121212"
 scrim-alpha = 0.5
 text = "#C8C8C8"
 selected-border = "#EA90A8"
