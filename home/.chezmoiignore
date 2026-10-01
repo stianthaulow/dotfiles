@@ -27,6 +27,7 @@ dot_hushlogin
 .chezmoiscripts/Omarchy/**
 .config/omarchy
 .local/state/omarchy
+.local/share/nautilus-python/extensions/copy_path.py
 {{ end }}
 
 {{ if not (stat (joinPath .chezmoi.homeDir "Documents" "PowerShell")) }}
