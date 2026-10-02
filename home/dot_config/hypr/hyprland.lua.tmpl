@@ -28,6 +28,18 @@ require("default.hypr.toggles")
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
 
+-- WinApps RemoteApp windows (class forced by ~/.local/bin/winapps-freerdp): Windows
+-- owns their geometry, so tiling/resizing leaves garbage; keep them floating and opaque.
+o.window("^winapps$", { float = true, tag = "-default-opacity", opacity = "1 1" })
+
+-- Keep X11 coordinates in Hyprland's logical layout (Omarchy enables zero scaling).
+-- With mixed monitor scales, zero scaling makes X and Hyprland disagree on window
+-- positions, which offsets/clips WinApps RemoteApp content. Cost: X11 apps are
+-- upscaled (blurry) on the 1.6x laptop panel. Needs a re-login to take effect.
+{{ if eq .chezmoi.hostname "stth-zbook-8" -}}
+hl.config({ xwayland = { force_zero_scaling = false } })
+{{ end -}}
+
 -- Apps pinned to workspaces (per host, from .chezmoidata/workspaces.toml; silent = don't steal focus).
 {{- range get (get .workspaces .chezmoi.hostname | default dict) "apps" }}
 o.window({{ .class | quote }}, { workspace = "{{ .workspace }}{{ if get . "silent" }} silent{{ end }}" }) -- {{ .name }}
