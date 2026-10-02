@@ -50,6 +50,11 @@ url = {{ $url | quote }}
 refreshPeriod = "168h"
 {{- end }}
 
+[".local/share/dotfiles-private"]
+type = "git-repo"
+url = "https://github.com/stianthaulow/dotfiles-private.git"
+refreshPeriod = "24h"
+
 [".config/omarchy/themes/thaulow/backgrounds/wallpaper.jpg"]
 type = "file"
 url = "https://raw.githubusercontent.com/stianthaulow/theme/debian/Wallpaper/wallpaper.jpg"
