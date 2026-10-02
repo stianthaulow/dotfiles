@@ -1,0 +1,42 @@
+#!/bin/bash
+# Override symbolic icons (sidebar/places) with the theme's symbolic-icons/*.svg.
+# Each SVG is named after the icon it replaces (e.g. folder-remote-symbolic.svg).
+# Files are installed into the first theme in the icon theme's inherit chain that
+# has a scalable/places directory, so GTK picks them up over the stock icons.
+set -u
+STATE=$HOME/.local/state/omarchy
+THEME_DIR=$STATE/current/theme
+SRC=$THEME_DIR/symbolic-icons
+MANAGED=$STATE/symbolic-icons.managed
+
+# Drop overrides we installed previously
+if [[ -f $MANAGED ]]; then
+  while read -r f; do rm -f "$f"; done <"$MANAGED"
+  rm -f "$MANAGED"
+fi
+
+if [[ -d $SRC ]] && ls "$SRC"/*.svg &>/dev/null; then
+  ICON_THEME=$(cat "$THEME_DIR/icons.theme" 2>/dev/null || gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
+  target=
+  queue=("$ICON_THEME")
+  while ((${#queue[@]})); do
+    t=${queue[0]}; queue=("${queue[@]:1}")
+    index=/usr/share/icons/$t/index.theme
+    [[ -f $index ]] || continue
+    if grep -q '^Directories=.*scalable/places' "$index"; then target=$t; break; fi
+    IFS=, read -ra inherits <<<"$(sed -n 's/^Inherits=//p' "$index")"
+    queue+=("${inherits[@]}")
+  done
+
+  if [[ -n $target ]]; then
+    out=$HOME/.local/share/icons/$target/scalable/places
+    mkdir -p "$out"
+    for svg in "$SRC"/*.svg; do
+      cp "$svg" "$out/"
+      echo "$out/$(basename "$svg")" >>"$MANAGED"
+    done
+  fi
+fi
+
+pgrep -x nautilus >/dev/null && nautilus -q
+exit 0
