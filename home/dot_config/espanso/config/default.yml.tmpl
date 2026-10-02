@@ -1,0 +1,7 @@
+# Wayland can't detect the layout, so espanso must be told
+keyboard_layout:
+  layout: "no"
+
+# Private matches live in the dotfiles-private repo
+extra_includes:
+  - "{{ .chezmoi.homeDir }}/.local/share/dotfiles-private/espanso/*.yml"

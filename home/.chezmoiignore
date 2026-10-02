@@ -26,6 +26,7 @@ dot_hushlogin
           (stat "/usr/share/omarchy")) }}
 .chezmoiscripts/Omarchy/**
 .config/omarchy
+.config/espanso
 .local/state/omarchy
 .local/share/nautilus-python/extensions/copy_path.py
 {{ end }}
