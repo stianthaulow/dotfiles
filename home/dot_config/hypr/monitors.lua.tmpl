@@ -1,0 +1,2 @@
+{{- /* Each host's monitor setup lives in .chezmoitemplates/hypr/monitors/<hostname>.lua. */ -}}
+{{ includeTemplate (printf "hypr/monitors/%s.lua" .chezmoi.hostname) (get .workspaces .chezmoi.hostname) -}}
