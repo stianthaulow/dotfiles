@@ -7,7 +7,9 @@ local omarchy_monitor_scale = "auto"
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
 -- Laptop panel a bit smaller than 2x (2560x1600 / 1.6 = 1600x1000).
-hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1.6 })
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x440", scale = 1.6 })
+-- Desk ultrawide sits right of the laptop with bottom edges aligned (1440 - 1000 = 440).
+hl.monitor({ output = "desc:Samsung Electric Company LS34A650U H4ZT200409", mode = "preferred", position = "1600x0", scale = 1 })
 
 -- Configure a specific monitor.
 -- hl.monitor({ output = "DP-2", mode = "2560x1440@144", position = "0x0", scale = 1 })
