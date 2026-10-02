@@ -2,6 +2,8 @@
 # Build custom home-folder icons from the theme's folder-icons/*.svg glyphs,
 # composited onto the active icon theme's folder, and apply them via GIO metadata.
 # Each SVG is named after the folder in $HOME it decorates (e.g. Projects.svg -> ~/Projects).
+# folder-icons/projects.conf maps ~/Projects/<name> to a logo inside the repo ("enrix assets/icons/enrix-mono.png");
+# the logo's light pixels become the glyph, so a white-on-black mono app icon works as-is.
 # Placeholders in the SVG: GLYPH_COLOR (sampled from the icon theme), STROKE (px at 256).
 set -u
 STATE=$HOME/.local/state/omarchy
@@ -9,6 +11,8 @@ THEME_DIR=$STATE/current/theme
 GLYPHS=$THEME_DIR/folder-icons
 OUT=$HOME/.local/share/icons/hicolor
 MANAGED=$STATE/folder-icons.managed
+# Remote homes browsed from Nautilus here; GVfs keeps their metadata locally, so tag them too when mounted
+REMOTES="sftp://b"
 
 ICON_THEME=$(cat "$THEME_DIR/icons.theme" 2>/dev/null || gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
 ICON_ROOT=/usr/share/icons/$ICON_THEME
@@ -16,11 +20,15 @@ ICON_ROOT=/usr/share/icons/$ICON_THEME
 
 # Drop icons from folders we managed previously
 if [[ -f $MANAGED ]]; then
-  while read -r d; do [[ -d $d ]] && gio set -t unset "$d" metadata::custom-icon 2>/dev/null; done <"$MANAGED"
+  while read -r d; do
+    if [[ $d == *://* ]]; then gio set -t unset "$d" metadata::custom-icon 2>/dev/null
+    elif [[ -d $d ]]; then gio set -t unset "$d" metadata::custom-icon 2>/dev/null; fi
+  done <"$MANAGED"
   rm -f "$MANAGED"
 fi
 
-if [[ ! -d $GLYPHS ]] || ! ls "$GLYPHS"/*.svg &>/dev/null; then
+PROJECTS=$GLYPHS/projects.conf
+if ! ls "$GLYPHS"/*.svg &>/dev/null && [[ ! -f $PROJECTS ]]; then
   pgrep -x nautilus >/dev/null && nautilus -q
   exit 0
 fi
@@ -35,26 +43,77 @@ GLYPH_COLOR=$(magick "$ref" -background white -alpha remove -colors 8 -format %c
 
 # size:source directory inside the icon theme
 SIZES="16:16x16 22:48x48 24:24x24 32:32x32 48:48x48 64:32x32@2x 96:48x48@2x 128:256x256 256:256x256 512:256x256@2x"
+mounted=()
+for r in $REMOTES; do gio info "$r/" &>/dev/null && mounted+=("$r"); done
+
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
 
-for svg in "$GLYPHS"/*.svg; do
-  folder=$(basename "$svg" .svg)
-  target=$HOME/$folder
-  [[ -d $target ]] || continue
-  icon=folder-$(echo "$folder" | tr '[:upper:]' '[:lower:]')
+# Where a $HOME path exists: locally and on any mounted remote
+locations() {
+  [[ -d $1 ]] && echo "$1"
+  for r in "${mounted[@]}"; do gio info "$r$1" &>/dev/null && echo "$r$1"; done
+}
+
+# Composite glyph onto the folder at every size; $2 writes the glyph for size $1 to $tmp/glyph.png
+render() {
+  local icon=$1 glyph=$2 spec s src base
   for spec in $SIZES; do
     s=${spec%%:*}; src=${spec#*:}
     base=$ICON_ROOT/$src/places/folder.png
     [[ -f $base ]] || base=$ICON_ROOT/256x256/places/folder.png
     [[ -f $base ]] || base=/usr/share/icons/Yaru/256x256/places/folder.png
-    stroke=$(python3 -c "print(max(6, 1.2*256/$s))")
-    sed -e "s/GLYPH_COLOR/$GLYPH_COLOR/g" -e "s/STROKE/$stroke/g" "$svg" | rsvg-convert -w "$s" -h "$s" -o "$tmp/glyph.png"
+    $glyph "$s"
     mkdir -p "$OUT/${s}x${s}/places"
     magick "$base" -resize "${s}x${s}!" "$tmp/glyph.png" -gravity center -composite "$OUT/${s}x${s}/places/$icon.png"
   done
-  gio set "$target" metadata::custom-icon "file://$OUT/256x256/places/$icon.png"
-  echo "$target" >>"$MANAGED"
+}
+
+apply() {
+  local icon=$1 t; shift
+  for t in "$@"; do
+    gio set "$t" metadata::custom-icon "file://$OUT/256x256/places/$icon.png" && echo "$t" >>"$MANAGED"
+  done
+}
+
+svg_glyph() {
+  local stroke; stroke=$(python3 -c "print(max(6, 1.2*256/$1))")
+  sed -e "s/GLYPH_COLOR/$GLYPH_COLOR/g" -e "s/STROKE/$stroke/g" "$svg" | rsvg-convert -w "$1" -h "$1" -o "$tmp/glyph.png"
+}
+
+logo_glyph() { magick "$tmp/logo512.png" -resize "${1}x${1}" "$tmp/glyph.png"; }
+
+for svg in "$GLYPHS"/*.svg; do
+  [[ -f $svg ]] || continue
+  folder=$(basename "$svg" .svg)
+  mapfile -t where < <(locations "$HOME/$folder")
+  (( ${#where[@]} )) || continue
+  icon=folder-$(echo "$folder" | tr '[:upper:]' '[:lower:]')
+  render "$icon" svg_glyph
+  apply "$icon" "${where[@]}"
 done
+
+[[ -f $PROJECTS ]] && while read -r name logo _; do
+  [[ -z $name || $name == \#* ]] && continue
+  target=$HOME/Projects/$name
+  mapfile -t where < <(locations "$target")
+  (( ${#where[@]} )) || continue
+  # Read the logo from the first clone that has it (local or remote)
+  rm -f "$tmp/logo"
+  for w in "${where[@]}"; do
+    if [[ $w == *://* ]]; then gio cat "$w/$logo" >"$tmp/logo" 2>/dev/null && break
+    elif [[ -f $w/$logo ]]; then cp "$w/$logo" "$tmp/logo" && break; fi
+  done
+  [[ -s $tmp/logo ]] || continue
+  # Light, opaque pixels -> mask; trimmed and centred on the folder body like the SVG glyphs
+  magick "$tmp/logo" \( +clone -alpha extract \) \( -clone 0 -alpha off -colorspace gray \) -delete 0 \
+    -compose multiply -composite -compose over -level 50%,100% -trim +repage -resize 200x200 \
+    -background black -gravity center -extent 200x200 "$tmp/mark.png" || continue
+  magick -size 512x512 xc:black "$tmp/mark.png" -geometry +156+196 -composite "$tmp/mask.png"
+  magick -size 512x512 xc:"$GLYPH_COLOR" "$tmp/mask.png" -alpha off -compose copy_opacity -composite "$tmp/logo512.png"
+  icon=folder-project-$(echo "$name" | tr '[:upper:]' '[:lower:]')
+  render "$icon" logo_glyph
+  apply "$icon" "${where[@]}"
+done <"$PROJECTS"
 
 gtk-update-icon-cache -f -t "$OUT" &>/dev/null || true
 # Nautilus caches icon paintables; restart it so it picks up the new files
