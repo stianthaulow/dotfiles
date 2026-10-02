@@ -38,3 +38,7 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ if ne (output "hostnamectl" "chassis" | trim) "laptop" }}
 .local/bin/mute-on-lock
 {{ end }}
+
+{{ if not (hasKey .workspaces .chezmoi.hostname) }}
+.config/hypr/monitors.lua
+{{ end }}

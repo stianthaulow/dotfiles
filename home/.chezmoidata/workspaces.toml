@@ -1,0 +1,48 @@
+# Per-host workspace layout, keyed by hostname (`chezmoi execute-template '{{ .chezmoi.hostname }}'`).
+#
+# apps:  window rules in ~/.config/hypr/hyprland.lua. An app with an icon replaces
+#        that workspace's number in the bar (first icon per workspace wins).
+# pins:  workspace -> monitor, read by .chezmoitemplates/hypr/monitors/<hostname>.lua.
+#        The keys mean whatever that host's template says.
+
+# Laptop: pins only apply while docked to exactly one ultrawide.
+[workspaces."stth-zbook-8".pins]
+laptop = ["7", "8"]
+ultrawide = ["1"]
+
+[[workspaces."stth-zbook-8".apps]]
+name = "Obsidian"
+class = '^md[.]obsidian[.]Obsidian$'
+workspace = "5"
+icon = ""
+
+[[workspaces."stth-zbook-8".apps]]
+name = "Teams"
+class = '^chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Profile_1$'
+workspace = "7"
+icon = "󰊻"
+
+[[workspaces."stth-zbook-8".apps]]
+name = "Outlook"
+class = '^chrome-faolnafnngnfdaknnbpnkhgohbobgegn-Profile_1$'
+workspace = "8"
+icon = "󰴢"
+
+# Desktop b: two 1440p monitors, keys are output names. The first workspace in
+# each list is the one shown when the monitor comes up.
+[workspaces.b.pins]
+"HDMI-A-1" = ["1", "2", "3", "4", "9", "10"]
+"DP-2" = ["5", "6", "7", "8"]
+
+[[workspaces.b.apps]]
+name = "Teams"
+class = '^chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default$'
+workspace = "8"
+silent = true
+icon = "󰊻"
+
+[[workspaces.b.apps]]
+name = "Outlook"
+class = '^chrome-faolnafnngnfdaknnbpnkhgohbobgegn-Default$'
+workspace = "8"
+silent = true
