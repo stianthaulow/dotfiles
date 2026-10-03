@@ -26,6 +26,8 @@ dot_hushlogin
           (stat "/usr/share/omarchy")) }}
 .chezmoiscripts/Omarchy/**
 .config/omarchy
+.config/voxtype
+.local/bin/voxtype-postprocess-record
 .config/espanso
 .config/kanata
 .config/systemd/user/kanata.service

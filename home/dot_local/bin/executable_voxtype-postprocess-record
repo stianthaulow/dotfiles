@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Voxtype post-process hook.
+# Passes the transcription through UNCHANGED, but records how many characters
+# it typed so `voxtype-undo` can backspace exactly that much.
+set -euo pipefail
+
+text="$(cat)"
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/voxtype"
+mkdir -p "$state_dir"
+printf '%s' "$text" | wc -m > "$state_dir/last_typed_chars"
+
+# Emit the text unchanged so voxtype types exactly what we counted.
+printf '%s' "$text"
