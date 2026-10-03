@@ -4,6 +4,8 @@
 # Each SVG is named after the folder in $HOME it decorates (e.g. Projects.svg -> ~/Projects).
 # folder-icons/projects.conf maps ~/Projects/<name> to a logo inside the repo ("enrix assets/icons/enrix-mono.png");
 # the logo's light pixels become the glyph, so a white-on-black mono app icon works as-is.
+# folder-icons/projects/<name>.svg provides a themed glyph for ~/Projects/<name>.
+# folder-icons/work/<name>.svg does the same for ~/Work/<name>.
 # Placeholders in the SVG: GLYPH_COLOR (sampled from the icon theme), STROKE (px at 256).
 set -u
 STATE=$HOME/.local/state/omarchy
@@ -91,6 +93,24 @@ for svg in "$GLYPHS"/*.svg; do
   render "$icon" svg_glyph
   apply "$icon" "${where[@]}"
 done
+
+# Child-folder glyphs use the same canvas and theme color as home-folder glyphs.
+shopt -s dotglob
+for collection in Projects Work; do
+  glyph_dir=$(echo "$collection" | tr '[:upper:]' '[:lower:]')
+  prefix=$glyph_dir
+  [[ $collection == Projects ]] && prefix=project
+  for svg in "$GLYPHS/$glyph_dir"/*.svg; do
+    [[ -f $svg ]] || continue
+    name=$(basename "$svg" .svg)
+    mapfile -t where < <(locations "$HOME/$collection/$name")
+    (( ${#where[@]} )) || continue
+    icon=folder-$prefix-$(echo "$name" | tr '[:upper:]' '[:lower:]')
+    render "$icon" svg_glyph
+    apply "$icon" "${where[@]}"
+  done
+done
+shopt -u dotglob
 
 [[ -f $PROJECTS ]] && while read -r name logo _; do
   [[ -z $name || $name == \#* ]] && continue
