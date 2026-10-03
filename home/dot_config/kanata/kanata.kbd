@@ -1,0 +1,59 @@
+;; Home row mods, mirrored on both hands (tuned for Omarchy's SUPER-heavy bindings):
+;;   pinky = Alt, ring = Ctrl, middle = Super, index = Shift
+;;
+;;   A   S    D     F     |  J     K     L    ;(Ø)
+;;   Alt Ctrl Super Shift |  Shift Super Ctrl Alt
+;;
+;; Holds only fire when the next key is on the opposite hand, so hold the mod
+;; with one hand and press the key with the other. Right pinky sends lalt, not
+;; ralt, because ralt is AltGr on the Norwegian layout.
+;;
+;; Emergency exit: lctl + spc + esc (physical keys).
+
+(defcfg
+  process-unmapped-keys yes
+  ;; Mid-word keys resolve as taps immediately, avoiding misfires while typing.
+  tap-hold-require-prior-idle 150
+  linux-dev-names-exclude (
+    "Espanso virtual device"
+    "Adafruit Macropad RP2040 Keyboard"
+    "Logitech MX Master 3S For Mac"
+  )
+  linux-continue-if-no-devs-found yes
+)
+
+(defhands
+  (left  grv 1 2 3 4 5 tab q w e r t caps a s d f g lsgt z x c v b esc)
+  (right 6 7 8 9 0 - = bspc y u i o p [ ] h j k l ; ' \ ret n m , . / up down left right))
+
+(defsrc
+  a   s   d   f   j   k   l   ;
+)
+
+(defvar
+  hold-time 200
+)
+
+(deftemplate hrm (key mod)
+  (tap-hold-opposite-hand-release $hold-time $key $mod
+    (timeout hold)
+    (same-hand tap)
+    (neutral-keys spc)
+    (neutral hold)
+    (tap-repress-timeout 200))
+)
+
+(defalias
+  a (t! hrm a lalt)
+  s (t! hrm s lctl)
+  d (t! hrm d lmet)
+  f (t! hrm f lsft)
+  j (t! hrm j rsft)
+  k (t! hrm k rmet)
+  l (t! hrm l rctl)
+  ; (t! hrm ; lalt)
+)
+
+(deflayer base
+  @a  @s  @d  @f  @j  @k  @l  @;
+)

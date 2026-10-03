@@ -27,6 +27,8 @@ dot_hushlogin
 .chezmoiscripts/Omarchy/**
 .config/omarchy
 .config/espanso
+.config/kanata
+.config/systemd/user/kanata.service
 .local/state/omarchy
 .local/share/nautilus-python/extensions/copy_path.py
 {{ end }}

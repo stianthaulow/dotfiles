@@ -4,6 +4,7 @@ set -eu
 PACKAGES_TO_INSTALL=(
   bitwarden
   espanso-wayland
+  kanata-bin
   7zip
   resvg
   ueberzugpp
