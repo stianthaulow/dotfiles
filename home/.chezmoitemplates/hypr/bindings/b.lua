@@ -6,6 +6,9 @@ o.bind("mouse:277", "Toggle fullscreen (MX gesture button)", hl.dsp.window.fulls
 
 -- T3 Code: launch or focus.
 o.bind("SUPER + A", "T3 Code", 'omarchy-launch-or-focus T3Code "uwsm-app -- t3code"')
+-- ChatGPT: the default binding only launches; its title-based focus misses since the title becomes the chat name, so match the class.
+hl.unbind("SUPER + SHIFT + A")
+o.bind("SUPER + SHIFT + A", "ChatGPT", o.launch_sole("chrome-chatgpt[.]com__-Default", "omarchy-launch-webapp https://chatgpt.com"))
 
 -- Gmail (personal "Profile 1") instead of HEY for email: launch or focus, and compose in its own window.
 hl.unbind("SUPER + SHIFT + E")

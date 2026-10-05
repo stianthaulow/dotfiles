@@ -28,6 +28,9 @@ o.bind("SUPER + SHIFT + T", "Teams", o.launch_sole("chrome-cifhbcnohmdccbgoicgdj
 hl.unbind("SUPER + SHIFT + O")
 o.bind("SUPER + SHIFT + O", "Obsidian", o.launch_sole("md[.]obsidian[.]Obsidian", "obsidian"))
 o.bind("SUPER + A", "T3 Code", o.launch_sole("com.t3tools.T3Code", "t3code"))
+-- ChatGPT: the default binding only launches; its title-based focus misses since the title becomes the chat name, so match the class.
+hl.unbind("SUPER + SHIFT + A")
+o.bind("SUPER + SHIFT + A", "ChatGPT", o.launch_sole("chrome-chatgpt[.]com__-Default", "omarchy-launch-webapp https://chatgpt.com"))
 
 -- Chromium profiles (open or focus). Replaces the default SUPER+SHIFT+B (Browser).
 -- "Default" = personal (gmail), "Profile 1" = work (malling.no).
