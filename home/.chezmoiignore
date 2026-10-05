@@ -47,3 +47,7 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ if not (hasKey .workspaces .chezmoi.hostname) }}
 .config/hypr/monitors.lua
 {{ end }}
+
+{{ if ne .chezmoi.hostname "b" }}
+.config/hypr/mx_keys.lua
+{{ end }}

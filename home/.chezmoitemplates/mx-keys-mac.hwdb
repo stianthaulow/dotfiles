@@ -1,0 +1,18 @@
+# Logitech MX Keys for Mac. Only matches this keyboard, so it applies only while
+# it's connected. 4092 = via Unifying receiver, B361 = via Bluetooth.
+#   - swap Option and Command on both sides (Super/Alt where muscle memory expects them)
+#   - swap the "§ |" key (left of 1) with the "< >" key (left of Z)
+#   - calculator key above the numpad sends F16; make it the real Calculator key
+#   - F17 becomes a real Print Screen key (Omarchy's screenshot bindings)
+#   - F19 becomes Screen Lock (bound to omarchy-system-lock in hypr/mx_keys.lua)
+evdev:input:b0003v046Dp4092*
+evdev:input:b0005v046DpB361*
+ KEYBOARD_KEY_700e2=leftmeta
+ KEYBOARD_KEY_700e3=leftalt
+ KEYBOARD_KEY_700e6=rightmeta
+ KEYBOARD_KEY_700e7=rightalt
+ KEYBOARD_KEY_70035=102nd
+ KEYBOARD_KEY_70064=grave
+ KEYBOARD_KEY_7006b=calc
+ KEYBOARD_KEY_7006c=sysrq
+ KEYBOARD_KEY_7006e=screenlock

@@ -1,0 +1,14 @@
+{{ if eq .chezmoi.hostname "b" -}}
+#!/usr/bin/env bash
+# Install the MX Keys for Mac key remaps (re-runs when the hwdb content changes).
+# hwdb hash: {{ includeTemplate "mx-keys-mac.hwdb" . | sha256sum }}
+set -eu
+
+hwdb=/etc/udev/hwdb.d/90-mx-keys-mac.hwdb
+cat <<'HWDB' | sudo tee "$hwdb" >/dev/null
+{{ includeTemplate "mx-keys-mac.hwdb" . -}}
+HWDB
+sudo chmod 644 "$hwdb"
+sudo systemd-hwdb update
+sudo udevadm trigger --subsystem-match=input --action=change
+{{ end -}}

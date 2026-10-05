@@ -20,6 +20,9 @@ require("hypr.monitors")
 require("hypr.input")
 require("hypr.bindings")
 require("hypr.shared_bindings")
+{{- if eq .chezmoi.hostname "b" }}
+require("hypr.mx_keys")
+{{- end }}
 require("hypr.looknfeel")
 require("hypr.autostart")
 
