@@ -8,12 +8,23 @@
 ;; with one hand and press the key with the other. Right pinky sends lalt, not
 ;; ralt, because ralt is AltGr on the Norwegian layout.
 ;;
+;; Super+Shift chords: press K+J (or D+F) together, within 40 ms, then the key
+;; on the other hand. Slower rolls type the letters as usual.
+;;
+;; Hold Caps Lock and press H/J/K/L for Super+Left/Down/Up/Right (Omarchy
+;; focus). Hold Shift too for Super+Shift+arrows (swap windows). Caps Lock
+;; itself no longer toggles caps.
+;;
 ;; Emergency exit: lctl + spc + esc (physical keys).
 
 (defcfg
   process-unmapped-keys yes
   ;; Mid-word keys resolve as taps immediately, avoiding misfires while typing.
   tap-hold-require-prior-idle 150
+  ;; Same for chords, so "kj" mid-word (ikkje, kjøre) never fires Super+Shift.
+  chords-v2-min-idle 150
+  ;; Required by defchordsv2.
+  concurrent-tap-hold yes
   linux-dev-names-exclude (
     "Espanso virtual device"
     "Adafruit Macropad RP2040 Keyboard"
@@ -27,7 +38,7 @@
   (right 6 7 8 9 0 - = bspc y u i o p [ ] h j k l ; ' \ ret n m , . / up down left right))
 
 (defsrc
-  a   s   d   f   j   k   l   ;
+  caps a   s   d   f   h   j   k   l   ;
 )
 
 (defvar
@@ -52,8 +63,18 @@
   k (t! hrm k rmet)
   l (t! hrm l rctl)
   ; (t! hrm ; lalt)
+  nav (layer-while-held nav)
+)
+
+(defchordsv2
+  (k j) (multi lmet lsft) 40 all-released ()
+  (d f) (multi lmet lsft) 40 all-released ()
 )
 
 (deflayer base
-  @a  @s  @d  @f  @j  @k  @l  @;
+  @nav @a  @s  @d  @f  h      @j     @k     @l      @;
+)
+
+(deflayer nav
+  _    _   _   _   _   M-left M-down M-up   M-right _
 )
