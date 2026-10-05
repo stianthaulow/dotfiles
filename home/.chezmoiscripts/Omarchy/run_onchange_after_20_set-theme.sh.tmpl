@@ -1,15 +1,11 @@
+{{- /* Theme switching talks to Hyprland and the shell. Outside a Hyprland session (e.g. SSH) this renders empty,
+       so chezmoi skips it without recording it as run, and the next apply at the desktop sets the theme. */ -}}
+{{ if env "HYPRLAND_INSTANCE_SIGNATURE" -}}
 #!/usr/bin/env bash
 # theme: {{ .omarchy.theme }}
 # Re-run (and re-apply the theme) when the theme's own files or theme-set hooks change
 # files: {{ output "sh" "-c" (printf "cd %q && find themes/%s hooks/theme-set.d -type f 2>/dev/null | sort | xargs -r sha256sum | sha256sum | cut -c1-16" (joinPath .chezmoi.sourceDir "dot_config/omarchy") .omarchy.theme) | trim }}
 set -eu
 
-theme={{ .omarchy.theme | quote }}
-
-# Theme switching talks to Hyprland and the shell; fail so chezmoi retries next apply
-if [[ -z ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
-  echo "Not in a Hyprland session, skipping omarchy theme set $theme" >&2
-  exit 1
-fi
-
-omarchy theme set "$theme"
+omarchy theme set {{ .omarchy.theme | quote }}
+{{ end -}}
