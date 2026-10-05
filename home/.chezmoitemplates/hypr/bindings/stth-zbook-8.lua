@@ -31,6 +31,8 @@ o.bind("SUPER + A", "T3 Code", o.launch_sole("com.t3tools.T3Code", "t3code"))
 -- ChatGPT: the default binding only launches; its title-based focus misses since the title becomes the chat name, so match the class.
 hl.unbind("SUPER + SHIFT + A")
 o.bind("SUPER + SHIFT + A", "ChatGPT", o.launch_sole("chrome-chatgpt[.]com__-Default", "omarchy-launch-webapp https://chatgpt.com"))
+-- Todoist (personal "Default" profile, app window like on B): open or focus.
+o.bind("SUPER + ALT + T", "Todoist", o.launch_sole("chrome-app.todoist.com__app_-Default", "chromium --profile-directory=Default --app=https://app.todoist.com/app/"))
 
 -- Chromium profiles (open or focus). Replaces the default SUPER+SHIFT+B (Browser).
 -- "Default" = personal (gmail), "Profile 1" = work (malling.no).

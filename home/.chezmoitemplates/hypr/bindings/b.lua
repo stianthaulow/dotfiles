@@ -10,6 +10,9 @@ o.bind("SUPER + A", "T3 Code", 'omarchy-launch-or-focus T3Code "uwsm-app -- t3co
 hl.unbind("SUPER + SHIFT + A")
 o.bind("SUPER + SHIFT + A", "ChatGPT", o.launch_sole("chrome-chatgpt[.]com__-Default", "omarchy-launch-webapp https://chatgpt.com"))
 
+-- Todoist (personal "Profile 1"): launch or focus.
+o.bind("SUPER + ALT + T", "Todoist", 'omarchy-launch-or-focus chrome-app.todoist.com__app_-Profile_1 "uwsm-app -- chromium --profile-directory=\\"Profile 1\\" --app=https://app.todoist.com/app/"')
+
 -- Gmail (personal "Profile 1") instead of HEY for email: launch or focus, and compose in its own window.
 hl.unbind("SUPER + SHIFT + E")
 o.bind("SUPER + SHIFT + E", "Gmail", o.launch_sole("chrome-mail.google.com__-Profile_1", "chromium --profile-directory=\"Profile 1\" --app=https://mail.google.com/"))
