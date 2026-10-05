@@ -1,0 +1,2 @@
+{{- /* Each host's bindings live in .chezmoitemplates/hypr/bindings/<hostname>.lua. Shared ones are in shared_bindings.lua. */ -}}
+{{ includeTemplate (printf "hypr/bindings/%s.lua" .chezmoi.hostname) . -}}

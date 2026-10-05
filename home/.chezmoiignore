@@ -51,3 +51,7 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ if ne .chezmoi.hostname "b" }}
 .config/hypr/mx_keys.lua
 {{ end }}
+
+{{ if not (stat (joinPath .chezmoi.sourceDir ".chezmoitemplates" "hypr" "bindings" (printf "%s.lua" .chezmoi.hostname))) }}
+.config/hypr/bindings.lua
+{{ end }}
