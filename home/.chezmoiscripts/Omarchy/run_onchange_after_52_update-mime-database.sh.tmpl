@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Rebuild the user MIME database when the package overrides change.
+# packages hash: {{ include "dot_local/share/mime/packages/typescript.xml" | sha256sum }}
+set -eu
+update-mime-database ~/.local/share/mime
+pgrep -x nautilus >/dev/null && nautilus -q || true

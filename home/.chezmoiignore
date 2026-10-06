@@ -33,6 +33,7 @@ dot_hushlogin
 .config/systemd/user/kanata.service
 .local/state/omarchy
 .local/share/nautilus-python/extensions/copy_path.py
+.local/share/mime
 {{ end }}
 
 {{ if not (stat (joinPath .chezmoi.homeDir "Documents" "PowerShell")) }}
@@ -50,6 +51,7 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 
 {{ if ne .chezmoi.hostname "b" }}
 .config/hypr/mx_keys.lua
+.config/systemd/user/espanso-restart.service
 {{ end }}
 
 {{ if not (stat (joinPath .chezmoi.sourceDir ".chezmoitemplates" "hypr" "bindings" (printf "%s.lua" .chezmoi.hostname))) }}

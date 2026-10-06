@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Claim *.ts/*.mts/*.cts for TypeScript over MPEG transport streams and Qt translations (both weight 50) -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/typescript">
+    <glob pattern="*.ts" weight="80"/>
+    <glob pattern="*.mts" weight="80"/>
+    <glob pattern="*.cts" weight="80"/>
+  </mime-type>
+</mime-info>
