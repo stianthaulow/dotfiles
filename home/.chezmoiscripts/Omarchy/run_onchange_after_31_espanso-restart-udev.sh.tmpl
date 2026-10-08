@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Install the udev rule that restarts espanso on keyboard hotplug (re-runs when the rule changes).
+# rule hash: {{ includeTemplate "espanso-restart.rules" . | sha256sum }}
+set -eu
+
+rule=/etc/udev/rules.d/90-espanso-restart.rules
+cat <<'RULE' | sudo tee "$rule" >/dev/null
+{{ includeTemplate "espanso-restart.rules" . -}}
+RULE
+sudo chmod 644 "$rule"
+sudo udevadm control --reload-rules
+systemctl --user daemon-reload

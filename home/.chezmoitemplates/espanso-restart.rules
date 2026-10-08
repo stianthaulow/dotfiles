@@ -1,0 +1,3 @@
+# espanso only scans keyboards at startup; restart it when a real keyboard or kanata's virtual one appears.
+ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_KEYBOARD}=="1", ENV{ID_BUS}=="usb|bluetooth", TAG+="systemd", ENV{SYSTEMD_USER_WANTS}+="espanso-restart.service"
+ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="kanata", TAG+="systemd", ENV{SYSTEMD_USER_WANTS}+="espanso-restart.service"

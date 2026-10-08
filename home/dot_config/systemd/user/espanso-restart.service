@@ -1,0 +1,9 @@
+[Unit]
+Description=Restart espanso so it picks up re-added keyboards
+Documentation=https://github.com/espanso/espanso
+
+[Service]
+Type=oneshot
+# Let all interfaces of a new keyboard settle before espanso re-scans
+ExecStartPre=/usr/bin/sleep 2
+ExecStart=/usr/bin/systemctl --user try-restart espanso.service
