@@ -31,6 +31,8 @@ dot_hushlogin
 .config/espanso
 .config/kanata
 .config/systemd/user/kanata.service
+.config/systemd/user/espanso.service.d
+.local/share/themes/omarchy-espanso
 .local/state/omarchy
 .local/share/nautilus-python/extensions/copy_path.py
 .local/share/mime

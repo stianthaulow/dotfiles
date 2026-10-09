@@ -3,8 +3,8 @@
 {{ if env "HYPRLAND_INSTANCE_SIGNATURE" -}}
 #!/usr/bin/env bash
 # theme: {{ .omarchy.theme }}
-# Re-run (and re-apply the theme) when the theme's own files or theme-set hooks change
-# files: {{ output "sh" "-c" (printf "cd %q && find themes/%s hooks/theme-set.d -type f 2>/dev/null | sort | xargs -r sha256sum | sha256sum | cut -c1-16" (joinPath .chezmoi.sourceDir "dot_config/omarchy") .omarchy.theme) | trim }}
+# Re-run (and re-apply the theme) when the theme's own files, user templates or theme-set hooks change
+# files: {{ output "sh" "-c" (printf "cd %q && find themes/%s themed hooks/theme-set.d -type f 2>/dev/null | sort | xargs -r sha256sum | sha256sum | cut -c1-16" (joinPath .chezmoi.sourceDir "dot_config/omarchy") .omarchy.theme) | trim }}
 set -eu
 
 # Without OMARCHY_PATH (e.g. apply run from T3 Code) theme-set silently skips the templates (foot.ini, kitty.conf, ...)

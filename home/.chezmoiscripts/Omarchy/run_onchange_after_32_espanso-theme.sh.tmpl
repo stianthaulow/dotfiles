@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Restart espanso so it picks up GTK_THEME from the drop-in (re-runs when the drop-in changes).
+# drop-in hash: {{ include "dot_config/systemd/user/espanso.service.d/theme.conf" | sha256sum }}
+set -eu
+
+systemctl --user daemon-reload
+systemctl --user try-restart espanso.service
