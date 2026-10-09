@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Wire graft into the current repo without leaving traces in it: Claude-only
+# wiring, no .gitignore edit, and everything graft writes listed in this
+# clone's .git/info/exclude instead of the repo's own ignore files.
+set -euo pipefail
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+exclude=$(git rev-parse --git-path info/exclude)
+
+paths=(/.claude/ /.mcp.json /.ignore)
+
+# Refuse to merge graft into files the team has committed.
+for p in .claude/settings.json .mcp.json .ignore; do
+  if git ls-files --error-unmatch "$p" >/dev/null 2>&1; then
+    echo "graft-init: $p is tracked in this repo; graft would edit it. Aborting." >&2
+    exit 1
+  fi
+done
+if [[ -n $(git ls-files .claude) ]]; then
+  echo "graft-init: .claude/ has tracked files; excluding only graft's paths." >&2
+  paths=(/.claude/settings.json /.claude/helpers/ /.claude/skills/graft/ /.mcp.json /.ignore)
+fi
+
+mkdir -p "$(dirname "$exclude")"
+touch "$exclude"
+for p in "${paths[@]}"; do
+  grep -qxF "$p" "$exclude" || echo "$p" >>"$exclude"
+done
+
+GRAFT_NO_GITIGNORE=1 graft init --no-agents --no-global "$@"
+
+if [[ -n $(git status --porcelain --untracked-files=all -- .gitignore .claude .mcp.json .ignore AGENTS.md CLAUDE.md) ]]; then
+  echo "graft-init: graft still left visible changes:" >&2
+  git status --short -- .gitignore .claude .mcp.json .ignore AGENTS.md CLAUDE.md >&2
+fi

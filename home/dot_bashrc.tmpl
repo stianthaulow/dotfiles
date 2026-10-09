@@ -77,6 +77,8 @@ ep() {
 
 # npm global path
 export PATH="$HOME/.npm-global/bin:$PATH"
+# graft: keep its /graft/ entry out of repo .gitignore files (globally ignored instead)
+export GRAFT_NO_GITIGNORE=1
 
 {{- if lookPath "mise" }}
 # node + cli tools via mise (honors .node-version / .tool-versions / mise.toml)
