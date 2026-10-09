@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""Move b's desktop into the hypr-rdp session while one is connected.
+
+On connect: save the monitor layout, disable the physical monitors so every
+workspace moves onto hypr-rdp's headless output, and show the workspace I was on.
+While connected: any input from b's own keyboard or mouse restores the desk and
+stops hypr-rdp for 10 minutes (hypr-rdp injects input through Wayland, so
+everything in /dev/input is physical).
+On disconnect: lock, then re-enable the monitors exactly as they were.
+
+hypr-rdp's own session hooks don't run when credentials are set
+(MuNeNiCK/hypr-rdp#105), so a session is detected as an established TCP
+connection on the RDP port.
+
+`hypr-rdp-session-watch --restore` restores by hand, e.g. over ssh.
+"""
+
+import glob
+import json
+import os
+import select
+import struct
+import subprocess
+import sys
+import time
+
+RDP_PORT = 3389
+RDP_OUTPUT = "hypr-rdp"
+IGNORED_DEVICES = ("Espanso",)
+POLL_SECONDS = 1
+END_GRACE_SECONDS = 3
+DESK_HOLD_SECONDS = 600
+
+RUNTIME_DIR = os.environ.setdefault("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+STATE_FILE = os.path.join(RUNTIME_DIR, "hypr-rdp-session.json")
+
+# A plain ssh session has none of the graphical session's environment.
+os.environ.setdefault("OMARCHY_PATH", "/usr/share/omarchy")
+if "HYPRLAND_INSTANCE_SIGNATURE" not in os.environ:
+    instances = sorted(glob.glob(f"{RUNTIME_DIR}/hypr/*"), key=os.path.getmtime)
+    if instances:
+        os.environ["HYPRLAND_INSTANCE_SIGNATURE"] = os.path.basename(instances[-1])
+
+EVENT = struct.Struct("llHHi")
+EV_KEY, EV_REL = 0x01, 0x02
+
+
+def log(msg):
+    print(msg, flush=True)
+
+
+def hyprctl(*args):
+    return subprocess.run(["hyprctl", *args], capture_output=True, text=True).stdout
+
+
+def hypr_json(what):
+    return json.loads(hyprctl("-j", what))
+
+
+def hypr_eval(lua):
+    out = hyprctl("eval", lua).strip()
+    if out != "ok":
+        log(f"hyprctl eval failed: {out}")
+
+
+def focus_workspace(name):
+    hyprctl("dispatch", f'hl.dsp.focus({{ workspace = "{name}" }})')
+
+
+def session_active():
+    out = subprocess.run(
+        ["ss", "-Htn", "state", "established", f"( sport = :{RDP_PORT} )"],
+        capture_output=True, text=True,
+    ).stdout
+    return bool(out.strip())
+
+
+def move_desktop_into_session():
+    monitors = [m for m in hypr_json("monitors") if m["name"] != RDP_OUTPUT]
+    focused = hypr_json("activeworkspace")
+    # Focus left on hypr-rdp's (usually empty) workspace says nothing about
+    # what I was working on; take what b's first monitor shows instead.
+    if focused["monitor"] == RDP_OUTPUT and monitors:
+        focused = monitors[0]["activeWorkspace"]
+    state = {
+        "focused": focused["name"],
+        "monitors": [
+            {
+                "name": m["name"],
+                "mode": f'{m["width"]}x{m["height"]}@{m["refreshRate"]:.3f}',
+                "position": f'{m["x"]}x{m["y"]}',
+                "scale": m["scale"],
+                "workspace": m["activeWorkspace"]["name"],
+            }
+            for m in monitors
+        ],
+    }
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f)
+
+    hypr_eval(" ".join(f'hl.monitor({{ output = "{m["name"]}", disabled = true }});' for m in monitors))
+
+    # Workspaces leave the disabled monitors asynchronously.
+    for _ in range(30):
+        if all(w["monitor"] == RDP_OUTPUT for w in hypr_json("workspaces")):
+            break
+        time.sleep(0.1)
+    focus_workspace(state["focused"])
+    log(f"session started: disabled {[m['name'] for m in monitors]}")
+
+
+def restore_desktop():
+    try:
+        with open(STATE_FILE) as f:
+            state = json.load(f)
+    except FileNotFoundError:
+        return
+
+    subprocess.run(["omarchy-system-lock"])
+    hypr_eval(" ".join(
+        f'hl.monitor({{ output = "{m["name"]}", disabled = false, mode = "{m["mode"]}", '
+        f'position = "{m["position"]}", scale = {m["scale"]} }});'
+        for m in state["monitors"]
+    ))
+    time.sleep(1)
+    for m in state["monitors"]:
+        focus_workspace(m["workspace"])
+    focus_workspace(state["focused"])
+    os.remove(STATE_FILE)
+    log("session ended: desk restored and locked")
+
+
+def physical_devices():
+    fds = {}
+    for path in glob.glob("/dev/input/event*"):
+        try:
+            with open(f"/sys/class/input/{os.path.basename(path)}/device/name") as f:
+                name = f.read().strip()
+        except OSError:
+            continue
+        if name.startswith(IGNORED_DEVICES):
+            continue
+        try:
+            fds[os.open(path, os.O_RDONLY | os.O_NONBLOCK)] = name
+        except OSError:
+            pass
+    return fds
+
+
+def physical_input(fds, timeout):
+    """Wait up to `timeout` seconds; return the device name if b's own input was used."""
+    ready, _, _ = select.select(list(fds), [], [], timeout)
+    for fd in ready:
+        try:
+            data = os.read(fd, EVENT.size * 64)
+        except OSError:
+            continue
+        for i in range(0, len(data) - EVENT.size + 1, EVENT.size):
+            _, _, type_, _, value = EVENT.unpack_from(data, i)
+            if (type_ == EV_KEY and value == 1) or type_ == EV_REL:
+                return fds[fd]
+    return None
+
+
+def close_all(fds):
+    for fd in fds:
+        os.close(fd)
+
+
+def main():
+    if "--restore" in sys.argv:
+        restore_desktop()
+        return
+
+    # Left over from a crash or a restart while a session was running.
+    if not session_active():
+        restore_desktop()
+
+    active = os.path.exists(STATE_FILE)
+    fds = physical_devices() if active else {}
+    gone_since = None
+
+    while True:
+        if active:
+            device = physical_input(fds, POLL_SECONDS)
+            if device:
+                log(f"input from {device}: the desk wins, ending the RDP session")
+                close_all(fds)
+                fds = {}
+                # Restore before stopping hypr-rdp, so b always has an output.
+                restore_desktop()
+                active = False
+                # Keep it down for a while so the client's auto-reconnect
+                # doesn't take the desk straight back.
+                subprocess.run(["systemctl", "--user", "stop", "hypr-rdp.service"])
+                subprocess.run([
+                    "systemd-run", "--user", "--collect", "--quiet",
+                    f"--on-active={DESK_HOLD_SECONDS}",
+                    "systemctl", "--user", "start", "hypr-rdp.service",
+                ])
+                continue
+        else:
+            time.sleep(POLL_SECONDS)
+
+        connected = session_active()
+        if connected and not active:
+            move_desktop_into_session()
+            fds = physical_devices()
+            active = True
+            gone_since = None
+        elif active and not connected:
+            # A reconnect replaces the connection; don't restore during the gap.
+            gone_since = gone_since or time.monotonic()
+            if time.monotonic() - gone_since >= END_GRACE_SECONDS:
+                close_all(fds)
+                fds = {}
+                restore_desktop()
+                active = False
+                gone_since = None
+        elif connected:
+            gone_since = None
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,13 @@
+[Unit]
+Description=hypr-rdp: RDP server for the live Hyprland session (tailnet only)
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/hypr-rdp
+# Binding the Tailscale IP fails until tailscaled has it; retry.
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

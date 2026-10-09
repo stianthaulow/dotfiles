@@ -1,0 +1,15 @@
+# hypr-rdp on b: RDP into the live Hyprland session from z (Remmina).
+# Tailnet only: bound to b's Tailscale IP. Password lives outside chezmoi.
+bind = "100.94.6.110:3389"
+username = "stian"
+password_file = "/home/stian/.config/hypr-rdp/password"
+
+# NVIDIA has no VA-API encoder; OpenH264 on the 7950X3D.
+h264_backend = "software"
+egfx_codec = "avc420"
+fps = 60
+bitrate = 12000000
+
+# Headless output sized to the client. hypr-rdp takes one fixed scale; 1 suits
+# the 3440x1440 ultrawide (z's built-in 2560x1600 screen would want 1.6).
+scale = 1

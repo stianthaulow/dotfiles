@@ -58,3 +58,15 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ if not (stat (joinPath .chezmoi.sourceDir ".chezmoitemplates" "hypr" "bindings" (printf "%s.lua" .chezmoi.hostname))) }}
 .config/hypr/bindings.lua
 {{ end }}
+
+{{ if ne .chezmoi.hostname "b" }}
+.config/systemd/user/hypr-rdp.service
+.config/systemd/user/hypr-rdp-session-watch.service
+.local/bin/hypr-rdp-session-watch
+.config/hypr-rdp
+{{ end }}
+
+{{ if ne .chezmoi.hostname "stth-zbook-8" }}
+.local/share/applications/org.remmina.Remmina.desktop
+.local/share/applications/org.remmina.Remmina-file.desktop
+{{ end }}
