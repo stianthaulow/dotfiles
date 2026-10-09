@@ -69,4 +69,5 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ if ne .chezmoi.hostname "stth-zbook-8" }}
 .local/share/applications/org.remmina.Remmina.desktop
 .local/share/applications/org.remmina.Remmina-file.desktop
+.config/autostart/remmina-applet.desktop
 {{ end }}
