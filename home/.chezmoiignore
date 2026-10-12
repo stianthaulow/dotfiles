@@ -43,6 +43,10 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ end }}
 
 
+{{ if not (stat (joinPath .chezmoi.homeDir "Vault" ".obsidian")) }}
+Vault
+{{ end }}
+
 {{ if ne (output "hostnamectl" "chassis" | trim) "laptop" }}
 .local/bin/mute-on-lock
 {{ end }}
