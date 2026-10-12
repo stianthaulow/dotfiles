@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Run a command inside the logged-in Hyprland session (env from the systemd user
+# manager, which uwsm populates). Meant for SSH: ssh b '~/.local/bin/in-session chezmoi update'
+set -euo pipefail
+
+if [ $# -eq 0 ]; then
+  echo "usage: in-session <command> [args...]" >&2
+  exit 2
+fi
+
+sig=$(systemctl --user show-environment 2>/dev/null | sed -n 's/^HYPRLAND_INSTANCE_SIGNATURE=//p')
+if [ -z "$sig" ] || [ ! -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr/$sig/.socket.sock" ]; then
+  echo "in-session: no running Hyprland session on $(hostname)" >&2
+  exit 1
+fi
+
+exec systemd-run --user --wait --pipe --quiet --collect -- "$@"
