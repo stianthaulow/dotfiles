@@ -67,6 +67,8 @@ Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 {{ end }}
 
 {{ if ne .chezmoi.hostname "stth-zbook-8" }}
+.local/bin/display-reset
+.config/omarchy/extensions/omarchy-menu.jsonc
 .local/share/applications/org.remmina.Remmina.desktop
 .local/share/applications/org.remmina.Remmina-file.desktop
 {{ end }}
