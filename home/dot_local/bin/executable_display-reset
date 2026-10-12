@@ -11,7 +11,11 @@ session=${XDG_SESSION_ID:-$(loginctl list-sessions --no-legend | awk -v u="$USER
 vt=$(loginctl show-session "$session" -p VTNr --value)
 other=$((vt == 2 ? 3 : 2))
 
-pkexec sh -c "chvt $other && sleep 2 && chvt $vt"
+# logind lets the local session switch VT without authentication.
+chvt() { busctl call org.freedesktop.login1 /org/freedesktop/login1/seat/seat0 org.freedesktop.login1.Seat SwitchTo u "$1"; }
+chvt "$other"
+sleep 2
+chvt "$vt"
 sleep 2
 
 # Outputs whose last modeset failed stay at 0x0 until a rule is re-applied.
