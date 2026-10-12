@@ -1,2 +1,6 @@
 {{- /* Each host's bindings live in .chezmoitemplates/hypr/bindings/<hostname>.lua. Shared ones are in shared_bindings.lua. */ -}}
 {{ includeTemplate (printf "hypr/bindings/%s.lua" .chezmoi.hostname) . -}}
+
+-- SUPER+J: togglesplit only exists in dwindle; on scrolling workspaces (SUPER+L) cycle the column width instead.
+hl.unbind("SUPER + J")
+o.bind("SUPER + J", "Toggle window split / column width", [[sh -c 'if hyprctl activeworkspace -j | jq -e ".tiledLayout == \"scrolling\"" >/dev/null; then hyprctl dispatch "hl.dsp.layout(\"colresize +conf\")"; else hyprctl dispatch "hl.dsp.layout(\"togglesplit\")"; fi']])
