@@ -80,9 +80,9 @@ BarWidget {
         readonly property var appIcon: root.workspaceIcons[modelData] || null
 
         bar: root.bar
-        // Icon workspaces keep their icon and show focus with the bar's active color.
-        text: appIcon ? appIcon.icon : (focused ? "\uDB85\uDCFB" : (modelData === 10 ? "0" : String(modelData)))
-        active: appIcon !== null && focused
+        // Focus shows as the bar's active color on both icons and numbers.
+        text: appIcon ? appIcon.icon : (modelData === 10 ? "0" : String(modelData))
+        active: focused
         tooltipText: appIcon ? appIcon.name : ""
         opacity: occupied || focused ? 1 : 0.5
         horizontalMargin: 6
