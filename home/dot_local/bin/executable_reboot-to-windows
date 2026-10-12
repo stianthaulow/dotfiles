@@ -1,0 +1,16 @@
+#!/bin/bash
+# Reboot into Windows once, via the firmware's BootNext.
+# Boots Windows Boot Manager directly instead of chainloading it from Limine,
+# which would change PCR 7 and make BitLocker ask for the recovery key.
+
+set -euo pipefail
+
+entry=$(efibootmgr | sed -n 's/^Boot\([0-9A-F]\{4\}\)\*\? Windows Boot Manager.*/\1/p' | head -1)
+
+if [[ -z $entry ]]; then
+  notify-send -u critical "Reboot to Windows" "No Windows Boot Manager entry found"
+  exit 1
+fi
+
+pkexec efibootmgr --bootnext "$entry" >/dev/null
+omarchy-system-reboot

@@ -29,4 +29,5 @@
   // "about": {"icon":"","label":"About","action":"omarchy-launch-or-focus-tui \"zsh -c 'fastfetch; read -k 1'\""},
 
   "trigger.hardware.display-reset": {"icon":"󰍹","label":"Display Reset","description":"Free a stuck output when a monitor gets no picture","action":"display-reset"},
+  "system.reboot-windows": {"icon":"","label":"Reboot to Windows","description":"One-time boot of Windows Boot Manager","action":"reboot-to-windows"},
 }
