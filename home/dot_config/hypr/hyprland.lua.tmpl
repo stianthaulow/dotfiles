@@ -39,6 +39,22 @@ o.window("^winapps$", { float = true, tag = "-default-opacity", opacity = "1 1" 
 -- espanso search bar and forms are popups; tiled, they fill half the screen.
 o.window("^espanso$", { float = true, center = true })
 
+-- espanso (re)start maps a gradient "Espanso Sync Tool" window and blocks until it gets
+-- keyboard focus to read modifier state (espanso-detect/src/evdev/sync/wayland.rs).
+-- Hide it and force focus so it closes by itself instead of waiting for a click.
+o.window("^Espanso\\.SyncTool$", {
+  tag = "-default-opacity",
+  float = true,
+  size = { 1, 1 },
+  move = { 0, 0 },
+  opacity = "0 0",
+  border_size = 0,
+  no_shadow = true,
+  no_blur = true,
+  no_anim = true,
+  stay_focused = true,
+})
+
 -- Keep X11 coordinates in Hyprland's logical layout (Omarchy enables zero scaling).
 -- With mixed monitor scales, zero scaling makes X and Hyprland disagree on window
 -- positions, which offsets/clips WinApps RemoteApp content. Cost: X11 apps are
