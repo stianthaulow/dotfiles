@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "stian.tokenwatch",
+  "name": "Tokenwatch",
+  "version": "1.0.0",
+  "author": "stian",
+  "description": "Session and weekly usage for every subscription in CLIProxyAPI, read from the tokenwatch poller.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Tokenwatch",
+    "description": "Active subscription's session usage in the bar; every subscription's limits in the panel.",
+    "category": "AI",
+    "allowMultiple": false,
+    "defaults": {
+      "refreshIntervalSec": 60
+    }
+  }
+}
