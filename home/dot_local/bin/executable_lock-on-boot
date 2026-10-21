@@ -1,0 +1,10 @@
+#!/bin/bash
+# Lock right after autologin, so an unattended boot (TPM unlock) doesn't leave an open desktop.
+# Skip it when the TPM unlock failed: the disk passphrase was typed at boot, so someone is at the desk.
+
+journalctl -b -t systemd-cryptsetup -q --no-pager | grep -qiE 'TPM policy does not match|unseal|Failed to .*tpm2' && exit 0
+
+for _ in $(seq 60); do
+  omarchy-shell shell ping >/dev/null 2>&1 && exec omarchy system lock
+  sleep 0.5
+done

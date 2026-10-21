@@ -6,6 +6,7 @@ PACKAGES_TO_INSTALL=(
   espanso-wayland
   kanata-bin
   7zip
+  git-lfs
   resvg
   ueberzugpp
   yazi
