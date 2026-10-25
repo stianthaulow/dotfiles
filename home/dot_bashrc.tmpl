@@ -106,6 +106,15 @@ if [ -d ~/.config/bash/completion.d ]; then
   done
 fi
 
+# mekk completion, same as `mekk completion bash`, plus the m alias
+if command -v mekk >/dev/null; then
+  _mekk() {
+    local IFS=$'\n'
+    COMPREPLY=($(mekk __complete "${COMP_WORDS[@]:1:COMP_CWORD}" 2>/dev/null))
+  }
+  complete -o default -F _mekk mekk m
+fi
+
 # Android sdk
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
