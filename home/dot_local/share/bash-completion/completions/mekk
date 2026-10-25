@@ -1,0 +1,7 @@
+# mekk bash completion, from `mekk completion bash`, also for the m alias.
+# bash-completion loads it on the first Tab after mekk or m (m is a symlink here).
+_mekk() {
+  local IFS=$'\n'
+  COMPREPLY=($(mekk __complete "${COMP_WORDS[@]:1:COMP_CWORD}" 2>/dev/null))
+}
+complete -o default -F _mekk mekk m
