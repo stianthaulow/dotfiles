@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# bt-connectable on|off: toggle page scan on the first Bluetooth controller (index varies between boots).
+set -eu
+hci=$(ls /sys/class/bluetooth | grep -m1 -x 'hci[0-9]*')
+btmgmt --index "${hci#hci}" connectable "$1" | grep -q 'Set Connectable complete'

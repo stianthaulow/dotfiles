@@ -1,0 +1,20 @@
+{{ if eq (output "hostnamectl" "chassis" | trim) "laptop" -}}
+#!/usr/bin/env bash
+# Install the unit that lets classic Bluetooth keyboards reconnect after resume (re-runs when it changes).
+# hash: {{ includeTemplate "bt-connectable-after-resume.service" . | sha256sum }} {{ includeTemplate "bt-connectable" . | sha256sum }}
+set -eu
+
+helper=/usr/local/bin/bt-connectable
+cat <<'HELPER' | sudo tee "$helper" >/dev/null
+{{ includeTemplate "bt-connectable" . -}}
+HELPER
+sudo chmod 755 "$helper"
+
+unit=/etc/systemd/system/bt-connectable-after-resume.service
+cat <<'UNIT' | sudo tee "$unit" >/dev/null
+{{ includeTemplate "bt-connectable-after-resume.service" . -}}
+UNIT
+sudo chmod 644 "$unit"
+sudo systemctl daemon-reload
+sudo systemctl enable bt-connectable-after-resume.service
+{{ end -}}
