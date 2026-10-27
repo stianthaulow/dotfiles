@@ -67,3 +67,10 @@ hl.config({ xwayland = { force_zero_scaling = false } })
 {{- range get (get .workspaces .chezmoi.hostname | default dict) "apps" }}
 o.window({{ .class | quote }}, { workspace = "{{ .workspace }}{{ if get . "silent" }} silent{{ end }}" }) -- {{ .name }}
 {{- end }}
+
+-- SUPER+SHIFT+Home: send those apps back to their workspaces (e.g. after dragging one to the ultrawide).
+o.bind("SUPER + SHIFT + Home", "Send pinned apps home", function()
+{{- range get (get .workspaces .chezmoi.hostname | default dict) "apps" }}
+  pcall(hl.dispatch, hl.dsp.window.move({ workspace = "{{ .workspace }}", follow = false, window = {{ printf "class:%s" .class | quote }} })) -- {{ .name }}
+{{- end }}
+end)
