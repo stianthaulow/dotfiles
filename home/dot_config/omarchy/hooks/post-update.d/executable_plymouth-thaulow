@@ -1,0 +1,9 @@
+#!/bin/bash
+# omarchy-settings owns the Plymouth/SDDM theme files, so updates reset the unlock screen to stock.
+# Put the thaulow one back when that happens.
+
+[[ -f $(omarchy-theme-dir thaulow 2>/dev/null)/unlock.png ]] || exit 0
+[[ $(omarchy-plymouth-current) == thaulow ]] && exit 0
+
+echo "Restoring thaulow unlock screen"
+omarchy-plymouth-set-by-theme thaulow
