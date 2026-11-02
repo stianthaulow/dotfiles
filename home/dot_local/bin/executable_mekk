@@ -1,0 +1,2 @@
+#!/bin/bash
+exec mise exec node@22 -- node "$HOME/Projects/mekk/bin/mekk.js" "$@"

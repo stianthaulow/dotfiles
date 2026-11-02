@@ -55,6 +55,19 @@ type = "git-repo"
 url = "https://github.com/stianthaulow/dotfiles-private.git"
 refreshPeriod = "1m"
 
+# mekk: the CLI, and ~/.mekk with the personal workflows (tsconfig expects the CLI at ~/Projects/mekk)
+["Projects/mekk"]
+type = "git-repo"
+url = "https://github.com/stianthaulow/mekk.git"
+refreshPeriod = "1m"
+pull.args = ["--autostash"]  # keeps uncommitted work
+
+[".mekk"]
+type = "git-repo"
+url = "https://github.com/stianthaulow/mekk-home.git"
+refreshPeriod = "1m"
+pull.args = ["--autostash"]  # keeps uncommitted work
+
 [".config/omarchy/themes/thaulow/backgrounds/wallpaper.jpg"]
 type = "file"
 url = "https://raw.githubusercontent.com/stianthaulow/theme/debian/Wallpaper/wallpaper.jpg"
