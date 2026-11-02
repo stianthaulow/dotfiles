@@ -1,4 +1,25 @@
-# If not running interactively, don't do anything (leave this at the top of this file)
+{{ if lookPath "mise" -}}
+# mise: put the shims first on PATH and drop any mise install dirs. Shims pick
+# the tool version per directory each time a command runs, so they suit
+# shells with no prompt hook (bash -lc, ssh commands, coding-agent shells).
+# Shims also go ahead of /usr/bin so system node/go never win.
+__mise_shims_first() {
+  local data="${MISE_DATA_DIR:-$HOME/.local/share/mise}" out="" d
+  local -a parts
+  IFS=: read -ra parts <<<"$PATH"
+  for d in "${parts[@]}"; do
+    case "$d" in "$data/shims" | "$data/installs/"*) continue ;; esac
+    out="${out:+$out:}$d"
+  done
+  export PATH="$data/shims${out:+:$out}"
+}
+if [[ $- != *i* ]]; then
+  __mise_shims_first
+  unset -f __mise_shims_first
+fi
+{{- end }}
+
+# If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 {{/* Omarchy specific */}}
@@ -81,8 +102,9 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 # graft: keep its /graft/ entry out of repo .gitignore files (globally ignored instead)
 export GRAFT_NO_GITIGNORE=1
 
-{{- if lookPath "mise" }}
-# node + cli tools via mise (honors .node-version / .tool-versions / mise.toml)
+{{- if and (lookPath "mise") (not (lookPath "omarchy-version")) }}
+# node + cli tools via mise (honors .node-version / .tool-versions / mise.toml).
+# Omarchy's default rc already runs this.
 eval "$(mise activate bash)"
 {{- end }}
 
@@ -135,6 +157,21 @@ case ":$PATH:" in
   *":$GOPATH/bin:"*) ;;
   *) export PATH="$GOPATH/bin:$PATH" ;;
 esac
+{{- end }}
+
+{{- if lookPath "mise" }}
+# mise in agent shells. Claude Code and Codex source this file once in an
+# interactive shell with no terminal and snapshot the PATH. The prompt hook
+# from `mise activate` never fires there, so the PATH would stay pinned to the
+# versions of the startup directory. Swap to shims instead. Humans at a real
+# terminal keep the prompt hook.
+if [[ ! -t 0 || -n ${CLAUDECODE-} || -n ${CODEX_THREAD_ID-} ]]; then
+  if declare -F _mise_hook >/dev/null; then
+    eval "$(command mise deactivate 2>/dev/null)"
+  fi
+  __mise_shims_first
+fi
+unset -f __mise_shims_first
 {{- end }}
 
 # Auto-attach to the persistent herdr session on SSH/mosh login.

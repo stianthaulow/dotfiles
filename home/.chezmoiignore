@@ -68,6 +68,7 @@ Vault
 .config/systemd/user/hypr-rdp-session-watch.service
 .local/bin/hypr-rdp-session-watch
 .config/hypr-rdp
+.local/share/applications/BambuStudio.desktop
 {{ end }}
 
 {{ if ne .chezmoi.hostname "stth-zbook-8" }}
