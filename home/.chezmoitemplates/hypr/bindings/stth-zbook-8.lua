@@ -27,6 +27,8 @@ o.bind("SUPER + SHIFT + T", "Teams", o.launch_sole("chrome-cifhbcnohmdccbgoicgdj
 -- Obsidian: the default binding's "^obsidian$" never matches the md.obsidian.Obsidian class, so it only launches.
 hl.unbind("SUPER + SHIFT + O")
 o.bind("SUPER + SHIFT + O", "Obsidian", o.launch_sole("md[.]obsidian[.]Obsidian", "obsidian"))
+-- Replaces the default SUPER+A (Select all).
+hl.unbind("SUPER + A")
 o.bind("SUPER + A", "T3 Code", o.launch_sole("com.t3tools.T3Code", "t3code"))
 -- ChatGPT: the default binding only launches; its title-based focus misses since the title becomes the chat name, so match the class.
 hl.unbind("SUPER + SHIFT + A")
@@ -43,3 +45,10 @@ o.bind("SUPER + SHIFT + CTRL + B", "Browser (work)", "/home/stian/.local/bin/chr
 -- Screenshot on SUPER+SHIFT+S (the Keychron K3 has no PrtSc key). Replaces the default Google Maps webapp binding.
 hl.unbind("SUPER + SHIFT + S")
 o.bind("SUPER + SHIFT + S", "Screenshot", "omarchy-capture-screenshot")
+
+-- Dictation keys from before Alt + Space and Right Alt became the defaults.
+-- Remove these lines to give the keys back to applications.
+if o.dictation_installed and o.dictation_installed() then
+  o.bind("SUPER + CTRL + X", "Toggle dictation", "omarchy-dictation toggle")
+  o.bind_hold("F9", "Start dictation (push-to-talk)", "omarchy-dictation start", "Stop dictation (push-to-talk)", "omarchy-dictation stop")
+end

@@ -5,6 +5,8 @@ o.bind("F10", "Undo last dictation", "/home/stian/.local/bin/voxtype-undo")
 o.bind("mouse:277", "Toggle fullscreen (MX gesture button)", hl.dsp.window.fullscreen({ mode = "fullscreen" }), { mouse = true })
 
 -- T3 Code: launch or focus.
+-- Replaces the default SUPER+A (Select all).
+hl.unbind("SUPER + A")
 o.bind("SUPER + A", "T3 Code", 'omarchy-launch-or-focus T3Code "uwsm-app -- t3code"')
 -- ChatGPT: the default binding only launches; its title-based focus misses since the title becomes the chat name, so match the class.
 hl.unbind("SUPER + SHIFT + A")
