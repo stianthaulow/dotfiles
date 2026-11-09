@@ -29,7 +29,8 @@ hl.unbind("SUPER + SHIFT + O")
 o.bind("SUPER + SHIFT + O", "Obsidian", o.launch_sole("md[.]obsidian[.]Obsidian", "obsidian"))
 -- Replaces the default SUPER+A (Select all).
 hl.unbind("SUPER + A")
-o.bind("SUPER + A", "T3 Code", o.launch_sole("com.t3tools.T3Code", "t3code"))
+-- Launch via the desktop entry: the AppImage has no t3code on Hyprland's PATH.
+o.bind("SUPER + A", "T3 Code", o.launch_sole("com.t3tools.T3Code", "t3code.desktop"))
 -- ChatGPT: the default binding only launches; its title-based focus misses since the title becomes the chat name, so match the class.
 hl.unbind("SUPER + SHIFT + A")
 o.bind("SUPER + SHIFT + A", "ChatGPT", o.launch_sole("chrome-chatgpt[.]com__-Default", "omarchy-launch-webapp https://chatgpt.com"))
