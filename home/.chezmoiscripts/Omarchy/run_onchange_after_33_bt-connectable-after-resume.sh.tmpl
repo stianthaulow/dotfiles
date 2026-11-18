@@ -16,5 +16,5 @@ cat <<'UNIT' | sudo tee "$unit" >/dev/null
 UNIT
 sudo chmod 644 "$unit"
 sudo systemctl daemon-reload
-sudo systemctl enable bt-connectable-after-resume.service
+sudo systemctl reenable bt-connectable-after-resume.service
 {{ end -}}

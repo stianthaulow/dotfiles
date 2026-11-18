@@ -1,14 +1,15 @@
 # Classic Bluetooth keyboards (Keychron K3) can't reconnect after s2idle resume:
-# the MT7925 stops page scanning. Keep the controller connectable for 2 minutes after waking.
+# the MT7925 stops page scanning. Keep the controller connectable at boot and after every wake.
+# (A 2-minute window wasn't enough: the K3 only reconnected if woken right after the laptop.)
 [Unit]
-Description=Make Bluetooth connectable for 2 minutes after resume
-After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+Description=Keep Bluetooth connectable (boot and resume)
+After=bluetooth.service suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+Wants=bluetooth.service
 
 [Service]
 Type=oneshot
-ExecStart=-/usr/bin/systemctl stop bt-connectable-off.timer bt-connectable-off.service
+ExecStartPre=/usr/bin/sleep 2
 ExecStart=/usr/local/bin/bt-connectable on
-ExecStart=/usr/bin/systemd-run --collect --unit=bt-connectable-off --on-active=2min /usr/local/bin/bt-connectable off
 
 [Install]
-WantedBy=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
