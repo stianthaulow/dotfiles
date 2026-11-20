@@ -322,15 +322,17 @@ Panel {
       }
     }
 
+    // Antigravity and Copilot have no session window: the agent omits the field.
     LimitRow {
       width: parent.width
+      visible: !!block.account && block.account.session !== undefined
       title: "Session"
       gauge: block.account ? block.account.session : null
     }
 
     LimitRow {
       width: parent.width
-      title: "Weekly"
+      title: block.account && block.account.weekly_label ? block.account.weekly_label : "Weekly"
       gauge: block.account ? block.account.weekly : null
     }
   }
