@@ -23,6 +23,8 @@ hl.unbind("SUPER + SHIFT + E")
 o.bind("SUPER + SHIFT + E", "Outlook", o.launch_sole("chrome-faolnafnngnfdaknnbpnkhgohbobgegn-Profile_1", "chromium --profile-directory=\"Profile 1\" --app-id=faolnafnngnfdaknnbpnkhgohbobgegn"))
 hl.unbind("SUPER + SHIFT + ALT + E")
 o.bind("SUPER + SHIFT + ALT + E", "New email", "chromium --profile-directory=\"Profile 1\" --app-id=faolnafnngnfdaknnbpnkhgohbobgegn --app-launch-url-for-shortcuts-menu-item=https://outlook.office.com/mail/deeplink/compose")
+-- Replaces the default SUPER+SHIFT+T (Activity / btop).
+hl.unbind("SUPER + SHIFT + T")
 o.bind("SUPER + SHIFT + T", "Teams", o.launch_sole("chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Profile_1", "chromium --profile-directory=\"Profile 1\" --app-id=cifhbcnohmdccbgoicgdjpfamggdegmo"))
 -- Obsidian: the default binding's "^obsidian$" never matches the md.obsidian.Obsidian class, so it only launches.
 hl.unbind("SUPER + SHIFT + O")

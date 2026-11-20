@@ -22,6 +22,7 @@ hl.unbind("SUPER + SHIFT + ALT + E")
 o.bind("SUPER + SHIFT + ALT + E", "New email", "chromium --profile-directory=\"Profile 1\" --app=\"https://mail.google.com/mail/?view=cm&fs=1\"")
 
 -- Teams PWA: launch or focus (class matches the workspace 8 rule).
+hl.unbind("SUPER + SHIFT + T")
 o.bind("SUPER + SHIFT + T", "Teams", 'omarchy-launch-or-focus chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default "uwsm-app -- chromium --profile-directory=Default --app-id=cifhbcnohmdccbgoicgdjpfamggdegmo"')
 
 -- Chromium profiles: launch or focus. Private = "Profile 1" (Stian), Work = "Default" (Malling).
